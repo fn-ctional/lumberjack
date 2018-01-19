@@ -2,10 +2,11 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface FromFrontEnd {
 
-    List<Device> getDevicesOut();
+    Map<Device,User> getDevicesOut();
 
     void setUserMaxDevices(User user, int max);
 
@@ -15,3 +16,4 @@ public interface FromFrontEnd {
 
     void getStatus(Device device);
 }
+
