@@ -1,0 +1,60 @@
+body {
+    background-color: #f4f4f4;
+    margin: 0;
+}
+
+h1 {
+    font-family: "Roboto", sans-serif;
+    color: #343434;
+    font-size: 40px;
+}
+
+p {
+    font-family: "Open Sans", sans-serif;
+}
+
+.main {
+    margin-top: 60px;
+}
+
+.name {
+    font-family: "Roboto", sans-serif;
+    color: #ffffff;
+    font-size: 40px;
+    display: inline-block;
+    margin: 20px;
+    height: auto;
+}
+
+.caption-contrast {
+    font-family: "Open Sans", sans-serif;
+    font-size: 18px;
+    color: #ffffff;
+    display: inline-block;
+    margin: 20px;
+}
+
+.top-bar {
+    height: auto;
+    width: 100%;
+    background-color: #272727;
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    top: 0;
+}
+
+.menu-bar {
+    height: auto;
+    width: 100%;
+}
+
+#github-logo {
+    display: inline-block;
+    float: right;
+    margin: 30px;
+}
+
+#github-logo:hover {
+    opacity: 0.5;
+}
