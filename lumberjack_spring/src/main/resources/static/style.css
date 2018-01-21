@@ -1,5 +1,5 @@
 body {
-    background-color: #f4f4f4;
+    background-color: #dddddd;
     margin: 0;
 }
 
@@ -14,7 +14,9 @@ p {
 }
 
 .main {
-    margin-top: 60px;
+    margin-top: 150px;
+    margin-left: 20%;
+    margin-right: 20%;
 }
 
 .name {
@@ -22,6 +24,7 @@ p {
     color: #ffffff;
     font-size: 40px;
     display: inline-block;
+    margin-left: 20%;
     margin: 20px;
     height: auto;
 }
@@ -35,7 +38,7 @@ p {
 }
 
 .top-bar {
-    height: auto;
+    height: 90px;
     width: 100%;
     background-color: #272727;
     padding: 0;
@@ -45,8 +48,13 @@ p {
 }
 
 .menu-bar {
-    height: auto;
+    height: 40px;
     width: 100%;
+    border-bottom-width: 8px;
+    border-bottom-color: #343434;
+    background-color: #ffffff;
+    position: fixed;
+    top: 90px;
 }
 
 #github-logo {
