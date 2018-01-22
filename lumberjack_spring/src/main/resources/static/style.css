@@ -14,7 +14,7 @@ p {
 }
 
 .main {
-    margin-top: 150px;
+    #margin-top: 150px;
     margin-left: 20%;
     margin-right: 20%;
 }
@@ -24,8 +24,7 @@ p {
     color: #ffffff;
     font-size: 40px;
     display: inline-block;
-    margin-left: 20%;
-    margin: 20px;
+    margin: 20px 20px 20px 20%;
     height: auto;
 }
 
@@ -43,19 +42,20 @@ p {
     background-color: #272727;
     padding: 0;
     margin: 0;
-    position: fixed;
-    top: 0;
 }
 
 .menu-bar {
     height: 40px;
     width: 100%;
-    border-bottom-width: 8px;
-    border-bottom-color: #343434;
+    border-bottom: 8px #343434;
     background-color: #ffffff;
-    position: fixed;
-    top: 90px;
 }
+
+.top-container {
+    position: sticky;
+    top: 0;
+}
+
 
 #github-logo {
     display: inline-block;
