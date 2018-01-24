@@ -1,5 +1,5 @@
 body {
-    background-color: #dddddd;
+    background-color: #ffffff;
     margin: 0;
 }
 
@@ -48,7 +48,11 @@ p {
     height: 40px;
     width: 100%;
     border-bottom: 8px #343434;
-    background-color: #ffffff;
+    background-color: #ebebeb;
+}
+
+.menu-option {
+
 }
 
 .top-container {
@@ -56,13 +60,28 @@ p {
     top: 0;
 }
 
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: #ebebeb;
+}
 
 #github-logo {
     display: inline-block;
     float: right;
     margin: 30px;
+    transition: opacity .4s ease-out;
+    -moz-transition: opacity .4s ease-out;
+    -webkit-transition: opacity .4s ease-out;
+    -o-transition: opacity .4s ease-out;
+    opacity: 1;
 }
 
 #github-logo:hover {
     opacity: 0.5;
+}
+
+#first-menu-option {
+    padding-left: 20%;
 }
