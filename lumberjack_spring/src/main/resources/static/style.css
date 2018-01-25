@@ -45,14 +45,30 @@ p {
 }
 
 .menu-bar {
-    height: 40px;
+    height: auto;
     width: 100%;
-    border-bottom: 8px #343434;
     background-color: #ebebeb;
 }
 
 .menu-option {
+    font-family: "Roboto", sans-serif;
+    padding: 1em;
+    transition: background-color .3s ease-out;
+    -moz-transition: background-color .3s ease-out;
+    -webkit-transition: background-color .3s ease-out;
+    -o-transition: background-color .3s ease-out;
+    display: inline-block;
+    margin:0;
+    border:0;
+}
 
+.menu-option:hover {
+    background-color: #ffffff;
+}
+
+#first-menu-option {
+    margin:0;
+    margin-left: 20%;
 }
 
 .top-container {
@@ -71,9 +87,9 @@ p {
 
 #footer-text {
     font-size: 12px;
-    color: #5c5c5c;
+    color: #757575;
     font-family: "Open Sans", sans-serif;
-    padding: 1%;
+    padding: 0.8%;
 }
 
 #github-logo {
@@ -89,8 +105,4 @@ p {
 
 #github-logo:hover {
     opacity: 0.5;
-}
-
-#first-menu-option {
-    padding-left: 20%;
 }
