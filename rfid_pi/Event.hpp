@@ -19,6 +19,8 @@ namespace Event {
     bool next(Event&);
   };
 
+  char toChar(Event&);
+
 }
 
 #endif // INCLUDED_EVENTS
