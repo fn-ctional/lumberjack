@@ -13,7 +13,7 @@ Source::Source( std::istream *&&stream ):
 }
 
 bool Source::next( Event &event ) {
-  source->read( static_cast<char*>(&event), sizeof(Event) );
+  source->read( reinterpret_cast<char*>(&event), sizeof(Event) );
   return source->good();
 }
 
