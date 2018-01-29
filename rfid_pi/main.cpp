@@ -1,10 +1,12 @@
-#include "Events.hpp"
+#include "Event.hpp"
 #include <iostream>
 
 int main() {
-  Events events("/dev/input/event0");
-  for (auto &event : events) {
-    if (event.type == 1 && event.value == 1) {
+  auto source = Event::Source("/dev/input/event0");
+  Event::Event event;
+
+  while( source.next(event) ) {
+    if ( event.type == 1 && event.value == 1 ) {
       std::cout << event.code << std::flush;
     }
   }
