@@ -16,7 +16,7 @@ namespace Event {
   public:
     Source(std::string);
     Source(std::istream*&&);
-    bool next(Event &event);
+    bool next(Event&);
   };
 
 }
