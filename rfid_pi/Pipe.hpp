@@ -6,12 +6,7 @@
 
 namespace Pipe {
 
-  class Pipe : public std::fstream {
-    std::string path;
-  public:
-    Pipe(std::string);
-    ~Pipe();
-  };
+  std::fstream make(std::string);
 
 }
 

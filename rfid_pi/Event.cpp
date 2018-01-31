@@ -7,12 +7,6 @@ bool Event::Source::next( Event &event ) {
   return source.good();
 }
 
-bool operator==(const input_event &x, const input_event &y) {
-  return x.type == y.type
-      && x.code == y.code
-      && x.value == y.value;
-}
-
 char Event::toChar(Event &event) {
   switch (event.code) {
     case KEY_1:     return '1';

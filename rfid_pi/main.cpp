@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
   auto source = Event::Source("/dev/input/event0");
   Event::Event event;
 
-  Pipe::Pipe pipe(argv[1]);
+  auto pipe = Pipe::make(argv[1]);
 
   while( source.next(event) ) {
     if ( event.type == INPUT_PROP_DIRECT && event.value == EV_KEY ) {
