@@ -1,17 +1,10 @@
 #include "Event.hpp"
-#include <fstream>
 
-Event::Source::Source( std::string path ):
-  source( new std::ifstream(path) ) {
-}
-
-Event::Source::Source( std::istream *&&stream ):
-  source( stream ) {
-}
+Event::Source::Source( std::string path ): source(path) {}
 
 bool Event::Source::next( Event &event ) {
-  source->read( reinterpret_cast<char*>(&event), sizeof(Event) );
-  return source->good();
+  source.read( reinterpret_cast<char*>(&event), sizeof(Event) );
+  return source.good();
 }
 
 bool operator==(const input_event &x, const input_event &y) {
