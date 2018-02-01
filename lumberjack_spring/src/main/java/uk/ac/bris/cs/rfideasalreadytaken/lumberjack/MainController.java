@@ -15,9 +15,14 @@ public class MainController extends WebMvcConfigurerAdapter {
         registry.addViewController("/").setViewName("index");
     }
 
-    @RequestMapping("/")
+    @RequestMapping(value={"", "/"})
     public String index() {
-        return "template.html";
+        return "templates/home.html";
+    }
+
+    @RequestMapping(value={"/about"})
+    public String about() {
+        return "templates/about.html";
     }
 
 }
