@@ -1,4 +1,5 @@
-*
+rfid_pi_web/.idea/
+rfid_pi_web/target/
 
 !*.cpp
 !*.hpp
