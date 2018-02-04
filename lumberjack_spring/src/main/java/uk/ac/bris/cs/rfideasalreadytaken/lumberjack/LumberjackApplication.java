@@ -9,17 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.sql.DataSource;
+
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 @SpringBootApplication
 public class LumberjackApplication implements CommandLineRunner{
 
 	private static final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
 
-	@Autowired
-	JdbcTemplate jdbcTemplate;
+	//@Autowired
+	//JdbcTemplate jdbcTemplate;
 
 	public static void main(String[] args) {
 		SpringApplication.run(LumberjackApplication.class, args);
@@ -27,8 +32,22 @@ public class LumberjackApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... strings) throws Exception {
-		log.info("Creating tables");
-		jdbcTemplate.execute("DROP TABLE example IF EXISTS");
-		jdbcTemplate.execute("CREATE TABLE example(" + "id SERIAL, first_name VARCHAR(255), last_name VARCHAR(255))");
+
+		MysqlDataSource dataSource = new MysqlDataSource();
+		dataSource.setUser("username");
+		dataSource.setPassword("password");
+		dataSource.setServerName("DBhost.example.org");
+
+		Connection conn = dataSource.getConnection();
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery("SELECT ID FROM USERS");
+
+		rs.close();
+		stmt.close();
+		conn.close();
+
+		//log.info("Creating tables");
+		//jdbcTemplate.execute("DROP TABLE example IF EXISTS");
+		//jdbcTemplate.execute("CREATE TABLE example(" + "id SERIAL, first_name VARCHAR(255), last_name VARCHAR(255))");
 	}
 }

@@ -58,6 +58,14 @@
 			<artifactId>thymeleaf</artifactId>
 			<version>3.0.9.RELEASE</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>com.mysql.jdbc.jar</artifactId>
+			<version>1.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/main/resources/com.mysql.jdbc.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>
