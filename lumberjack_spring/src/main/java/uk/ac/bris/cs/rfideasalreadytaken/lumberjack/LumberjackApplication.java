@@ -23,11 +23,9 @@ public class LumberjackApplication implements CommandLineRunner{
 
 	private static final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
 
-	//@Autowired
-	//JdbcTemplate jdbcTemplate;
-
 	public static void main(String[] args) {
 		SpringApplication.run(LumberjackApplication.class, args);
+		return;
 	}
 
 	@Override
@@ -40,12 +38,10 @@ public class LumberjackApplication implements CommandLineRunner{
 
 		log.info("2");
 
-		//dataSource.setServerName("129.150.119.251");
+		dataSource.setServerName("129.150.119.251");
 		dataSource.setConnectTimeout(5000);
-		//dataSource.setServerName("oc-129-150-119-251.compute.oraclecloud.com");
-		dataSource.setURL("jdbc:mysql://129.150.119.251:3306/LumberjackDatabase");
-		//dataSource.setPortNumber(3306);
-		//dataSource.setDatabaseName("LumberjackDatabase");
+		dataSource.setPortNumber(3306);
+		dataSource.setDatabaseName("LumberjackDatabase");
 		dataSource.setUser("lumberjack");
 		dataSource.setPassword("Lumberjack1#");
 
@@ -53,26 +49,21 @@ public class LumberjackApplication implements CommandLineRunner{
 
 		Connection conn = dataSource.getConnection();
 
-
-
 		log.info("4");
 
 		Statement stmt = conn.createStatement();
 
 		log.info("5");
 
-		//ResultSet rs = stmt.executeQuery("DROP TABLE test IF EXISTS");
-		ResultSet rs = stmt.executeQuery("CREATE TABLE test(\" + \"id SERIAL, first_name VARCHAR(255), last_name VARCHAR(255))");
+		//stmt.execute("CREATE TABLE IF NOT EXISTS USERS (\nID integer PRIMARY KEY);");
+		//stmt.execute("DROP TABLE IF EXISTS USERS");
+		ResultSet rs = stmt.executeQuery("SELECT ID FROM USERS");
 
 		log.info("6");
 
 		rs.close();
 		stmt.close();
 		conn.close();
-
-		//ResultSet rs = stmt.executeQuery("SELECT ID FROM USERS");
-		//log.info("Creating tables");
-		//jdbcTemplate.execute("DROP TABLE example IF EXISTS");
-		//jdbcTemplate.execute("CREATE TABLE example(" + "id SERIAL, first_name VARCHAR(255), last_name VARCHAR(255))");
+		return;
 	}
 }
