@@ -25,4 +25,9 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "templates/about.html";
     }
 
+    @RequestMapping(value = {"/download"})
+    public String download() {
+        return "templates/download.html";
+    }
+
 }

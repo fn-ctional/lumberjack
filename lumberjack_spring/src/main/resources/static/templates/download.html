@@ -8,8 +8,6 @@
 
     <title>lumberjack</title>
 
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-
     <!--Bootstrap imports-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -39,10 +37,10 @@
                 <a class="nav-link" href="/">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="/about">About</a>
+                <a class="nav-link" href="/about">About</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/download">Download</a>
+                <a class="nav-link active" href="/download">Download</a>
             </li>
         </ul>
         <ul class="navbar-nav">
@@ -65,15 +63,20 @@
 
 <div class="container">
     <div class="mt-3">
-        <h1>About lumberjack</h1>
+        <h1>Download lumberjack</h1>
     </div>
-    <p class="lead">A device library and logging system using RFID technology.</p>
+    <p class="lead">A device library and logging system using RFID technology.</p> </br>
     <p>
-        This system is being developed as part of a project with The University of Bristol Department of Computer Science,
-        for a second year project. The team is comprised of 6 students with varying areas of expertise and interest.
+        lumberjack is an open source project, so you can download it from our
+        <a href="https://github.com/AdamBeddoe/lumberjack/">GitHub</a>.
     </p>
     <p>
-        INSERT DEV PROFILES
+        To run the project, navigate to the root of the project directory <code>lumberjack_spring</code> and run
+        Spring Boot <code>mvn spring-boot:run</code>.
+    </p>
+    <p>
+        Navigate to <a href="http://localhost:8080/">localhost:8080</a> enter the
+        web front-end.
     </p>
 </div>
 
