@@ -1,12 +1,14 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import java.sql.Time;
 import java.util.Date;
 
 public class DeviceAssignments {
 
     private String deviceID;
     private String userID;
-    private Date dateAssigned;
+    private java.sql.Date dateAssigned;
+    private java.sql.Time timeAssigned;
 
     public String getDeviceID() {
 
@@ -21,6 +23,10 @@ public class DeviceAssignments {
         return dateAssigned;
     }
 
+    public Date getTimeAssigned() {
+        return timeAssigned;
+    }
+
     public void setDeviceID(String deviceID) {
         this.deviceID = deviceID;
     }
@@ -29,7 +35,11 @@ public class DeviceAssignments {
         this.userID = userID;
     }
 
-    public void setDateAssigned(Date dateAssigned) {
+    public void setDateAssigned(java.sql.Date dateAssigned) {
         this.dateAssigned = dateAssigned;
+    }
+
+    public void setDateAssigned(java.sql.Time timeAssigned) {
+        this.timeAssigned = timeAssigned;
     }
 }
