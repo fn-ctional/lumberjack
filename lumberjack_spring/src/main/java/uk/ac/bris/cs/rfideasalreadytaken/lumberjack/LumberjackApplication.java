@@ -35,7 +35,6 @@ public class LumberjackApplication implements CommandLineRunner{
 
 		BackendTemp backend = new BackendTemp();
 
-		backend.connectToDatabase();
 		log.info(backend.scanRecieved(new Scan()));
 
 		log.info("End");

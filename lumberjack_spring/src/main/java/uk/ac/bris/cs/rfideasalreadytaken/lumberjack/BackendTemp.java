@@ -21,8 +21,7 @@ public class BackendTemp implements FromCardReader{
             if (isValidUser(scan)) {
                 return userScanned(scan);
             }
-
-            if (isValidDevice(scan)) {
+            else if (isValidDevice(scan)) {
                 return deviceScanned(scan);
             }
 
@@ -33,7 +32,7 @@ public class BackendTemp implements FromCardReader{
         }
     }
 
-    public boolean connectToDatabase() throws Exception{
+    private boolean connectToDatabase() throws Exception{
 
         if(connected == false){
             try {
@@ -44,7 +43,7 @@ public class BackendTemp implements FromCardReader{
                 dataSource.setDatabaseName("LumberjackDatabase");
                 dataSource.setUser("lumberjack");
                 dataSource.setPassword("Lumberjack1#");
-                dataSource.setConnectTimeout(1);
+                dataSource.setConnectTimeout(5000);
 
                 conn = dataSource.getConnection();
 
