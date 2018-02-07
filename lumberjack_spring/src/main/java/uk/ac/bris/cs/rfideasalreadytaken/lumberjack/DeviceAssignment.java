@@ -5,10 +5,16 @@ import java.util.Date;
 
 public class DeviceAssignment {
 
+    private String assignmentID;
     private String deviceID;
     private String userID;
     private java.sql.Date dateAssigned;
     private java.sql.Time timeAssigned;
+
+    public String getAssignmentID() {
+
+        return assignmentID;
+    }
 
     public String getDeviceID() {
 
@@ -25,6 +31,10 @@ public class DeviceAssignment {
 
     public Date getTimeAssigned() {
         return timeAssigned;
+    }
+
+    public void setAssignmentID(String assignmentID) {
+        this.assignmentID = assignmentID;
     }
 
     public void setDeviceID(String deviceID) {

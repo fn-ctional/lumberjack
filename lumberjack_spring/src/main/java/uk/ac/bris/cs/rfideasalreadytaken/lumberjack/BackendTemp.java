@@ -54,12 +54,6 @@ public class BackendTemp implements FromCardReader{
             }catch(com.mysql.jdbc.exceptions.jdbc4.CommunicationsException e) {
                 return false;
             }
-
-            //stmt.execute("CREATE TABLE IF NOT EXISTS USERS (\nID integer PRIMARY KEY);");
-            //stmt.execute("DROP TABLE IF EXISTS USERS");
-            //rs = stmt.executeQuery("SELECT ID FROM USERS");
-
-            connected = true;
         }
 
         return true;
@@ -160,6 +154,55 @@ public class BackendTemp implements FromCardReader{
 
     private boolean addTakeOutToHistory(DeviceAssignment assignment){
         //Database Stuff
+        return true;
+    }
+
+    public boolean resetDatabases() throws Exception{
+
+        connectToDatabase();
+
+        stmt.execute("DROP TABLE IF EXISTS AssignmentHistory");
+        stmt.execute("DROP TABLE IF EXISTS Assignments");
+        stmt.execute("DROP TABLE IF EXISTS Users");
+        stmt.execute("DROP TABLE IF EXISTS Devices");
+
+        stmt.execute("CREATE TABLE IF NOT EXISTS Users (" +
+                "\nUserID varchar(100) NOT NULL," +
+                "\nDeviceLimit int," +
+                "\nPRIMARY KEY (UserID));");
+
+        stmt.execute("CREATE TABLE IF NOT EXISTS Devices (" +
+                "\nDeviceID varchar(100) NOT NULL," +
+                "\nType varchar(100)," +
+                "\nAvailable bit," +
+                "\nCurrentlyAssigned bit," +
+                "\nPRIMARY KEY (DeviceID));");
+
+        stmt.execute("CREATE TABLE IF NOT EXISTS Assignments (" +
+                "\nAssignmentID varchar(100) NOT NULL,\n" +
+                "\nDeviceID varchar(100) NOT NULL," +
+                "\nUserID varchar(100) NOT NULL," +
+                "\nDateAssigned date," +
+                "\nTimeAssigned time," +
+                "\nPRIMARY KEY (AssignmentID)," +
+                "\nCONSTRAINT FOREIGN KEY (DeviceID) REFERENCES Devices(DeviceID)," +
+                "\nCONSTRAINT FOREIGN KEY (UserID) REFERENCES Users(UserID));");
+
+        stmt.execute("CREATE TABLE IF NOT EXISTS AssignmentHistory (" +
+                "\nAssignmentHistoryID varchar(100) NOT NULL,\n" +
+                "\nDeviceID varchar(100) NOT NULL," +
+                "\nUserID varchar(100) NOT NULL," +
+                "\nDateAssigned date," +
+                "\nTimeAssigned time," +
+                "\nDateReturned date," +
+                "\nTimeReturned time," +
+                "\nTiemRemovedFor time," +
+                "\nReturnedSuccessfully bit," +
+                "\nReturnedBy varchar(100) NOT NULL," +
+                "\nPRIMARY KEY (AssignmentHistoryID)," +
+                "\nCONSTRAINT FOREIGN KEY (DeviceID) REFERENCES Devices(DeviceID)," +
+                "\nCONSTRAINT FOREIGN KEY (UserID) REFERENCES Users(UserID));");
+
         return true;
     }
 }
