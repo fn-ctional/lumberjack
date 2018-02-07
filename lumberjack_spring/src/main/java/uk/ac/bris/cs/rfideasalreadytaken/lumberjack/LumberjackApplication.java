@@ -31,39 +31,13 @@ public class LumberjackApplication implements CommandLineRunner{
 	@Override
 	public void run(String... strings) throws Exception {
 
-		log.info("1");
+		log.info("Start");
 
-		Class.forName("com.mysql.jdbc.Driver");
-		MysqlDataSource dataSource = new MysqlDataSource();
+		BackendTemp backend = new BackendTemp();
 
-		log.info("2");
+		backend.connectToDatabase();
 
-		dataSource.setServerName("129.150.119.251");
-		dataSource.setConnectTimeout(5000);
-		dataSource.setPortNumber(3306);
-		dataSource.setDatabaseName("LumberjackDatabase");
-		dataSource.setUser("lumberjack");
-		dataSource.setPassword("Lumberjack1#");
-
-		log.info("3");
-
-		Connection conn = dataSource.getConnection();
-
-		log.info("4");
-
-		Statement stmt = conn.createStatement();
-
-		log.info("5");
-
-		//stmt.execute("CREATE TABLE IF NOT EXISTS USERS (\nID integer PRIMARY KEY);");
-		//stmt.execute("DROP TABLE IF EXISTS USERS");
-		ResultSet rs = stmt.executeQuery("SELECT ID FROM USERS");
-
-		log.info("6");
-
-		rs.close();
-		stmt.close();
-		conn.close();
+		log.info("End");
 		return;
 	}
 }

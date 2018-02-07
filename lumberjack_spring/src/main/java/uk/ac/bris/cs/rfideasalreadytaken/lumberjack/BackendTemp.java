@@ -1,11 +1,21 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
 public class BackendTemp implements FromCardReader{
 
     private boolean userLoaded = false;
     private User currentUser = new User();
+    private boolean connected = false;
+    private Connection conn = null;
+    private Statement stmt = null;
+    private ResultSet rs = null;
 
-    public String scanRecieved(Scan scan){
+    public String scanRecieved(Scan scan) throws Exception{
 
         if(isValidUser(scan)){
             return userScanned(scan);
@@ -16,6 +26,31 @@ public class BackendTemp implements FromCardReader{
         }
 
         return "Scan not recognised";
+    }
+
+    public boolean connectToDatabase() throws Exception{
+
+        if(connected == false){
+
+            MysqlDataSource dataSource = new MysqlDataSource();
+
+            dataSource.setServerName("129.150.119.251");
+            dataSource.setConnectTimeout(5000);
+            dataSource.setPortNumber(3306);
+            dataSource.setDatabaseName("LumberjackDatabase");
+            dataSource.setUser("lumberjack");
+            dataSource.setPassword("Lumberjack1#");
+
+            conn = dataSource.getConnection();
+
+            stmt = conn.createStatement();
+
+            //stmt.execute("CREATE TABLE IF NOT EXISTS USERS (\nID integer PRIMARY KEY);");
+            //stmt.execute("DROP TABLE IF EXISTS USERS");
+            //rs = stmt.executeQuery("SELECT ID FROM USERS");
+        }
+
+        return true;
     }
 
     private String userScanned(Scan scan){
