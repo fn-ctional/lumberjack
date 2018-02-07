@@ -17,4 +17,5 @@ public class Scan {
     public String getDeviceID() {
         return deviceID;
     }
+
 }
