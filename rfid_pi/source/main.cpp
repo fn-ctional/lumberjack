@@ -1,5 +1,5 @@
 #include <iostream>
-#include "File.hpp"
+#include "Event.hpp"
 
 int main(int argc, char **argv) {
   if ( argc < 2 ) {
@@ -7,11 +7,11 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  File file(argv[1]);
-  char buff[11];
-  int err = 0;
-  while ( err != Error::EndOfFile) {
-    err = file.read( buff, 10 );
-    std::cout << buff << std::flush;
+  Scanner scanner(argv[1]);
+  Event user, device;
+  if ( scanner.read(user, device) ) {
+    std::cout << user.code << device.code << std::endl;
+  } else {
+    std::cerr << "Oh no!" << std::endl;
   }
 }
