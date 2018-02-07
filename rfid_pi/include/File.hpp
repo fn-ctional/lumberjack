@@ -15,8 +15,6 @@ public:
   ~File();
 
   int read(char*, int, int = -1);
-
-  const static int blocking = -1;
 private:
   int file_descriptor;
 };
