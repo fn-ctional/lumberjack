@@ -17,4 +17,16 @@ public class Device {
     public boolean isAvailable() {
         return available;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
 }
