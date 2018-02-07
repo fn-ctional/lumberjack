@@ -101,11 +101,17 @@ public class BackendTemp implements FromCardReader{
     }
 
     private boolean returnDevice(Device device, User user){
+        //If user is not the one who took out the device rembe to take out the device for the new user
         //Database Stuff
         return true;
     }
 
     private boolean takeOutDevice(Device device, User user){
+        //Database Stuff
+        return true;
+    }
+
+    private boolean addTakeOutToHistory(DeviceAssignment assignment){
         //Database Stuff
         return true;
     }

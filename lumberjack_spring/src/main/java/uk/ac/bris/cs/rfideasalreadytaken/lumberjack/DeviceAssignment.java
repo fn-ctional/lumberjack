@@ -3,7 +3,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 import java.sql.Time;
 import java.util.Date;
 
-public class DeviceAssignments {
+public class DeviceAssignment {
 
     private String deviceID;
     private String userID;
