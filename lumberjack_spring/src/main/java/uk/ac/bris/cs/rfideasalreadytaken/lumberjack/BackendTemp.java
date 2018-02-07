@@ -13,41 +13,54 @@ public class BackendTemp implements FromCardReader{
     private boolean connected = false;
     private Connection conn = null;
     private Statement stmt = null;
-    private ResultSet rs = null;
 
     public String scanRecieved(Scan scan) throws Exception{
 
-        if(isValidUser(scan)){
-            return userScanned(scan);
-        }
+        if(connectToDatabase()) {
 
-        if(isValidDevice(scan)){
-            return deviceScanned(scan);
-        }
+            if (isValidUser(scan)) {
+                return userScanned(scan);
+            }
 
-        return "Scan not recognised";
+            if (isValidDevice(scan)) {
+                return deviceScanned(scan);
+            }
+
+            return "Scan not recognised";
+        }
+        else{
+            return "Failed to connect to Database";
+        }
     }
 
     public boolean connectToDatabase() throws Exception{
 
         if(connected == false){
+            try {
+                MysqlDataSource dataSource = new MysqlDataSource();
 
-            MysqlDataSource dataSource = new MysqlDataSource();
+                dataSource.setServerName("129.150.119.251");
+                dataSource.setPortNumber(3306);
+                dataSource.setDatabaseName("LumberjackDatabase");
+                dataSource.setUser("lumberjack");
+                dataSource.setPassword("Lumberjack1#");
+                dataSource.setConnectTimeout(1);
 
-            dataSource.setServerName("129.150.119.251");
-            dataSource.setConnectTimeout(5000);
-            dataSource.setPortNumber(3306);
-            dataSource.setDatabaseName("LumberjackDatabase");
-            dataSource.setUser("lumberjack");
-            dataSource.setPassword("Lumberjack1#");
+                conn = dataSource.getConnection();
 
-            conn = dataSource.getConnection();
+                stmt = conn.createStatement();
 
-            stmt = conn.createStatement();
+                connected = true;
+
+            }catch(com.mysql.jdbc.exceptions.jdbc4.CommunicationsException e) {
+                return false;
+            }
 
             //stmt.execute("CREATE TABLE IF NOT EXISTS USERS (\nID integer PRIMARY KEY);");
             //stmt.execute("DROP TABLE IF EXISTS USERS");
             //rs = stmt.executeQuery("SELECT ID FROM USERS");
+
+            connected = true;
         }
 
         return true;
