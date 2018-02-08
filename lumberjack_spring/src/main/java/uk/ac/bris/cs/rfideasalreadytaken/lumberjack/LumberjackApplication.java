@@ -22,8 +22,9 @@ public class LumberjackApplication implements CommandLineRunner{
 
 		log.info("Start");
 
-		BackendTemp backend = new BackendTemp();
+		Backend backend = new Backend();
 
+		backend.resetDatabase();
 		backend.insertTestCases();
 
 		log.info("End");
