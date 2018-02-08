@@ -33,7 +33,7 @@ namespace Channel {
 
   private:
     Write(Data<T> *data): data(data) {};
-    volatile Data<T> *data;
+    Data<T> *data;
     friend Channel<T>;
   };
 
@@ -55,7 +55,7 @@ namespace Channel {
 
   private:
     Read(Data<T> *data): data(data) {};
-    volatile Data<T> *data;
+    Data<T> *data;
     friend Channel<T>;
   };
 
@@ -82,12 +82,12 @@ namespace Channel {
     };
 
     Read<T> get_read() {
-      if ( read_exists ) exit(-1); // TODO: Fix???
+      if ( read_exists ) exit(-1);
       return Read<T>(data);
     };
 
     Write<T> get_write() {
-      if ( write_exists ) exit(-1); // TODO: Fix???
+      if ( write_exists ) exit(-1);
       return Write<T>(data);
     };
 

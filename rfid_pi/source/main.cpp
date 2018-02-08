@@ -3,21 +3,27 @@
 #include <thread>
 #include "Channel.hpp"
 
-void reader(const char *path, Channel::Write<char> chan) {
-  auto file = std::ifstream(path);
-  char c;
-  while ( file ) {
-    file.get(c);
-    chan.write(c);
-  }
+#include <linux/input.h>
 
-  chan.write('\x00');
+using Event = input_event;
+using Code = decltype(Event::code);
+
+void reader(const char *path, Channel::Write<Code> chan) {
+  auto file = std::ifstream(path);
+  Event event;
+  while ( file ) {
+    file.read(reinterpret_cast<char*>(&event), sizeof(Event));
+    if ( event.type == 1 && event.value == 1 ) {
+      chan.write(event.code);
+    }
+  }
 }
 
-void writer(Channel::Read<char> chan) {
-  char c;
-  while ( (chan.read(c), c) ) {
-    std::cout << c << std::flush;
+void writer(Channel::Read<Code> chan) {
+  while ( true ) {
+    Code code;
+    chan.read(code);
+    std::cout << "[writer] '" << code << "'" << std::endl;
   }
 }
 
@@ -27,7 +33,7 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  Channel::Channel<char> channel;
+  Channel::Channel<Code> channel;
 
   auto t_reader = std::thread( reader, argv[1], channel.get_write() );
   auto t_writer = std::thread( writer, channel.get_read() );
