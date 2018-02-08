@@ -5,15 +5,23 @@ import java.util.Date;
 
 public class DeviceAssignment {
 
-    private String assignmentID;
+    private String id;
     private String deviceID;
     private String userID;
-    private java.sql.Date dateAssigned;
-    private java.sql.Time timeAssigned;
+    private int dateAssigned;
+    private int timeAssigned;
 
-    public String getAssignmentID() {
+    public DeviceAssignment(String id, String deviceID, String userID, int dateAssigned, int timeAssigned){
+        this.id = id;
+        this.deviceID = deviceID;
+        this.userID = userID;
+        this.dateAssigned = dateAssigned;
+        this.timeAssigned = timeAssigned;
+    }
 
-        return assignmentID;
+    public String getId() {
+
+        return id;
     }
 
     public String getDeviceID() {
@@ -25,16 +33,16 @@ public class DeviceAssignment {
         return userID;
     }
 
-    public Date getDateAssigned() {
+    public int getDateAssigned() {
         return dateAssigned;
     }
 
-    public Date getTimeAssigned() {
+    public int getTimeAssigned() {
         return timeAssigned;
     }
 
-    public void setAssignmentID(String assignmentID) {
-        this.assignmentID = assignmentID;
+    public void setAssignmentID(String id) {
+        this.id = id;
     }
 
     public void setDeviceID(String deviceID) {
@@ -45,11 +53,11 @@ public class DeviceAssignment {
         this.userID = userID;
     }
 
-    public void setDateAssigned(java.sql.Date dateAssigned) {
+    public void setDateAssigned(int dateAssigned) {
         this.dateAssigned = dateAssigned;
     }
 
-    public void setDateAssigned(java.sql.Time timeAssigned) {
+    public void setTimeAssigned(int timeAssigned) {
         this.timeAssigned = timeAssigned;
     }
 }

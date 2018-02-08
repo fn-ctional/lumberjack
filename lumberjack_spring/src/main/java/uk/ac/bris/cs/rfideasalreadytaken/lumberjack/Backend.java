@@ -9,7 +9,7 @@ import java.sql.Statement;
 public class Backend implements FromCardReader{
 
     private boolean userLoaded = false;
-    private User currentUser = new User();
+    private User currentUser = new User("","",0,0,0);
     private boolean connected = false;
     private Connection conn = null;
     private Statement stmt = null;
@@ -118,12 +118,12 @@ public class Backend implements FromCardReader{
 
     private User loadUser(Scan scan){
         //Query Users to find the user corresponding to this scan and return them
-        return new User();
+        return null;
     }
 
     private Device loadDevice(Scan scan){
         //Query Devices to find the device corresponding to this scan and return it
-        return new Device();
+        return null;
     }
 
     private boolean canUserRemoveDevices(User user){
@@ -150,7 +150,7 @@ public class Backend implements FromCardReader{
             //Update Users so that the user has removed 1 less device than before
             //Update Devices so that that device is no longer recorded as removed
         //if no
-            //Add to AssignmentHistory a record of the device being removed by the old user and returned by the new user usign addTakeOutToHistory()
+            //Add to AssignmentHistory a record of the device being removed by the old user and returned by the new user usign insertIntoAssignmentHistory()
             //Update Users so that the previous user has removed 1 less device than before
             //Update Devices so the device is no longer recorded as being removed (takeOutDevice() will reverse this but it should be done in case takeOutDevice() fails)
             //Use takeOutDevice() to create a record of the device bign taken out by the new user
@@ -164,7 +164,29 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    private boolean addTakeOutToHistory(DeviceAssignment assignment, User returningUser){
+    private boolean insertIntoDevices(Device device) throws Exception{
+        stmt.execute("INSERT INTO Devices (id, scanValue, Type, Available, CurrentlyAssigned)\n" +
+                "VALUES (\"" + device.getId() + "\", \"" + device.getScanValue() + "\", \"" + device.getType() +
+                "\"," + String.valueOf(device.isAvailable()) + "," + String.valueOf(device.iscurrentlyAssigned()) + ")");
+        return true;
+    }
+
+    private boolean insertIntoUsers(User user) throws Exception{
+        stmt.execute("INSERT INTO Users (id, scanValue, DeviceLimit, DevicesRemoved, CanRemove)\n" +
+                "VALUES (\"" + user.getId() + "\", \"" + user.getScanValue() + "\", " + String.valueOf(user.getDeviceLimit()) +
+                "," + String.valueOf(user.getDevicesRemoved()) + "," + String.valueOf(user.getCanRemove()) + ")");
+        return true;
+    }
+
+    //TODO insert real date and time
+    private boolean insertIntoAssignments(DeviceAssignment assignment) throws Exception{
+        stmt.execute("INSERT INTO Assignments (id, DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
+                "VALUES (\"" + assignment.getId() + "\", \"" + assignment.getDeviceID() + "\", \"" + assignment.getUserID() +
+                "\"," + "'2018/10/02', '16:17:18'" + ")");
+        return true;
+    }
+
+    private boolean insertIntoAssignmentHistory(DeviceAssignment assignment, User returningUser){
         //Add to AssignmentHistory a record of the device being removed and returned by that user
         return true;
     }
@@ -180,6 +202,7 @@ public class Backend implements FromCardReader{
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Users (" +
                 "\nid varchar(100) NOT NULL," +
+                "\nScanValue varchar(100) NOT NULL UNIQUE," +
                 "\nDeviceLimit int," +
                 "\nDevicesRemoved int," +
                 "\nCanRemove bit," +
@@ -187,6 +210,7 @@ public class Backend implements FromCardReader{
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Devices (" +
                 "\nid varchar(100) NOT NULL," +
+                "\nScanValue varchar(100) NOT NULL UNIQUE," +
                 "\nType varchar(100)," +
                 "\nAvailable bit," +
                 "\nCurrentlyAssigned bit," +
@@ -224,20 +248,26 @@ public class Backend implements FromCardReader{
 
         resetDatabase();
 
-        stmt.execute("INSERT INTO Users (id, DeviceLimit, DevicesRemoved, CanRemove)\n" +
-                "VALUES (\"Aidan9876\", 2, 0, 1)," +
-                "(\"Betty1248\", 1, 1, 1)," +
-                "(\"Callum2468\", 3, 0, 0)," +
-                "(\"Dorathy0369\", 1, 0, 1)");
+        User user = new User("Aidan9876", "scanValueU1", 2, 0, 1);
+        insertIntoUsers(user);
+        user = new User("Betty1248", "scanValueU2", 1, 1, 1);
+        insertIntoUsers(user);
+        user = new User("Callum2468", "scanValueU3", 3, 0, 0);
+        insertIntoUsers(user);
+        user = new User("Dorathy0369", "scanValueU4", 1, 0, 1);
+        insertIntoUsers(user);
 
-        stmt.execute("INSERT INTO Devices (id, Type, Available, CurrentlyAssigned)\n" +
-                "VALUES (\"laptop01\", \"laptop\", 1, 0)," +
-                "(\"laptop02\", \"laptop\", 1, 1)," +
-                "(\"laptop03\", \"laptop\", 0, 0)," +
-                "(\"camera01\", \"camera\", 1, 0)");
+        Device device = new Device("laptop01", "scanValueD1", "laptop", 1, 0);
+        insertIntoDevices(device);
+        device = new Device("laptop02", "scanValueD2", "laptop", 1, 1);
+        insertIntoDevices(device);
+        device = new Device("laptop03", "scanValueD3", "laptop", 0, 0);
+        insertIntoDevices(device);
+        device = new Device("camera01", "scanValueD4", "camera", 1, 0);
+        insertIntoDevices(device);
 
-        stmt.execute("INSERT INTO Assignments (id, DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
-                "VALUES (\"001\", \"laptop02\", \"Betty1248\", '2018/10/02', '16:17:18')");
+        DeviceAssignment assignment = new DeviceAssignment("001", "laptop02", "Betty1248", 0,0);
+        insertIntoAssignments(assignment);
 
         return true;
     }
