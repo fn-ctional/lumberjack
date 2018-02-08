@@ -5,18 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import javax.sql.DataSource;
-
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 @SpringBootApplication
 public class LumberjackApplication implements CommandLineRunner{
@@ -35,7 +24,7 @@ public class LumberjackApplication implements CommandLineRunner{
 
 		BackendTemp backend = new BackendTemp();
 
-		backend.resetDatabases();
+		backend.insertTestCases();
 
 		log.info("End");
 		return;

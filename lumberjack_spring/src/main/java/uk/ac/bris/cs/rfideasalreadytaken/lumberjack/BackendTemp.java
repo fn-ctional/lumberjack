@@ -169,7 +169,7 @@ public class BackendTemp implements FromCardReader{
         return true;
     }
 
-    public boolean resetDatabases() throws Exception{
+    public boolean resetDatabase() throws Exception{
 
         connectToDatabase();
 
@@ -196,8 +196,8 @@ public class BackendTemp implements FromCardReader{
                 "\nAssignmentID varchar(100) NOT NULL,\n" +
                 "\nDeviceID varchar(100) NOT NULL," +
                 "\nUserID varchar(100) NOT NULL," +
-                "\nDateAssigned date," +
-                "\nTimeAssigned time," +
+                "\nDateAssigned DATE," +
+                "\nTimeAssigned TIME," +
                 "\nPRIMARY KEY (AssignmentID)," +
                 "\nCONSTRAINT FOREIGN KEY (DeviceID) REFERENCES Devices(DeviceID)," +
                 "\nCONSTRAINT FOREIGN KEY (UserID) REFERENCES Users(UserID));");
@@ -206,16 +206,38 @@ public class BackendTemp implements FromCardReader{
                 "\nAssignmentHistoryID varchar(100) NOT NULL,\n" +
                 "\nDeviceID varchar(100) NOT NULL," +
                 "\nUserID varchar(100) NOT NULL," +
-                "\nDateAssigned date," +
-                "\nTimeAssigned time," +
-                "\nDateReturned date," +
-                "\nTimeReturned time," +
+                "\nDateAssigned DATE," +
+                "\nTimeAssigned TIME," +
+                "\nDateReturned DATE," +
+                "\nTimeReturned TIME," +
                 "\nTiemRemovedFor time," +
                 "\nReturnedSuccessfully bit," +
                 "\nReturnedBy varchar(100) NOT NULL," +
                 "\nPRIMARY KEY (AssignmentHistoryID)," +
                 "\nCONSTRAINT FOREIGN KEY (DeviceID) REFERENCES Devices(DeviceID)," +
                 "\nCONSTRAINT FOREIGN KEY (UserID) REFERENCES Users(UserID));");
+
+        return true;
+    }
+
+    public boolean insertTestCases() throws Exception{
+
+        resetDatabase();
+
+        stmt.execute("INSERT INTO Users (UserID, DeviceLimit, DevicesRemoved, CanRemove)\n" +
+                "VALUES (\"Adian9876\", 2, 0, 1)," +
+                "(\"Betty1248\", 1, 1, 1)," +
+                "(\"Callum2468\", 3, 0, 0)," +
+                "(\"Dorathy0369\", 1, 0, 1)");
+
+        stmt.execute("INSERT INTO Devices (DeviceID, Type, Available, CurrentlyAssigned)\n" +
+                "VALUES (\"laptop01\", \"laptop\", 1, 0)," +
+                "(\"laptop02\", \"laptop\", 1, 1)," +
+                "(\"laptop03\", \"laptop\", 0, 0)," +
+                "(\"camera01\", \"camera\", 1, 0)");
+
+        stmt.execute("INSERT INTO Assignments (AssignmentID, DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
+                "VALUES (\"001\", \"laptop02\", \"Betty1248\", '2018/10/02', '16:17:18')");
 
         return true;
     }
