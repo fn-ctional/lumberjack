@@ -63,5 +63,16 @@ public class MainController extends WebMvcConfigurerAdapter {
         return ResponseEntity.status(500).body("Unknown server error.");
     }
 
+    @RequestMapping(value = "/devices", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity checkDeviceOut() {
 
+        // call changeDeviceState in model (which might exist in master, not sure)
+
+        //if unsuccessful:
+        //return ResponseEntity.status(403).body("Device has already been taken out.");
+        //return ResponseEntity.status(403).body("User not recognised.");
+        //return ResponseEntity.status(403).body("Device not recognised.");
+        return ResponseEntity.status(500).body("Unknown server error.");
+    }
 }
