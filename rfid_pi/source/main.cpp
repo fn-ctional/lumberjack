@@ -1,5 +1,25 @@
 #include <iostream>
-#include "Event.hpp"
+#include <fstream>
+#include <thread>
+#include "Channel.hpp"
+
+void reader(const char *path, Channel::Write<char> chan) {
+  auto file = std::ifstream(path);
+  char c;
+  while ( file ) {
+    file.get(c);
+    chan.write(c);
+  }
+
+  chan.write('\x00');
+}
+
+void writer(Channel::Read<char> chan) {
+  char c;
+  while ( (chan.read(c), c) ) {
+    std::cout << c << std::flush;
+  }
+}
 
 int main(int argc, char **argv) {
   if ( argc < 2 ) {
@@ -7,11 +27,12 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  Scanner scanner(argv[1]);
-  Event user, device;
-  if ( scanner.read(user, device) ) {
-    std::cout << user.code << device.code << std::endl;
-  } else {
-    std::cerr << "Oh no!" << std::endl;
-  }
+  Channel::Channel<char> channel;
+
+  auto t_reader = std::thread( reader, argv[1], channel.get_write() );
+  auto t_writer = std::thread( writer, channel.get_read() );
+
+  t_reader.join();
+  t_writer.join();
+
 }

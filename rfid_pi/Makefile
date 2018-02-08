@@ -2,10 +2,11 @@ warnings := -Wall -Wextra -pedantic
 source := source/*.cpp
 inc_dir := -I include/
 headers := include/*.hpp
+link := -lpthread
 
 default: $(source) $(headers)
 	@ mkdir -p bin
-	@ g++ -std=c++14 $(warnings) $(inc_dir) $(source) -o bin/scan $(debug) $(optimise)
+	@ g++ -std=c++14 $(warnings) $(inc_dir) $(link) $(source) -o bin/scan $(debug) $(optimise)
 
 debug: | debug_set default
 
