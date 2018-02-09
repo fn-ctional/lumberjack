@@ -32,7 +32,7 @@ public class User {
         return devicesRemoved;
     }
 
-    public int getCanRemove() {
+    public int canRemove() {
         return canRemove;
     }
 

@@ -32,7 +32,7 @@ public class Device {
         return available;
     }
 
-    public int iscurrentlyAssigned() {
+    public int isCurrentlyAssigned() {
         return currentlyAssigned;
     }
 

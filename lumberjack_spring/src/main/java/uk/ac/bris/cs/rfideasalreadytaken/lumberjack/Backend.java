@@ -114,7 +114,7 @@ public class Backend implements FromCardReader{
     }
 
     //TODO switch scan value to be correct thing
-    public boolean isValidDevice(Scan scan) throws Exception{
+    private boolean isValidDevice(Scan scan) throws Exception{
         rs = stmt.executeQuery("SELECT id FROM Devices WHERE id = \"" + scan.getUserID() + "\"");
         return rs.next();
     }
@@ -129,19 +129,25 @@ public class Backend implements FromCardReader{
         return null;
     }
 
-    private boolean canUserRemoveDevices(User user) throws Exception{
-        //Query Users to see if the user is at their device limit or otherwise cannot remove devices and return result
-        return true;
+    public boolean canUserRemoveDevices(User user) throws Exception{
+        if(user.canRemove() > 0){
+            return true;
+        }
+        return false;
     }
 
     private boolean canDeviceBeRemoved(Device device) throws Exception{
-        //Query Devices to see if the device is available and return result
-        return true;
+        if(device.isAvailable() > 0){
+            return true;
+        }
+        return false;
     }
 
     private boolean isDeviceCurrentlyOut(Device device) throws Exception{
-        //Query Devices to see if the device is currently taken out and return result
-        return true;
+        if(device.isCurrentlyAssigned() > 0){
+            return true;
+        }
+        return false;
     }
 
     private boolean returnDevice(Device device, User user) throws Exception{
@@ -170,14 +176,14 @@ public class Backend implements FromCardReader{
     private boolean insertIntoDevices(Device device) throws Exception{
         stmt.execute("INSERT INTO Devices (id, scanValue, Type, Available, CurrentlyAssigned)\n" +
                 "VALUES (\"" + device.getId() + "\", \"" + device.getScanValue() + "\", \"" + device.getType() +
-                "\"," + String.valueOf(device.isAvailable()) + "," + String.valueOf(device.iscurrentlyAssigned()) + ")");
+                "\"," + String.valueOf(device.isAvailable()) + "," + String.valueOf(device.isCurrentlyAssigned()) + ")");
         return true;
     }
 
     private boolean insertIntoUsers(User user) throws Exception{
         stmt.execute("INSERT INTO Users (id, scanValue, DeviceLimit, DevicesRemoved, CanRemove)\n" +
                 "VALUES (\"" + user.getId() + "\", \"" + user.getScanValue() + "\", " + String.valueOf(user.getDeviceLimit()) +
-                "," + String.valueOf(user.getDevicesRemoved()) + "," + String.valueOf(user.getCanRemove()) + ")");
+                "," + String.valueOf(user.getDevicesRemoved()) + "," + String.valueOf(user.canRemove()) + ")");
         return true;
     }
 
