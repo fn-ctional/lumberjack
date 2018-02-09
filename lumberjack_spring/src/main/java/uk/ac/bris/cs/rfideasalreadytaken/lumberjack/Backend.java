@@ -1,11 +1,13 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+@Service
 public class Backend implements FromCardReader{
 
     private boolean userLoaded = false;
