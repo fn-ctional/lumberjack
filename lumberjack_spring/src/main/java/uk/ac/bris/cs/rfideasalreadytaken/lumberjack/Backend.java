@@ -60,7 +60,7 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    private String userScanned(Scan scan){
+    private String userScanned(Scan scan) throws Exception{
 
         User loadedUser = loadUser(scan);
 
@@ -74,7 +74,7 @@ public class Backend implements FromCardReader{
         }
     }
 
-    private String deviceScanned(Scan scan){
+    private String deviceScanned(Scan scan) throws Exception{
 
         Device loadedDevice = loadDevice(scan);
 
@@ -108,42 +108,43 @@ public class Backend implements FromCardReader{
     }
 
     //TODO switch scan value to be correct thing
-    public boolean isValidUser(Scan scan) throws Exception{
+    private boolean isValidUser(Scan scan) throws Exception{
         rs = stmt.executeQuery("SELECT id FROM Users WHERE id = \"" + scan.getUserID() + "\"");
         return rs.next();
     }
 
-    private boolean isValidDevice(Scan scan){
-        //Query Devices to see whether or not the scan is a user
-        return true;
+    //TODO switch scan value to be correct thing
+    public boolean isValidDevice(Scan scan) throws Exception{
+        rs = stmt.executeQuery("SELECT id FROM Devices WHERE id = \"" + scan.getUserID() + "\"");
+        return rs.next();
     }
 
-    private User loadUser(Scan scan){
+    private User loadUser(Scan scan) throws Exception{
         //Query Users to find the user corresponding to this scan and return them
         return null;
     }
 
-    private Device loadDevice(Scan scan){
+    private Device loadDevice(Scan scan) throws Exception{
         //Query Devices to find the device corresponding to this scan and return it
         return null;
     }
 
-    private boolean canUserRemoveDevices(User user){
+    private boolean canUserRemoveDevices(User user) throws Exception{
         //Query Users to see if the user is at their device limit or otherwise cannot remove devices and return result
         return true;
     }
 
-    private boolean canDeviceBeRemoved(Device device){
+    private boolean canDeviceBeRemoved(Device device) throws Exception{
         //Query Devices to see if the device is available and return result
         return true;
     }
 
-    private boolean isDeviceCurrentlyOut(Device device){
+    private boolean isDeviceCurrentlyOut(Device device) throws Exception{
         //Query Devices to see if the device is currently taken out and return result
         return true;
     }
 
-    private boolean returnDevice(Device device, User user){
+    private boolean returnDevice(Device device, User user) throws Exception{
         //Load and then delete from Assignments the record of this device being removed
         //Check if the user who returned the device correlates to the one who removed it
         //Assume no user is the old user as they dont need to scan their UCard to return
@@ -159,7 +160,7 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    private boolean takeOutDevice(Device device, User user){
+    private boolean takeOutDevice(Device device, User user) throws Exception{
         //Update Devices so the device is recorded as being removed
         //Update Users so that the user has removed 1 more device than before
         //Update Assignments so that there is a new record of the new user removing the device
