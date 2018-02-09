@@ -24,6 +24,9 @@ public class LumberjackApplication implements CommandLineRunner{
 
 		Backend backend = new Backend();
 
+		java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
+		log.info(date.toString());
+
 		backend.resetDatabase();
 		backend.insertTestCases();
 

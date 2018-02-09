@@ -3,7 +3,6 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class Backend implements FromCardReader{
@@ -179,14 +178,14 @@ public class Backend implements FromCardReader{
     }
 
     //TODO insert real date and time
-    private boolean insertIntoAssignments(DeviceAssignment assignment) throws Exception{
+    private boolean insertIntoAssignments(Assignment assignment) throws Exception{
         stmt.execute("INSERT INTO Assignments (id, DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
                 "VALUES (\"" + assignment.getId() + "\", \"" + assignment.getDeviceID() + "\", \"" + assignment.getUserID() +
-                "\"," + "'2018/10/02', '16:17:18'" + ")");
+                "\", '" + assignment.getDateAssigned().toString() + "' , '16:17:18'" + ")");
         return true;
     }
 
-    private boolean insertIntoAssignmentHistory(DeviceAssignment assignment, User returningUser){
+    private boolean insertIntoAssignmentHistory(Assignment assignment, User returningUser){
         //Add to AssignmentHistory a record of the device being removed and returned by that user
         return true;
     }
@@ -266,7 +265,10 @@ public class Backend implements FromCardReader{
         device = new Device("camera01", "scanValueD4", "camera", 1, 0);
         insertIntoDevices(device);
 
-        DeviceAssignment assignment = new DeviceAssignment("001", "laptop02", "Betty1248", 0,0);
+
+        java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
+
+        Assignment assignment = new Assignment("001", "laptop02", "Betty1248", date,0);
         insertIntoAssignments(assignment);
 
         return true;
