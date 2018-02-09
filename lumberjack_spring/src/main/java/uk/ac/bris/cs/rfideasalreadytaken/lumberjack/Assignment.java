@@ -9,9 +9,9 @@ public class Assignment {
     private String deviceID;
     private String userID;
     private java.sql.Date dateAssigned;
-    private int timeAssigned;
+    private java.sql.Time timeAssigned;
 
-    public Assignment(String id, String deviceID, String userID, java.sql.Date dateAssigned, int timeAssigned){
+    public Assignment(String id, String deviceID, String userID, java.sql.Date dateAssigned, java.sql.Time timeAssigned){
         this.id = id;
         this.deviceID = deviceID;
         this.userID = userID;
@@ -31,7 +31,7 @@ public class Assignment {
         return dateAssigned;
     }
 
-    public int getTimeAssigned() {
+    public java.sql.Time getTimeAssigned() {
         return timeAssigned;
     }
 
@@ -51,5 +51,5 @@ public class Assignment {
         this.dateAssigned = dateAssigned;
     }
 
-    public void setTimeAssigned(int timeAssigned) { this.timeAssigned = timeAssigned; }
+    public void setTimeAssigned(java.sql.Time timeAssigned) { this.timeAssigned = timeAssigned; }
 }

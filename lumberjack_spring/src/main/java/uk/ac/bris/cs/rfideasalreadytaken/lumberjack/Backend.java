@@ -177,11 +177,10 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    //TODO insert real date and time
     private boolean insertIntoAssignments(Assignment assignment) throws Exception{
         stmt.execute("INSERT INTO Assignments (id, DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
                 "VALUES (\"" + assignment.getId() + "\", \"" + assignment.getDeviceID() + "\", \"" + assignment.getUserID() +
-                "\", '" + assignment.getDateAssigned().toString() + "' , '16:17:18'" + ")");
+                "\", '" + assignment.getDateAssigned().toString() + "' , '" + assignment.getTimeAssigned().toString() + "')");
         return true;
     }
 
@@ -265,10 +264,10 @@ public class Backend implements FromCardReader{
         device = new Device("camera01", "scanValueD4", "camera", 1, 0);
         insertIntoDevices(device);
 
-
         java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
+        java.sql.Time time = java.sql.Time.valueOf("14:45:20");
 
-        Assignment assignment = new Assignment("001", "laptop02", "Betty1248", date,0);
+        Assignment assignment = new Assignment("001", "laptop02", "Betty1248", date,time);
         insertIntoAssignments(assignment);
 
         return true;
