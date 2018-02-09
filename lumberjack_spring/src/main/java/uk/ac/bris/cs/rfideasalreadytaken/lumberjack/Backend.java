@@ -109,18 +109,27 @@ public class Backend implements FromCardReader{
 
     //TODO switch scan value to be correct thing
     private boolean isValidUser(Scan scan) throws Exception{
-        rs = stmt.executeQuery("SELECT id FROM Users WHERE id = \"" + scan.getUserID() + "\"");
+        rs = stmt.executeQuery("SELECT id FROM Users WHERE ScanValue = \"" + scan.getUserID() + "\"");
         return rs.next();
     }
 
     //TODO switch scan value to be correct thing
     private boolean isValidDevice(Scan scan) throws Exception{
-        rs = stmt.executeQuery("SELECT id FROM Devices WHERE id = \"" + scan.getUserID() + "\"");
+        rs = stmt.executeQuery("SELECT id FROM Devices WHERE ScanValue = \"" + scan.getUserID() + "\"");
         return rs.next();
     }
 
-    private User loadUser(Scan scan) throws Exception{
-        //Query Users to find the user corresponding to this scan and return them
+    public User loadUser(Scan scan) throws Exception{
+        rs = stmt.executeQuery("SELECT id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove FROM Users WHERE ScanValue = \"" + scan.getUserID() + "\"");
+        if(rs.next()){
+            User user = new User();
+            user.setCanRemove(rs.getInt("CanRemove"));
+            user.setDeviceLimit(rs.getInt("DeviceLimit"));
+            user.setDevicesRemoved(rs.getInt("DevicesRemoved"));
+            user.setId(rs.getString("id"));
+            user.setScanValue(rs.getString("ScanValue"));
+            return user;
+        }
         return null;
     }
 

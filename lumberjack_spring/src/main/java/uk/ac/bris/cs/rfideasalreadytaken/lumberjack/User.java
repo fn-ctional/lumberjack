@@ -8,6 +8,8 @@ public class User {
     private int devicesRemoved;
     private int canRemove;
 
+    public User(){}
+
     public User(String id, String scanValue, int deviceLimit, int devicesRemoved, int canRemove){
         this.id = id;
         this.scanValue = scanValue;
