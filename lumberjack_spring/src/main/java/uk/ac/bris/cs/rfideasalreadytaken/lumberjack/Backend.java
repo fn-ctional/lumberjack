@@ -3,6 +3,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class Backend implements FromCardReader{
@@ -12,6 +13,7 @@ public class Backend implements FromCardReader{
     private boolean connected = false;
     private Connection conn = null;
     private Statement stmt = null;
+    private ResultSet rs = null;
 
     public String scanRecieved(Scan scan) throws Exception{
 
@@ -105,9 +107,10 @@ public class Backend implements FromCardReader{
         }
     }
 
-    private boolean isValidUser(Scan scan){
-        //Query Users to see whether or not the scan is a user
-        return true;
+    //TODO switch scan value to be correct thing
+    public boolean isValidUser(Scan scan) throws Exception{
+        rs = stmt.executeQuery("SELECT id FROM Users WHERE id = \"" + scan.getUserID() + "\"");
+        return rs.next();
     }
 
     private boolean isValidDevice(Scan scan){
@@ -184,7 +187,7 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    //TODO get current date and time adn calculate time removed for
+    //TODO get current date and time and calculate time removed for
     private boolean insertIntoAssignmentHistory(Assignment assignment, String returningUserID) throws Exception{
 
         int returnedSuccessfully = 0;
