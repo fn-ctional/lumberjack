@@ -184,8 +184,20 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    private boolean insertIntoAssignmentHistory(Assignment assignment, User returningUser){
-        //Add to AssignmentHistory a record of the device being removed and returned by that user
+    //TODO get current date and time adn calculate time removed for
+    private boolean insertIntoAssignmentHistory(Assignment assignment, String returningUserID) throws Exception{
+
+        int returnedSuccessfully = 0;
+        if(assignment.getUserID() == returningUserID){
+            returnedSuccessfully = 1;
+        }
+
+        stmt.execute("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, TimeRemovedFor, ReturnedSuccessfully, ReturnedBy)\n" +
+                "VALUES (\"" + assignment.getDeviceID() + "\", \"" + assignment.getUserID() +
+                "\", '" + assignment.getDateAssigned().toString() + "' , '" + assignment.getTimeAssigned().toString() +
+                "', '" + assignment.getDateAssigned().toString() + "' , '" + assignment.getTimeAssigned().toString() +
+                "', '" + assignment.getTimeAssigned().toString() + "' , " + returnedSuccessfully +
+                ",\""+ returningUserID + "\")");
         return true;
     }
 
@@ -225,14 +237,14 @@ public class Backend implements FromCardReader{
                 "\nCONSTRAINT FOREIGN KEY (UserID) REFERENCES Users(id));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS AssignmentHistory (" +
-                "\nid varchar(100) NOT NULL,\n" +
+                "\nid int NOT NULL AUTO_INCREMENT,\n" +
                 "\nDeviceID varchar(100) NOT NULL," +
                 "\nUserID varchar(100) NOT NULL," +
                 "\nDateAssigned DATE," +
                 "\nTimeAssigned TIME," +
                 "\nDateReturned DATE," +
                 "\nTimeReturned TIME," +
-                "\nTiemRemovedFor time," +
+                "\nTimeRemovedFor time," +
                 "\nReturnedSuccessfully bit," +
                 "\nReturnedBy varchar(100) NOT NULL," +
                 "\nPRIMARY KEY (id)," +
@@ -267,8 +279,14 @@ public class Backend implements FromCardReader{
         java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
         java.sql.Time time = java.sql.Time.valueOf("14:45:20");
 
-        Assignment assignment = new Assignment("001", "laptop02", "Betty1248", date,time);
+        Assignment assignment = new Assignment("002", "laptop02", "Betty1248", date,time);
         insertIntoAssignments(assignment);
+
+        date = java.sql.Date.valueOf("2018-02-09");
+        time = java.sql.Time.valueOf("09:32:13");
+
+        assignment = new Assignment("001", "laptop01", "Callum2468", date,time);
+        insertIntoAssignmentHistory(assignment, "Aidan9876");
 
         return true;
     }
