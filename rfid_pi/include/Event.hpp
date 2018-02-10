@@ -16,11 +16,11 @@ namespace Event {
   public:
     Source(const char*);
 
-    bool read(char&, int);
+    bool read(char&, bool);
     bool readline(std::string&, int);
 
   private:
-    bool read_raw(Code&, int);
+    bool read_raw(Code&, bool);
 
     Channel::Channel<Code> channel;
     Channel::Read<Code> reader;

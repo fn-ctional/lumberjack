@@ -1,33 +1,49 @@
 #include "Event.hpp"
+#include <chrono>
 
 void source_f(const char*, Channel::Write<Event::Code>);
 char toChar(Event::Code);
+
+auto now() {
+  return std::chrono::steady_clock::now();
+}
+
+auto future(int milliseconds) {
+  return now() + std::chrono::milliseconds(milliseconds);
+}
 
 Event::Source::Source(const char *path)
 : reader(channel.get_read())
 , source(source_f, path, channel.get_write()) {}
 
-bool Event::Source::read(char &c, int timeout) {
+bool Event::Source::read(char &c, bool block) {
   Code code;
-  if ( !read_raw(code, timeout) ) return false;
+  if ( !read_raw(code, block) ) return false;
   c = toChar( code );
   return true;
 }
 
 bool Event::Source::readline(std::string &str, int timeout) {
+  auto end = future(timeout);
+  bool block = timeout < 0;
   str.clear();
   char c;
-  do {
-    if ( !read(c, timeout) ) return false;
-    str += c;
-  } while ( c != '\n' );
-  str.pop_back();
-  return true;
+  while ( block || now() < end ) {
+    if ( read( c, block ) ) {
+      if ( c == '\n' ) return true;
+      str += c;
+    }
+  }
+  return false;
 }
 
-bool Event::Source::read_raw(Code &code, int /*timeout*/) {
-  reader.read(code);
-  return true;
+bool Event::Source::read_raw(Code &code, bool block) {
+  if ( block ) {
+    reader.read(code);
+    return true;
+  } else {
+    return reader.try_read(code);
+  }
 }
 
 char toChar(Event::Code code) {
