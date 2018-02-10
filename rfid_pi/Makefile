@@ -6,6 +6,7 @@ link := -lpthread
 
 default: $(source) $(headers)
 	@ mkdir -p bin
+	@ echo -e "\e[00;36m[compiling]\e[0m"
 	@ g++ -std=c++14 $(warnings) $(inc_dir) $(link) $(source) -o bin/scan $(debug) $(optimise)
 
 debug: | debug_set default
@@ -16,6 +17,7 @@ clean:
 	@ rm -rf bin/*
 
 run: default
+	@ echo -e "\e[00;36m[running]\e[0m"
 	@ ./bin/scan || true
 
 gdb: debug
