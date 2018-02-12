@@ -27,8 +27,9 @@ public class LumberjackApplication implements CommandLineRunner{
 		backend.resetDatabase();
 		backend.insertTestCases();
 
-		Device device = new Device("sfysgdf", "scanVsdgsdgalueD1", "ladsfsdfptop", true, true);
-		backend.insertIntoDevices((device));
+		Device device = new Device("laptop01", "scanValueD1", "laptop", true, false);
+		User user = new User("Aidan9876", "scanValueU1", 2, 0, true);
+		backend.takeOutDevice(device, user);
 		//Scan scan = new Scan("scanValueU1", "");
 		//User user = backend.loadUser(scan);
 		//log.info(user.getId() + " | " + user.getScanValue());

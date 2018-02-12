@@ -221,36 +221,68 @@ public class Backend implements FromCardReader{
         return false;
     }
 
-    private boolean returnDevice(Device device, User user) throws Exception{
-        //Load and then delete from Assignments the record of this device being removed
-        //Check if the user who returned the device correlates to the one who removed it
-        //Assume no user is the old user as they dont need to scan their UCard to return
-        //if yes
-            //Add to AssignmentHistory a record of the device being removed and returned by that user using addTakeOutToHistory
-            //Update Users so that the user has removed 1 less device than before
-            //Update Devices so that that device is no longer recorded as removed
-        //if no
-            //Add to AssignmentHistory a record of the device being removed by the old user and returned by the new user usign insertIntoAssignmentHistory()
-            //Update Users so that the previous user has removed 1 less device than before
-            //Update Devices so the device is no longer recorded as being removed (takeOutDevice() will reverse this but it should be done in case takeOutDevice() fails)
-            //Use takeOutDevice() to create a record of the device bign taken out by the new user
+    private boolean returnDevice(Device device, User returningUser) throws Exception{
+
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ");
+        stmt.setString(1, device.getId());
+        ResultSet rs = stmt.executeQuery();
+        Assignment assignment = loadAssignmentFromResultSet(rs);
+
+        deleteFromAssignments(assignment.getId());
+
+        insertIntoAssignmentHistory(assignment,returningUser.getId());
+
+        int removed = returningUser.getDevicesRemoved()-1;
+        PreparedStatement stmt3 = conn.prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");
+        stmt3.setInt(1, removed);
+        stmt3.setString(2, assignment.getUserID());
+        stmt3.execute();
+
+        PreparedStatement stmt4 = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = false WHERE id = ?");
+        stmt4.setString(1, device.getId());
+        stmt4.execute();
+
+        if(returningUser.getId() != assignment.getUserID()){
+
+            takeOutDevice(device, returningUser);
+        }
+
         return true;
     }
 
-    private boolean takeOutDevice(Device device, User user) throws Exception{
-        //Update Devices so the device is recorded as being removed
-        //Update Users so that the user has removed 1 more device than before
-        //Update Assignments so that there is a new record of the new user removing the device
+    //TODO get current date and time and calculate time removed for
+    public boolean takeOutDevice(Device device, User user) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = true WHERE id = ?");
+        stmt.setString(1, device.getId());
+        stmt.execute();
+
+        int removed = user.getDevicesRemoved()+1;
+        PreparedStatement stmt3 = conn.prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");
+        stmt3.setInt(1, removed);
+        stmt3.setString(2, user.getId());
+        stmt3.execute();
+
+        java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
+        java.sql.Time time = java.sql.Time.valueOf("14:45:20");
+        Assignment assignment = new Assignment(device.getId(),user.getId(), date, time);
+        insertIntoAssignments(assignment);
         return true;
     }
 
-    public boolean insertIntoDevices(Device device) throws Exception{
+    private boolean insertIntoDevices(Device device) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Devices (id, scanValue, Type, Available, CurrentlyAssigned) VALUES (?,?,?,?,?)");
         stmt.setString(1, device.getId());
         stmt.setString(2, device.getScanValue());
         stmt.setString(3, device.getType());
         stmt.setBoolean(4, device.isAvailable());
         stmt.setBoolean(5, device.isCurrentlyAssigned());
+        stmt.execute();
+        return true;
+    }
+
+    private boolean deleteFromDevices(String deviceID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Devices WHERE id = ?");
+        stmt.setString(1, deviceID);
         stmt.execute();
         return true;
     }
@@ -267,14 +299,27 @@ public class Backend implements FromCardReader{
         return true;
     }
 
+    private boolean deleteFromUsers(String userID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Users WHERE id = ?");
+        stmt.setString(1, userID);
+        stmt.execute();
+        return true;
+    }
+
     private boolean insertIntoAssignments(Assignment assignment) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (id, DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
-                "VALUES (?,?,?,?,?)");
-        stmt.setString(1, assignment.getId());
-        stmt.setString(2, assignment.getDeviceID());
-        stmt.setString(3, assignment.getUserID());
-        stmt.setDate(4, assignment.getDateAssigned());
-        stmt.setTime(5, assignment.getTimeAssigned());
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
+                "VALUES (?,?,?,?)");
+        stmt.setString(1, assignment.getDeviceID());
+        stmt.setString(2, assignment.getUserID());
+        stmt.setDate(3, assignment.getDateAssigned());
+        stmt.setTime(4, assignment.getTimeAssigned());
+        stmt.execute();
+        return true;
+    }
+
+    private boolean deleteFromAssignments(String assignmentID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Assignments WHERE id = ?");
+        stmt.setString(1, assignmentID);
         stmt.execute();
         return true;
     }
@@ -299,6 +344,13 @@ public class Backend implements FromCardReader{
         stmt.setTime(7, assignment.getTimeAssigned());
         stmt.setBoolean(8, returnedSuccessfully);
         stmt.setString(9,returningUserID);
+        return true;
+    }
+
+    private boolean deleteFromAssignmentHistory(String assignmentHistoryID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM AssignmentHistory WHERE id = ?");
+        stmt.setString(1, assignmentHistoryID);
+        stmt.execute();
         return true;
     }
 
@@ -328,7 +380,7 @@ public class Backend implements FromCardReader{
                 "\nPRIMARY KEY (id));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Assignments (" +
-                "\nid varchar(100) NOT NULL,\n" +
+                "\nid int NOT NULL AUTO_INCREMENT,\n" +
                 "\nDeviceID varchar(100) NOT NULL," +
                 "\nUserID varchar(100) NOT NULL," +
                 "\nDateAssigned DATE," +
@@ -380,13 +432,13 @@ public class Backend implements FromCardReader{
         java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
         java.sql.Time time = java.sql.Time.valueOf("14:45:20");
 
-        Assignment assignment = new Assignment("002", "laptop02", "Betty1248", date,time);
+        Assignment assignment = new Assignment("laptop02", "Betty1248", date,time);
         insertIntoAssignments(assignment);
 
         date = java.sql.Date.valueOf("2018-02-09");
         time = java.sql.Time.valueOf("09:32:13");
 
-        assignment = new Assignment("001", "laptop01", "Callum2468", date,time);
+        assignment = new Assignment("laptop01", "Callum2468", date,time);
         insertIntoAssignmentHistory(assignment, "Aidan9876");
 
         return true;
