@@ -182,17 +182,22 @@ public class Backend implements FromCardReader{
         return rs.next();
     }
 
+    //TODO switch scan value to be correct thing
     private User loadUser(Scan scan) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("SELECT id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove FROM Users WHERE ScanValue = ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE ScanValue = ?");
         stmt.setString(1, scan.getUserID());
         ResultSet rs = stmt.executeQuery();
         User user = loadUserFromResultSet(rs);
         return user;
     }
 
+    //TODO switch scan value to be correct thing
     private Device loadDevice(Scan scan) throws Exception{
-        //Query Devices to find the device corresponding to this scan and return it
-        return null;
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Devices WHERE ScanValue = ?");
+        stmt.setString(1, scan.getUserID());
+        ResultSet rs = stmt.executeQuery();
+        Device device = loadDeviceFromResultSet(rs);
+        return device;
     }
 
     public boolean canUserRemoveDevices(User user) throws Exception{
