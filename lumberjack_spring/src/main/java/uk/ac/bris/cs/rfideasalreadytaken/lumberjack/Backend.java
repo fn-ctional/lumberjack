@@ -221,37 +221,49 @@ public class Backend implements FromCardReader{
         return false;
     }
 
-    private boolean returnDevice(Device device, User user) throws Exception{
-        //Load and then delete from Assignments the record of this device being removed
-        //Check if the user who returned the device correlates to the one who removed it
-        //Assume no user is the old user as they dont need to scan their UCard to return
-        //if yes
-            //Add to AssignmentHistory a record of the device being removed and returned by that user using addTakeOutToHistory
-            //Update Users so that the user has removed 1 less device than before
-            //Update Devices so that that device is no longer recorded as removed
-        //if no
-            //Add to AssignmentHistory a record of the device being removed by the old user and returned by the new user usign insertIntoAssignmentHistory()
-            //Update Users so that the previous user has removed 1 less device than before
-            //Update Devices so the device is no longer recorded as being removed (takeOutDevice() will reverse this but it should be done in case takeOutDevice() fails)
-            //Use takeOutDevice() to create a record of the device bign taken out by the new user
+    private boolean returnDevice(Device device, User returningUser) throws Exception{
+
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ");
+        stmt.setString(1, device.getId());
+        ResultSet rs = stmt.executeQuery();
+        Assignment assignment = loadAssignmentFromResultSet(rs);
+
+        PreparedStatement stmt2 = conn.prepareStatement("DELETE FROM Assignments WHERE DeviceID = ?");
+        stmt2.setString(1, device.getId());
+        stmt2.execute();
+
+        insertIntoAssignmentHistory(assignment,returningUser.getId());
+
+        int removed = returningUser.getDevicesRemoved()-1;
+        PreparedStatement stmt3 = conn.prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");
+        stmt3.setInt(1, removed);
+        stmt3.setString(2, assignment.getUserID());
+        stmt3.execute();
+
+        PreparedStatement stmt4 = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = false WHERE id = ?");
+        stmt4.setString(1, device.getId());
+        stmt4.execute();
+
+        if(returningUser.getId() != assignment.getUserID()){
+
+            takeOutDevice(device, returningUser);
+        }
+
         return true;
     }
 
     //TODO get current date and time and calculate time removed for
     public boolean takeOutDevice(Device device, User user) throws Exception{
-        //Update Devices so the device is recorded as being removed
         PreparedStatement stmt = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = true WHERE id = ?");
         stmt.setString(1, device.getId());
         stmt.execute();
 
-        //Update Users so that the user has removed 1 more device than before
         int removed = user.getDevicesRemoved()+1;
         PreparedStatement stmt3 = conn.prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");
         stmt3.setInt(1, removed);
         stmt3.setString(2, user.getId());
         stmt3.execute();
 
-        //Update Assignments so that there is a new record of the new user removing the device
         java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
         java.sql.Time time = java.sql.Time.valueOf("14:45:20");
         Assignment assignment = new Assignment(device.getId(),user.getId(), date, time);
