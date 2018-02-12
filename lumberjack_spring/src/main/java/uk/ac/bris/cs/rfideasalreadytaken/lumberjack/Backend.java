@@ -237,10 +237,25 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    private boolean takeOutDevice(Device device, User user) throws Exception{
+    //TODO get current date and time and calculate time removed for
+    public boolean takeOutDevice(Device device, User user) throws Exception{
         //Update Devices so the device is recorded as being removed
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = true WHERE id = ?");
+        stmt.setString(1, device.getId());
+        stmt.execute();
+
         //Update Users so that the user has removed 1 more device than before
+        int removed = user.getDevicesRemoved()+1;
+        PreparedStatement stmt3 = conn.prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");
+        stmt3.setInt(1, removed);
+        stmt3.setString(2, user.getId());
+        stmt3.execute();
+
         //Update Assignments so that there is a new record of the new user removing the device
+        java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
+        java.sql.Time time = java.sql.Time.valueOf("14:45:20");
+        Assignment assignment = new Assignment(device.getId(),user.getId(), date, time);
+        insertIntoAssignments(assignment);
         return true;
     }
 
@@ -268,13 +283,12 @@ public class Backend implements FromCardReader{
     }
 
     private boolean insertIntoAssignments(Assignment assignment) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (id, DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
-                "VALUES (?,?,?,?,?)");
-        stmt.setString(1, assignment.getId());
-        stmt.setString(2, assignment.getDeviceID());
-        stmt.setString(3, assignment.getUserID());
-        stmt.setDate(4, assignment.getDateAssigned());
-        stmt.setTime(5, assignment.getTimeAssigned());
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
+                "VALUES (?,?,?,?)");
+        stmt.setString(1, assignment.getDeviceID());
+        stmt.setString(2, assignment.getUserID());
+        stmt.setDate(3, assignment.getDateAssigned());
+        stmt.setTime(4, assignment.getTimeAssigned());
         stmt.execute();
         return true;
     }
@@ -328,7 +342,7 @@ public class Backend implements FromCardReader{
                 "\nPRIMARY KEY (id));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Assignments (" +
-                "\nid varchar(100) NOT NULL,\n" +
+                "\nid int NOT NULL AUTO_INCREMENT,\n" +
                 "\nDeviceID varchar(100) NOT NULL," +
                 "\nUserID varchar(100) NOT NULL," +
                 "\nDateAssigned DATE," +
@@ -380,13 +394,13 @@ public class Backend implements FromCardReader{
         java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
         java.sql.Time time = java.sql.Time.valueOf("14:45:20");
 
-        Assignment assignment = new Assignment("002", "laptop02", "Betty1248", date,time);
+        Assignment assignment = new Assignment("laptop02", "Betty1248", date,time);
         insertIntoAssignments(assignment);
 
         date = java.sql.Date.valueOf("2018-02-09");
         time = java.sql.Time.valueOf("09:32:13");
 
-        assignment = new Assignment("001", "laptop01", "Callum2468", date,time);
+        assignment = new Assignment("laptop01", "Callum2468", date,time);
         insertIntoAssignmentHistory(assignment, "Aidan9876");
 
         return true;
