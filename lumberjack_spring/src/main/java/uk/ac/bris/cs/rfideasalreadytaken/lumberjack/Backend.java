@@ -269,7 +269,7 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    public boolean insertIntoDevices(Device device) throws Exception{
+    private boolean insertIntoDevices(Device device) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Devices (id, scanValue, Type, Available, CurrentlyAssigned) VALUES (?,?,?,?,?)");
         stmt.setString(1, device.getId());
         stmt.setString(2, device.getScanValue());
