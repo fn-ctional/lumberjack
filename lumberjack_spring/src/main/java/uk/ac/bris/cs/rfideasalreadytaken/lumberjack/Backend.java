@@ -228,9 +228,7 @@ public class Backend implements FromCardReader{
         ResultSet rs = stmt.executeQuery();
         Assignment assignment = loadAssignmentFromResultSet(rs);
 
-        PreparedStatement stmt2 = conn.prepareStatement("DELETE FROM Assignments WHERE DeviceID = ?");
-        stmt2.setString(1, device.getId());
-        stmt2.execute();
+        deleteFromAssignments(assignment.getId());
 
         insertIntoAssignmentHistory(assignment,returningUser.getId());
 
@@ -282,6 +280,13 @@ public class Backend implements FromCardReader{
         return true;
     }
 
+    private boolean deleteFromDevices(String deviceID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Devices WHERE id = ?");
+        stmt.setString(1, deviceID);
+        stmt.execute();
+        return true;
+    }
+
     private boolean insertIntoUsers(User user) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users (id, scanValue, DeviceLimit, DevicesRemoved, CanRemove)" +
                 "VALUES (?,?,?,?,?)");
@@ -294,6 +299,13 @@ public class Backend implements FromCardReader{
         return true;
     }
 
+    private boolean deleteFromUsers(String userID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Users WHERE id = ?");
+        stmt.setString(1, userID);
+        stmt.execute();
+        return true;
+    }
+
     private boolean insertIntoAssignments(Assignment assignment) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
                 "VALUES (?,?,?,?)");
@@ -301,6 +313,13 @@ public class Backend implements FromCardReader{
         stmt.setString(2, assignment.getUserID());
         stmt.setDate(3, assignment.getDateAssigned());
         stmt.setTime(4, assignment.getTimeAssigned());
+        stmt.execute();
+        return true;
+    }
+
+    private boolean deleteFromAssignments(String assignmentID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Assignments WHERE id = ?");
+        stmt.setString(1, assignmentID);
         stmt.execute();
         return true;
     }
@@ -325,6 +344,13 @@ public class Backend implements FromCardReader{
         stmt.setTime(7, assignment.getTimeAssigned());
         stmt.setBoolean(8, returnedSuccessfully);
         stmt.setString(9,returningUserID);
+        return true;
+    }
+
+    private boolean deleteFromAssignmentHistory(String assignmentHistoryID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM AssignmentHistory WHERE id = ?");
+        stmt.setString(1, assignmentHistoryID);
+        stmt.execute();
         return true;
     }
 
