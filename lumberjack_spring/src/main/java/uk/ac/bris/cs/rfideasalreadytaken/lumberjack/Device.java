@@ -5,10 +5,10 @@ public class Device {
     private String id;
     private String scanValue;
     private String type;
-    private int available;
-    private int currentlyAssigned;
+    private boolean available;
+    private boolean currentlyAssigned;
 
-    public Device(String id, String scanValue, String type, int available, int currentlyAssigned){
+    public Device(String id, String scanValue, String type, boolean available, boolean currentlyAssigned){
         this.id = id;
         this.scanValue = scanValue;
         this.type = type;
@@ -28,11 +28,11 @@ public class Device {
         return type;
     }
 
-    public int isAvailable() {
+    public boolean isAvailable() {
         return available;
     }
 
-    public int isCurrentlyAssigned() {
+    public boolean isCurrentlyAssigned() {
         return currentlyAssigned;
     }
 
@@ -48,11 +48,11 @@ public class Device {
         this.type = type;
     }
 
-    public void setAvailable(int available) {
+    public void setAvailable(boolean available) {
         this.available = available;
     }
 
-    public void setCurrentlyAssigned(int currentlyAssigned) {
+    public void setCurrentlyAssigned(boolean currentlyAssigned) {
         this.currentlyAssigned = currentlyAssigned;
     }
 }

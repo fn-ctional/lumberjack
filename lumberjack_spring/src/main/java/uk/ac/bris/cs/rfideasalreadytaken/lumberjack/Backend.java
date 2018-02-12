@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 @Service
 public class Backend implements FromCardReader{
@@ -148,14 +149,14 @@ public class Backend implements FromCardReader{
     }
 
     private boolean canDeviceBeRemoved(Device device) throws Exception{
-        if(device.isAvailable() > 0){
+        if(device.isAvailable()){
             return true;
         }
         return false;
     }
 
     private boolean isDeviceCurrentlyOut(Device device) throws Exception{
-        if(device.isCurrentlyAssigned() > 0){
+        if(device.isCurrentlyAssigned()){
             return true;
         }
         return false;
@@ -184,10 +185,14 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    private boolean insertIntoDevices(Device device) throws Exception{
-        stmt.execute("INSERT INTO Devices (id, scanValue, Type, Available, CurrentlyAssigned)\n" +
-                "VALUES (\"" + device.getId() + "\", \"" + device.getScanValue() + "\", \"" + device.getType() +
-                "\"," + String.valueOf(device.isAvailable()) + "," + String.valueOf(device.isCurrentlyAssigned()) + ")");
+    public boolean insertIntoDevices(Device device) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Devices (id, scanValue, Type, Available, CurrentlyAssigned) VALUES (?,?,?,?,?)");
+        stmt.setString(1, device.getId());
+        stmt.setString(2, device.getScanValue());
+        stmt.setString(3, device.getType());
+        stmt.setBoolean(4, device.isAvailable());
+        stmt.setBoolean(5, device.isCurrentlyAssigned());
+        stmt.execute();
         return true;
     }
 
@@ -288,13 +293,13 @@ public class Backend implements FromCardReader{
         user = new User("Dorathy0369", "scanValueU4", 1, 0, 1);
         insertIntoUsers(user);
 
-        Device device = new Device("laptop01", "scanValueD1", "laptop", 1, 0);
+        Device device = new Device("laptop01", "scanValueD1", "laptop", true, false);
         insertIntoDevices(device);
-        device = new Device("laptop02", "scanValueD2", "laptop", 1, 1);
+        device = new Device("laptop02", "scanValueD2", "laptop", true, true);
         insertIntoDevices(device);
-        device = new Device("laptop03", "scanValueD3", "laptop", 0, 0);
+        device = new Device("laptop03", "scanValueD3", "laptop", false, false);
         insertIntoDevices(device);
-        device = new Device("camera01", "scanValueD4", "camera", 1, 0);
+        device = new Device("camera01", "scanValueD4", "camera", true, false);
         insertIntoDevices(device);
 
         java.sql.Date date = java.sql.Date.valueOf("2018-02-10");

@@ -27,12 +27,14 @@ public class LumberjackApplication implements CommandLineRunner{
 		backend.resetDatabase();
 		backend.insertTestCases();
 
-		Scan scan = new Scan("scanValueU1", "");
-		User user = backend.loadUser(scan);
-		log.info(user.getId() + " | " + user.getScanValue());
-		scan = new Scan("scanValueU4", "");
-		user = backend.loadUser(scan);
-		log.info(user.getId() + " | " + user.getScanValue());
+		Device device = new Device("sfysgdf", "scanVsdgsdgalueD1", "ladsfsdfptop", true, true);
+		backend.insertIntoDevices((device));
+		//Scan scan = new Scan("scanValueU1", "");
+		//User user = backend.loadUser(scan);
+		//log.info(user.getId() + " | " + user.getScanValue());
+		//scan = new Scan("scanValueU4", "");
+		//user = backend.loadUser(scan);
+		//log.info(user.getId() + " | " + user.getScanValue());
 
 		log.info("End");
 		return;
