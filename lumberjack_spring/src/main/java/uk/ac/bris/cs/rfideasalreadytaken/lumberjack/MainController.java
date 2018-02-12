@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @Controller
 public class MainController extends WebMvcConfigurerAdapter {
+
     @Autowired
     private Backend backend;
 
@@ -33,45 +34,45 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "templates/download.html";
     }
 
-
-    /*
-    //This is complicated so I'm going to do a simpler get request first.
-
+    /**
+     * Handler for taking out and returning device scans.
+     * @param scan A JSON containing device and user strings.
+         * @return An HTTP status code and body description of error or action performed.
+     */
     @PatchMapping(value = "/devices", consumes = "application/json", produces = "text/plain")
     @ResponseBody
     public ResponseEntity changeDeviceState(@RequestBody Scan scan) {
-
-            boolean successful = true;
-            if (successful) {
+        try {
+            String result = backend.scanRecieved(scan);
+            if (result.isEmpty()) throw new Exception();
+            if (result.equals("Scan not recognised")) {
+                return ResponseEntity.status(500).body("Scan not recognised");
+            }
+            if (result.equals("Failed to connect to database.")) {
+                return ResponseEntity.status(500).body("Failed to connect to database.");
+            }
+            if (result.equals("Failed to connect to database.")) {
+                //taken out vs put in
                 return ResponseEntity.status(200).body("Device " + scan.getDeviceID() + " successfully by " + scan.getUserID() + ".");
             }
-            else if (!successful) { //for example
+            if (result.equals("Failed to connect to database.")) {
                 return ResponseEntity.status(403).body("User " + scan.getUserID() + " is not permitted to take out device " + scan.getDeviceID() + ".");
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Unknown server error.");
+        }
 
-        // call changeDeviceState in model (which might exist in master, not sure)
-
-        //if unsuccessful:
         //return ResponseEntity.status(403).body("Device has already been taken out.");
         //return ResponseEntity.status(403).body("User not recognised.");
         //return ResponseEntity.status(403).body("Device not recognised.");
+
         return ResponseEntity.status(500).body("Unknown server error.");
-    }*/
+    }
 
-    //@Autowired
-    //private BackendTemp backendTemp;
 
-    @GetMapping(value = "/devices", produces = "application/json")
+    @GetMapping(value = "/devices/{id}", produces = "application/json")
     @ResponseBody
-    public DeviceState checkIfDeviceOut() {
-        User adam = new User("420","hello",10,0,true);
-        try {
-            DeviceState deviceState = new DeviceState();
-            deviceState.setBusy(backend.canUserRemoveDevices(adam));
-            return deviceState;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public DeviceState checkIfDeviceOut(@PathVariable String id) {
 
         return null;
     }
