@@ -16,7 +16,6 @@ public class Backend implements FromCardReader{
     private boolean connected = false;
     private Connection conn = null;
     private Statement stmt = null;
-    private ResultSet rs = null;
 
     public String scanRecieved(Scan scan) throws Exception{
 
@@ -110,20 +109,7 @@ public class Backend implements FromCardReader{
         }
     }
 
-    //TODO switch scan value to be correct thing
-    private boolean isValidUser(Scan scan) throws Exception{
-        rs = stmt.executeQuery("SELECT id FROM Users WHERE ScanValue = \"" + scan.getUserID() + "\"");
-        return rs.next();
-    }
-
-    //TODO switch scan value to be correct thing
-    private boolean isValidDevice(Scan scan) throws Exception{
-        rs = stmt.executeQuery("SELECT id FROM Devices WHERE ScanValue = \"" + scan.getUserID() + "\"");
-        return rs.next();
-    }
-
-    public User loadUser(Scan scan) throws Exception{
-        rs = stmt.executeQuery("SELECT id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove FROM Users WHERE ScanValue = \"" + scan.getUserID() + "\"");
+    private User loadUserFromResultSet(ResultSet rs) throws Exception{
         if(rs.next()){
             User user = new User();
             user.setCanRemove(rs.getBoolean("CanRemove"));
@@ -134,6 +120,74 @@ public class Backend implements FromCardReader{
             return user;
         }
         return null;
+    }
+
+    private Device loadDeviceFromResultSet(ResultSet rs) throws Exception{
+        if(rs.next()){
+            Device device = new Device();
+            device.setAvailable(rs.getBoolean("Available"));
+            device.setCurrentlyAssigned(rs.getBoolean("CurrentlyAssigned"));
+            device.setType(rs.getString("Type"));
+            device.setId(rs.getString("id"));
+            device.setScanValue(rs.getString("ScanValue"));
+            return device;
+        }
+        return null;
+    }
+
+    private Assignment loadAssignmentFromResultSet(ResultSet rs) throws Exception{
+        if(rs.next()){
+            Assignment assignment = new Assignment();
+            assignment.setDeviceID(rs.getString("DeviceID"));
+            assignment.setUserID(rs.getString("UserID"));
+            assignment.setDateAssigned(rs.getDate("DateAssigned"));
+            assignment.setAssignmentID(rs.getString("id"));
+            assignment.setTimeAssigned(rs.getTime("TimeAssigned"));
+            return assignment;
+        }
+        return null;
+    }
+
+    private AssignmentHistory loadAssignmentHistoryFromResultSet(ResultSet rs) throws Exception{
+        if(rs.next()){
+            AssignmentHistory assignmentHistory = new AssignmentHistory();
+            assignmentHistory.setAssignmentHistoryID(rs.getString("id"));
+            assignmentHistory.setDeviceID(rs.getString("DeviceID"));
+            assignmentHistory.setUserID(rs.getString("UserID"));
+            assignmentHistory.setDateAssigned(rs.getDate("DateAssigned"));
+            assignmentHistory.setTimeAssigned(rs.getTime("TimeAssigned"));
+            assignmentHistory.setDateReturned(rs.getDate("DateReturned"));
+            assignmentHistory.setTimeReturned(rs.getTime("TimeReturned"));
+            assignmentHistory.setTimeRemovedFor(rs.getTime("TimeRemovedFor"));
+            assignmentHistory.setReturnedSuccessfully(rs.getBoolean("ReturnedSuccessfully"));
+            assignmentHistory.setReturnedByID(rs.getString("ReturnedBy"));
+            return assignmentHistory;
+        }
+        return null;
+    }
+
+    //TODO switch scan value to be correct thing
+    private boolean isValidUser(Scan scan) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("SELECT id FROM Users WHERE ScanValue = ?");
+        stmt.setString(1, scan.getUserID());
+        ResultSet rs = stmt.executeQuery();
+        return rs.next();
+    }
+
+    //TODO switch scan value to be correct thing
+    private boolean isValidDevice(Scan scan) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("SELECT id FROM Devices WHERE ScanValue = ?");
+        stmt.setString(1, scan.getUserID());
+        ResultSet rs = stmt.executeQuery();
+        return rs.next();
+    }
+
+    private User loadUser(Scan scan) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("SELECT id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove FROM Users WHERE ScanValue = ?");
+        stmt.setString(1, scan.getUserID());
+        ResultSet rs = stmt.executeQuery();
+        User user = loadUserFromResultSet(rs);
+        return user;
     }
 
     private Device loadDevice(Scan scan) throws Exception{

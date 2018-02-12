@@ -11,6 +11,8 @@ public class Assignment {
     private java.sql.Date dateAssigned;
     private java.sql.Time timeAssigned;
 
+    public Assignment(){};
+
     public Assignment(String id, String deviceID, String userID, java.sql.Date dateAssigned, java.sql.Time timeAssigned){
         this.id = id;
         this.deviceID = deviceID;

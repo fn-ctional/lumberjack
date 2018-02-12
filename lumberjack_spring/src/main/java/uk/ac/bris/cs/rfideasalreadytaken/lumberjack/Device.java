@@ -8,6 +8,8 @@ public class Device {
     private boolean available;
     private boolean currentlyAssigned;
 
+    public Device(){};
+
     public Device(String id, String scanValue, String type, boolean available, boolean currentlyAssigned){
         this.id = id;
         this.scanValue = scanValue;
