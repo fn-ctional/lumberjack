@@ -6,11 +6,11 @@ public class User {
     private String scanValue;
     private int deviceLimit;
     private int devicesRemoved;
-    private int canRemove;
+    private boolean canRemove;
 
     public User(){}
 
-    public User(String id, String scanValue, int deviceLimit, int devicesRemoved, int canRemove){
+    public User(String id, String scanValue, int deviceLimit, int devicesRemoved, boolean canRemove){
         this.id = id;
         this.scanValue = scanValue;
         this.deviceLimit = deviceLimit;
@@ -34,7 +34,7 @@ public class User {
         return devicesRemoved;
     }
 
-    public int canRemove() {
+    public boolean canRemove() {
         return canRemove;
     }
 
@@ -54,7 +54,7 @@ public class User {
         this.devicesRemoved = devicesRemoved;
     }
 
-    public void setCanRemove(int canRemove) {
+    public void setCanRemove(boolean canRemove) {
         this.canRemove = canRemove;
     }
 }

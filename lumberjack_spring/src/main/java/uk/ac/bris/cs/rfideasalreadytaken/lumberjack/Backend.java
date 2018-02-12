@@ -12,7 +12,7 @@ import java.sql.PreparedStatement;
 public class Backend implements FromCardReader{
 
     private boolean userLoaded = false;
-    private User currentUser = new User("","",0,0,0);
+    private User currentUser = new User("","",0,0,false);
     private boolean connected = false;
     private Connection conn = null;
     private Statement stmt = null;
@@ -126,7 +126,7 @@ public class Backend implements FromCardReader{
         rs = stmt.executeQuery("SELECT id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove FROM Users WHERE ScanValue = \"" + scan.getUserID() + "\"");
         if(rs.next()){
             User user = new User();
-            user.setCanRemove(rs.getInt("CanRemove"));
+            user.setCanRemove(rs.getBoolean("CanRemove"));
             user.setDeviceLimit(rs.getInt("DeviceLimit"));
             user.setDevicesRemoved(rs.getInt("DevicesRemoved"));
             user.setId(rs.getString("id"));
@@ -142,7 +142,7 @@ public class Backend implements FromCardReader{
     }
 
     public boolean canUserRemoveDevices(User user) throws Exception{
-        if(user.canRemove() > 0){
+        if(user.canRemove()){
             return true;
         }
         return false;
@@ -197,33 +197,49 @@ public class Backend implements FromCardReader{
     }
 
     private boolean insertIntoUsers(User user) throws Exception{
-        stmt.execute("INSERT INTO Users (id, scanValue, DeviceLimit, DevicesRemoved, CanRemove)\n" +
-                "VALUES (\"" + user.getId() + "\", \"" + user.getScanValue() + "\", " + String.valueOf(user.getDeviceLimit()) +
-                "," + String.valueOf(user.getDevicesRemoved()) + "," + String.valueOf(user.canRemove()) + ")");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users (id, scanValue, DeviceLimit, DevicesRemoved, CanRemove)" +
+                "VALUES (?,?,?,?,?)");
+        stmt.setString(1, user.getId());
+        stmt.setString(2, user.getScanValue());
+        stmt.setInt(3, user.getDeviceLimit());
+        stmt.setInt(4, user.getDevicesRemoved());
+        stmt.setBoolean(5, user.canRemove());
+        stmt.execute();
         return true;
     }
 
     private boolean insertIntoAssignments(Assignment assignment) throws Exception{
-        stmt.execute("INSERT INTO Assignments (id, DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
-                "VALUES (\"" + assignment.getId() + "\", \"" + assignment.getDeviceID() + "\", \"" + assignment.getUserID() +
-                "\", '" + assignment.getDateAssigned().toString() + "' , '" + assignment.getTimeAssigned().toString() + "')");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (id, DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
+                "VALUES (?,?,?,?,?)");
+        stmt.setString(1, assignment.getId());
+        stmt.setString(2, assignment.getDeviceID());
+        stmt.setString(3, assignment.getUserID());
+        stmt.setDate(4, assignment.getDateAssigned());
+        stmt.setTime(5, assignment.getTimeAssigned());
+        stmt.execute();
         return true;
     }
 
     //TODO get current date and time and calculate time removed for
     private boolean insertIntoAssignmentHistory(Assignment assignment, String returningUserID) throws Exception{
 
-        int returnedSuccessfully = 0;
+        boolean returnedSuccessfully = false;
         if(assignment.getUserID() == returningUserID){
-            returnedSuccessfully = 1;
+            returnedSuccessfully = true;
         }
 
-        stmt.execute("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, TimeRemovedFor, ReturnedSuccessfully, ReturnedBy)\n" +
-                "VALUES (\"" + assignment.getDeviceID() + "\", \"" + assignment.getUserID() +
-                "\", '" + assignment.getDateAssigned().toString() + "' , '" + assignment.getTimeAssigned().toString() +
-                "', '" + assignment.getDateAssigned().toString() + "' , '" + assignment.getTimeAssigned().toString() +
-                "', '" + assignment.getTimeAssigned().toString() + "' , " + returnedSuccessfully +
-                ",\""+ returningUserID + "\")");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, TimeRemovedFor, ReturnedSuccessfully, ReturnedBy)" +
+                "VALUES (?,?,?,?,?,?,?,?,?)");
+
+        stmt.setString(1, assignment.getDeviceID());
+        stmt.setString(2, assignment.getUserID());
+        stmt.setDate(3, assignment.getDateAssigned());
+        stmt.setTime(4, assignment.getTimeAssigned());
+        stmt.setDate(5, assignment.getDateAssigned());
+        stmt.setTime(6, assignment.getTimeAssigned());
+        stmt.setTime(7, assignment.getTimeAssigned());
+        stmt.setBoolean(8, returnedSuccessfully);
+        stmt.setString(9,returningUserID);
         return true;
     }
 
@@ -284,13 +300,13 @@ public class Backend implements FromCardReader{
 
         resetDatabase();
 
-        User user = new User("Aidan9876", "scanValueU1", 2, 0, 1);
+        User user = new User("Aidan9876", "scanValueU1", 2, 0, true);
         insertIntoUsers(user);
-        user = new User("Betty1248", "scanValueU2", 1, 1, 1);
+        user = new User("Betty1248", "scanValueU2", 1, 1, true);
         insertIntoUsers(user);
-        user = new User("Callum2468", "scanValueU3", 3, 0, 0);
+        user = new User("Callum2468", "scanValueU3", 3, 0, false);
         insertIntoUsers(user);
-        user = new User("Dorathy0369", "scanValueU4", 1, 0, 1);
+        user = new User("Dorathy0369", "scanValueU4", 1, 0, true);
         insertIntoUsers(user);
 
         Device device = new Device("laptop01", "scanValueD1", "laptop", true, false);

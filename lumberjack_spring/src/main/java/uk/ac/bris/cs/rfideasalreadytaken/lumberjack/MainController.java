@@ -64,7 +64,7 @@ public class MainController extends WebMvcConfigurerAdapter {
     @GetMapping(value = "/devices", produces = "application/json")
     @ResponseBody
     public DeviceState checkIfDeviceOut() {
-        User adam = new User("420","hello",10,0,1);
+        User adam = new User("420","hello",10,0,true);
         try {
             DeviceState deviceState = new DeviceState();
             deviceState.setBusy(backend.canUserRemoveDevices(adam));
