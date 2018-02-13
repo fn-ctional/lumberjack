@@ -20,9 +20,11 @@ int main() {
       continue;
     }
 
-    auto data = "{user:'" + user + "',device:'" + device + "'}";
+    auto data = "{\"user\":\"" + user + "\",\"device\":\"" + device + "\"}";
     if ( !connection.send(data, response) ) {
       std::cerr << "[data send failed]" << std::endl;
+    } else {
+      std::cout << data << std::endl;
     }
 
   }

@@ -1,4 +1,5 @@
 #include "Connection.hpp"
+#include <cstring>
 
 struct String {
   char const *ptr;
@@ -13,9 +14,6 @@ Connection::Connection::Connection(const char *url)
   curl_easy_setopt(handle, CURLOPT_URL, url);
   curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "PATCH");
   curl_easy_setopt(handle, CURLOPT_READFUNCTION, writer);
-
-  auto header = curl_slist_append(nullptr, "Content-Type: application/json");
-  curl_easy_setopt(handle, CURLOPT_HEADER, header);
 }
 
 Connection::Connection::Connection(Connection &&c)
@@ -32,7 +30,14 @@ Connection::Connection::~Connection() {
 }
 
 bool Connection::Connection::send(std::string body, Response&) {
+  auto content_len = "Content-Length: " + std::to_string(body.size());
   String str = { body.c_str(), body.size() };
+
+  auto header = curl_slist_append(nullptr, "Content-Type: application/json");
+       header = curl_slist_append(header,  content_len.c_str());
+       header = curl_slist_append(header,  "Transfer-Encoding:");
+  curl_easy_setopt(handle, CURLOPT_HTTPHEADER, header);
+
   curl_easy_setopt(handle, CURLOPT_READDATA, &str);
   curl_easy_setopt(handle, CURLOPT_UPLOAD, 1L);
   return curl_easy_perform(handle) == CURLE_OK;
@@ -43,11 +48,15 @@ Connection::Connection::operator bool() const {
 }
 
 size_t writer(char *buff, size_t size, size_t nitems, String *str) {
-  size_t i = 0;
-  for ( ; i < size*nitems && str->size; ++i ) {
-    buff[i] = *(str->ptr);
-    ++(str->ptr);
-    --(str->size);
-  }
-  return i;
+  size_t buffsize = size * nitems;
+
+  size_t copy_size = str->size <= buffsize ? str->size
+                                           : buffsize;
+
+  memcpy(buff, str->ptr, copy_size);
+
+  str->ptr += copy_size;
+  str->size -= copy_size;
+
+  return copy_size;
 }
