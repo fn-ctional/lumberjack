@@ -53,10 +53,10 @@ public class MainController extends WebMvcConfigurerAdapter {
             }
             if (result.equals("Failed to connect to database.")) {
                 //taken out vs put in
-                return ResponseEntity.status(200).body("Device " + scan.getDeviceID() + " successfully by " + scan.getUserID() + ".");
+                return ResponseEntity.status(200).body("Device " + scan.getDevice() + " successfully by " + scan.getUserID() + ".");
             }
             if (result.equals("Failed to connect to database.")) {
-                return ResponseEntity.status(403).body("User " + scan.getUserID() + " is not permitted to take out device " + scan.getDeviceID() + ".");
+                return ResponseEntity.status(403).body("User " + scan.getUserID() + " is not permitted to take out device " + scan.getDevice() + ".");
             }
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Unknown server error.");

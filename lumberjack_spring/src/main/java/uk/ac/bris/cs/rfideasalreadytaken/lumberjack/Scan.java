@@ -2,20 +2,22 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 public class Scan {
 
-    private final String userID;
-    private final String deviceID;
-
-    Scan(String userID, String deviceID) {
-        this.userID = userID;
-        this.deviceID = deviceID;
-    }
+    private String user;
+    private String device;
 
     public String getUserID() {
-        return userID;
+        return user;
     }
 
-    public String getDeviceID() {
-        return deviceID;
+    public void setUser(String user) {
+        this.user= user;
     }
 
+    public String getDevice() {
+        return device;
+    }
+
+    public void setDevice(String device) {
+        this.device = device;
+    }
 }
