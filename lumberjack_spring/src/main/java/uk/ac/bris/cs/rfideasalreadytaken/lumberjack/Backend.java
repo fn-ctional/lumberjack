@@ -17,21 +17,47 @@ public class Backend implements FromCardReader{
     private Connection conn = null;
     private Statement stmt = null;
 
+    public final String successReturn = "Device returned successfully";
+    public final String successRemoval = "Device taken out successfully";
+    public final String successReturnAndRemoval = "Device was not returned correctly, so has been taken out under new user";
+    public final String successUserLoaded = "User loaded sucessfully";
+    public final String failScanNotRecognised = "Scan not recognised";
+    public final String failNoLoadedUser = "No user has been loaded";
+    public final String failUserAtDeviceLimit = "User is at their limit of removable devices";
+    public final String failUserNotPermittedToRemove = "User is not permitted to remove devices";
+    public final String failDeviceIsNotAvailable = "Device cannot be taken out";
+    public final String errorConnectionFailed = "Error connecting to Database";
+    public final String errorUserNotLoaded = "Error loading user";
+    public final String errorDeviceNotLoaded = "Error loading device";
+    public final String errorDeviceHandlingFailed = "Error handling device return or takeout";
+    public final String errorReturnFailed = "Error returning device";
+    public final String errorRemovalFailed = "Error taking out device";
+
+    //TODO add time limit before curretn user resets
     public String scanRecieved(Scan scan) throws Exception{
 
         if(connectToDatabase()) {
 
+            String result;
+
             if (isValidUser(scan)) {
-                return userScanned(scan);
+                result = userScanned(scan);
+                return result;
             }
             else if (isValidDevice(scan)) {
-                return deviceScanned(scan);
+                result = deviceScanned(scan);
+
+                if(result == successReturn || result == successRemoval || result == successReturnAndRemoval){
+                    userLoaded = false;
+                }
+
+                return result;
             }
 
-            return "Scan not recognised";
+            return failScanNotRecognised;
         }
         else{
-            return "Failed to connect to Database";
+            return errorConnectionFailed;
         }
     }
 
@@ -64,48 +90,57 @@ public class Backend implements FromCardReader{
 
     private String userScanned(Scan scan) throws Exception{
 
-        User loadedUser = loadUser(scan);
-
-        if(canUserRemoveDevices(loadedUser)){
+        try {
+            User loadedUser = loadUser(scan);
             currentUser = loadedUser;
             userLoaded = true;
-            return "User loaded sucessfully";
+            return successUserLoaded;
         }
-        else{
-            return "User cannot remove devices";
+        catch(Exception e){
+            return errorUserNotLoaded;
         }
     }
 
     private String deviceScanned(Scan scan) throws Exception{
 
-        Device loadedDevice = loadDevice(scan);
+        Device loadedDevice;
 
-        if(canDeviceBeRemoved(loadedDevice)){
+        try {
+            loadedDevice = loadDevice(scan);
+        }
+        catch(Exception e){
+            return errorDeviceNotLoaded;
+        }
 
-            if(!userLoaded){
-                return "No user has been scanned";
+        try {
+            if (canDeviceBeRemoved(loadedDevice)) {
+
+                if (!userLoaded) {
+                    return failNoLoadedUser;
+                }
+
+                if (isDeviceCurrentlyOut(loadedDevice)) {
+
+                    return returnDevice(loadedDevice, currentUser);
+                }
+                else {
+
+                    if (isUserAtDeviceLimit(currentUser)) {
+                        return failUserAtDeviceLimit;
+                    }
+                    else if (canUserRemoveDevices(currentUser)) {
+                        return failUserNotPermittedToRemove;
+                    }
+
+                    return takeOutDevice(loadedDevice, currentUser);
+                }
             }
-
-            if(isDeviceCurrentlyOut(loadedDevice)){
-
-                if(returnDevice(loadedDevice, currentUser)){
-                    return "Device returned successfully";
-                }
-                else{
-                    return "Error returning device";
-                }
-            }
-            else{
-                if(takeOutDevice(loadedDevice, currentUser)){
-                    return "Device taken out successfully";
-                }
-                else{
-                    return "Error taking out device";
-                }
+            else {
+                return failDeviceIsNotAvailable;
             }
         }
-        else{
-            return "Device cannot be taken out";
+        catch(Exception e){
+            return errorDeviceHandlingFailed;
         }
     }
 
@@ -207,6 +242,13 @@ public class Backend implements FromCardReader{
         return false;
     }
 
+    public boolean isUserAtDeviceLimit(User user){
+        if(user.getDeviceLimit() == user.getDevicesRemoved()){
+            return true;
+        }
+        return false;
+    }
+
     private boolean canDeviceBeRemoved(Device device) throws Exception{
         if(device.isAvailable()){
             return true;
@@ -221,52 +263,63 @@ public class Backend implements FromCardReader{
         return false;
     }
 
-    private boolean returnDevice(Device device, User returningUser) throws Exception{
+    private String returnDevice(Device device, User returningUser) throws Exception{
 
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ");
-        stmt.setString(1, device.getId());
-        ResultSet rs = stmt.executeQuery();
-        Assignment assignment = loadAssignmentFromResultSet(rs);
+        try{
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ");
+            stmt.setString(1, device.getId());
+            ResultSet rs = stmt.executeQuery();
+            Assignment assignment = loadAssignmentFromResultSet(rs);
 
-        deleteFromAssignments(assignment.getId());
+            deleteFromAssignments(assignment.getId());
 
-        insertIntoAssignmentHistory(assignment,returningUser.getId());
+            insertIntoAssignmentHistory(assignment,returningUser.getId());
 
-        int removed = returningUser.getDevicesRemoved()-1;
-        PreparedStatement stmt3 = conn.prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");
-        stmt3.setInt(1, removed);
-        stmt3.setString(2, assignment.getUserID());
-        stmt3.execute();
+            int removed = returningUser.getDevicesRemoved()-1;
+            PreparedStatement stmt3 = conn.prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");
+            stmt3.setInt(1, removed);
+            stmt3.setString(2, assignment.getUserID());
+            stmt3.execute();
 
-        PreparedStatement stmt4 = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = false WHERE id = ?");
-        stmt4.setString(1, device.getId());
-        stmt4.execute();
+            PreparedStatement stmt4 = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = false WHERE id = ?");
+            stmt4.setString(1, device.getId());
+            stmt4.execute();
 
-        if(returningUser.getId() != assignment.getUserID()){
+            if(returningUser.getId() != assignment.getUserID()){
 
-            takeOutDevice(device, returningUser);
+                takeOutDevice(device, returningUser);
+                return successReturnAndRemoval;
+            }
+
+            return successReturn;
         }
-
-        return true;
+        catch(Exception e) {
+            return errorReturnFailed;
+        }
     }
 
     //TODO get current date and time and calculate time removed for
-    public boolean takeOutDevice(Device device, User user) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = true WHERE id = ?");
-        stmt.setString(1, device.getId());
-        stmt.execute();
+    public String takeOutDevice(Device device, User user) throws Exception{
+        try {
+            PreparedStatement stmt = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = true WHERE id = ?");
+            stmt.setString(1, device.getId());
+            stmt.execute();
 
-        int removed = user.getDevicesRemoved()+1;
-        PreparedStatement stmt3 = conn.prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");
-        stmt3.setInt(1, removed);
-        stmt3.setString(2, user.getId());
-        stmt3.execute();
+            int removed = user.getDevicesRemoved() + 1;
+            PreparedStatement stmt3 = conn.prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");
+            stmt3.setInt(1, removed);
+            stmt3.setString(2, user.getId());
+            stmt3.execute();
 
-        java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
-        java.sql.Time time = java.sql.Time.valueOf("14:45:20");
-        Assignment assignment = new Assignment(device.getId(),user.getId(), date, time);
-        insertIntoAssignments(assignment);
-        return true;
+            java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
+            java.sql.Time time = java.sql.Time.valueOf("14:45:20");
+            Assignment assignment = new Assignment(device.getId(), user.getId(), date, time);
+            insertIntoAssignments(assignment);
+            return successRemoval;
+        }
+        catch(Exception e) {
+            return errorRemovalFailed;
+        }
     }
 
     private boolean insertIntoDevices(Device device) throws Exception{
