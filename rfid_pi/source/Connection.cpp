@@ -13,6 +13,9 @@ Connection::Connection::Connection(const char *url)
   curl_easy_setopt(handle, CURLOPT_URL, url);
   curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "PATCH");
   curl_easy_setopt(handle, CURLOPT_READFUNCTION, writer);
+
+  auto header = curl_slist_append(nullptr, "Content-Type: application/json");
+  curl_easy_setopt(handle, CURLOPT_HEADER, header);
 }
 
 Connection::Connection::Connection(Connection &&c)

@@ -2,7 +2,7 @@
 #include "Event.hpp"
 #include "Connection.hpp"
 
-const static char *URL = "192.168.0.252:8080/devices";
+const static char *URL = "localhost:8080/devices";
 
 int main() {
   auto connection = Connection::Connection(URL);
@@ -15,12 +15,12 @@ int main() {
 
     source.readline( user , -1 );
 
-    if ( !source.readline( device, 3000) ) {
+    if ( !source.readline( device, 3000 ) ) {
       std::cerr << "[timeout]" << std::endl;
       continue;
     }
 
-    auto data = "{user='" + user + "',device='" + device + "'}";
+    auto data = "{user:'" + user + "',device:'" + device + "'}";
     if ( !connection.send(data, response) ) {
       std::cerr << "[data send failed]" << std::endl;
     }
