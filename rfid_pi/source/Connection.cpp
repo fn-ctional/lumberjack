@@ -6,18 +6,16 @@ struct String {
 
 size_t writer(char*, size_t, size_t, String*);
 
-Connection::Connection::Connection(std::string url)
-: url(url)
-, handle( curl_easy_init() )
+Connection::Connection::Connection(const char *url)
+: handle( curl_easy_init() )
 {
-  curl_easy_setopt(handle, CURLOPT_URL, url.c_str());
+  curl_easy_setopt(handle, CURLOPT_URL, url);
   curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "PATCH");
   curl_easy_setopt(handle, CURLOPT_READFUNCTION, writer);
 }
 
 Connection::Connection::Connection(Connection &&c)
-: url(c.url)
-, handle(c.handle)
+: handle(c.handle)
 {
   c.handle = nullptr;
 }

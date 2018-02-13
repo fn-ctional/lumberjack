@@ -14,7 +14,7 @@ namespace Connection {
 
   class Connection {
   public:
-    Connection(std::string);
+    Connection(const char*);
     Connection(Connection&) = delete;
     Connection(Connection&&);
     ~Connection();
@@ -22,7 +22,6 @@ namespace Connection {
     bool send(std::string, Response&);
     operator bool() const;
   private:
-    std::string url;
     CURL *handle;
   };
 
