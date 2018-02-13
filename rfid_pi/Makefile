@@ -2,7 +2,7 @@ warnings := -Wall -Wextra -pedantic
 source := source/*.cpp
 inc_dir := -I include/
 headers := include/*.hpp
-link := -lpthread
+link := -lpthread $(shell curl-config --libs)
 
 opt_msg := "unoptimised"
 dbg_msg := ""

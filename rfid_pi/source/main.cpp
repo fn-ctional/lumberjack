@@ -1,20 +1,29 @@
 #include <iostream>
 #include "Event.hpp"
+#include "Connection.hpp"
+
+const static char *URL = "192.168.0.252:8080/devices";
 
 int main() {
-  auto source = Event::Source("/dev/input/event0");
-  std::string data;
-  
-  while ( true ) {
-    source.readline( data , -1 );
-    std::cout << data << std::endl;
+  auto connection = Connection::Connection(URL);
+  auto response = Connection::Response();
 
-    if ( source.readline( data, 3000) ) {
-      std::cout << data << std::endl;
-    } else {
+  auto source = Event::Source("/dev/input/event0");
+  std::string user, device;
+
+  while ( true ) {
+
+    source.readline( user , -1 );
+
+    if ( !source.readline( device, 3000) ) {
       std::cerr << "[timeout]" << std::endl;
+      continue;
     }
 
-    std::cout << std::endl;
+    auto data = "{user='" + user + "',device='" + device + "'}";
+    if ( !connection.send(data, response) ) {
+      std::cerr << "[data send failed]" << std::endl;
+    }
+
   }
 }
