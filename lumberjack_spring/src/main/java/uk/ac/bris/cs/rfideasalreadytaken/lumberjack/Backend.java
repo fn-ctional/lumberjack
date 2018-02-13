@@ -204,7 +204,7 @@ public class Backend implements FromCardReader{
     //TODO switch scan value to be correct thing
     private boolean isValidUser(Scan scan) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT id FROM Users WHERE ScanValue = ?");
-        stmt.setString(1, scan.getUserID());
+        stmt.setString(1, scan.getUser());
         ResultSet rs = stmt.executeQuery();
         return rs.next();
     }
@@ -212,7 +212,7 @@ public class Backend implements FromCardReader{
     //TODO switch scan value to be correct thing
     private boolean isValidDevice(Scan scan) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT id FROM Devices WHERE ScanValue = ?");
-        stmt.setString(1, scan.getUserID());
+        stmt.setString(1, scan.getUser());
         ResultSet rs = stmt.executeQuery();
         return rs.next();
     }
@@ -220,7 +220,7 @@ public class Backend implements FromCardReader{
     //TODO switch scan value to be correct thing
     private User loadUser(Scan scan) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE ScanValue = ?");
-        stmt.setString(1, scan.getUserID());
+        stmt.setString(1, scan.getUser());
         ResultSet rs = stmt.executeQuery();
         User user = loadUserFromResultSet(rs);
         return user;
@@ -229,7 +229,7 @@ public class Backend implements FromCardReader{
     //TODO switch scan value to be correct thing
     private Device loadDevice(Scan scan) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Devices WHERE ScanValue = ?");
-        stmt.setString(1, scan.getUserID());
+        stmt.setString(1, scan.getUser());
         ResultSet rs = stmt.executeQuery();
         Device device = loadDeviceFromResultSet(rs);
         return device;

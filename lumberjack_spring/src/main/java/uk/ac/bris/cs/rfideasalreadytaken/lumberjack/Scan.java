@@ -5,7 +5,8 @@ public class Scan {
     private String user;
     private String device;
 
-    public String getUserID() {
+    //TODO: Refactored for now to conform with REST API but I think UserID is more representative of what it is
+    public String getUser() {
         return user;
     }
 
