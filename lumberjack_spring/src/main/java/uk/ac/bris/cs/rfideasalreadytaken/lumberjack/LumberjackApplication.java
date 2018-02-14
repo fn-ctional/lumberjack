@@ -5,18 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.jdbc.core.JdbcTemplate;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import javax.sql.DataSource;
-
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 @SpringBootApplication
 public class LumberjackApplication implements CommandLineRunner{
@@ -33,9 +22,20 @@ public class LumberjackApplication implements CommandLineRunner{
 
 		log.info("Start");
 
-		BackendTemp backend = new BackendTemp();
+		Backend backend = new Backend();
 
-		backend.resetDatabases();
+		backend.resetDatabase();
+		backend.insertTestCases();
+
+		Device device = new Device("laptop01", "scanValueD1", "laptop", true, false);
+		User user = new User("Aidan9876", "scanValueU1", 2, 0, true);
+		backend.takeOutDevice(device, user);
+		//Scan scan = new Scan("scanValueU1", "");
+		//User user = backend.loadUser(scan);
+		//log.info(user.getId() + " | " + user.getScanValue());
+		//scan = new Scan("scanValueU4", "");
+		//user = backend.loadUser(scan);
+		//log.info(user.getId() + " | " + user.getScanValue());
 
 		log.info("End");
 		return;

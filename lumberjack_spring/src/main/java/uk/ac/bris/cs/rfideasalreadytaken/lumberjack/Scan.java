@@ -2,20 +2,23 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 public class Scan {
 
-    private final String userID;
-    private final String deviceID;
+    private String user;
+    private String device;
 
-    Scan(String userID, String deviceID) {
-        this.userID = userID;
-        this.deviceID = deviceID;
+    //TODO: Refactored for now to conform with REST API but I think UserID is more representative of what it is
+    public String getUser() {
+        return user;
     }
 
-    public String getUserID() {
-        return userID;
+    public void setUser(String user) {
+        this.user= user;
     }
 
-    public String getDeviceID() {
-        return deviceID;
+    public String getDevice() {
+        return device;
     }
 
+    public void setDevice(String device) {
+        this.device = device;
+    }
 }

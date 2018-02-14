@@ -13,7 +13,22 @@ public class AssignmentHistory {
     private java.sql.Time timeReturned;
     private java.sql.Time timeRemovedFor;
     private boolean returnedSuccessfully;
-    private String returnedBy;
+    private String returnedByID;
+
+    public AssignmentHistory(){};
+
+    public AssignmentHistory(String assignmentHistoryID, String deviceID, String userID, java.sql.Date dateAssigned, java.sql.Time timeAssigned, java.sql.Date dateReturned, java.sql.Time timeReturned, java.sql.Time timeRemovedFor, boolean returnedSuccessfully, String returnedByID){
+        this.assignmentHistoryID = assignmentHistoryID;
+        this.deviceID = deviceID;
+        this.userID = userID;
+        this.dateAssigned = dateAssigned;
+        this.timeAssigned = timeAssigned;
+        this.dateReturned = dateReturned;
+        this.timeReturned = timeReturned;
+        this.timeRemovedFor = timeRemovedFor;
+        this.returnedSuccessfully = returnedSuccessfully;
+        this.returnedByID = returnedByID;
+    }
 
     public String getAssignmentHistoryID() {
         return assignmentHistoryID;
@@ -51,19 +66,13 @@ public class AssignmentHistory {
         return returnedSuccessfully;
     }
 
-    public String getReturnedBy() {
-        return returnedBy;
+    public String getReturnedByID() {
+        return returnedByID;
     }
 
-    public void setAssignmentHistoryID(String assignmentHistoryID) {
+    public void setAssignmentHistoryID(String assignmentHistoryID) { this.assignmentHistoryID = assignmentHistoryID; }
 
-        this.assignmentHistoryID = assignmentHistoryID;
-    }
-
-    public void setDeviceID(String deviceID) {
-
-        this.deviceID = deviceID;
-    }
+    public void setDeviceID(String deviceID) { this.deviceID = deviceID; }
 
     public void setUserID(String userID) {
         this.userID = userID;
@@ -89,11 +98,9 @@ public class AssignmentHistory {
         this.timeRemovedFor = timeRemovedFor;
     }
 
-    public void setReturnedSuccessfully(boolean returnedSuccessfully) {
-        this.returnedSuccessfully = returnedSuccessfully;
-    }
+    public void setReturnedSuccessfully(boolean returnedSuccessfully) { this.returnedSuccessfully = returnedSuccessfully; }
 
-    public void setReturnedBy(String returnedBy) {
-        this.returnedBy = returnedBy;
+    public void setReturnedByID(String returnedByID) {
+        this.returnedByID = returnedByID;
     }
 }
