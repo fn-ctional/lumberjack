@@ -20,42 +20,35 @@ public class LumberjackApplication implements CommandLineRunner{
 	@Override
 	public void run(String... strings) throws Exception {
 
-		log.info("Start");
-
 		Backend backend = new Backend();
-
 		backend.resetDatabase();
 		backend.insertTestCases();
 
-		Device device = new Device("laptop04", "scanValueD1", "laptop", true, false);
-		User user = new User("Aidan9876", "scanValueU1", 2, 0, true);
-
 		Scan scan = new Scan();
-		scan.setUser("scanValueU1");
-		scan.setDevice("scanValueU1");
-		log.info(backend.scanRecieved(scan));
+		scan.setUser("1314831486");
+		scan.setDevice("1314831486");
 
-		scan.setUser("scanValueD1");
-		scan.setDevice("scanValueD1");
-		log.info(backend.scanRecieved(scan));
+		log.info("Scan User:");
+		log.info(backend.scanRecieved(scan) + "\n");
 
-		scan.setUser("scanValueU1");
-		scan.setDevice("scanValueU1");
-		log.info(backend.scanRecieved(scan));
+		scan.setUser("36109839730967812");
+		scan.setDevice("36109839730967812");
 
-		scan.setUser("scanValueD1");
-		scan.setDevice("scanValueD1");
-		log.info(backend.scanRecieved(scan));
+		log.info("Scan Device not taken out:");
+		log.info(backend.scanRecieved(scan) + "\n");
 
+		scan.setUser("457436545");
+		scan.setDevice("457436545");
 
-		//Scan scan = new Scan("scanValueU1", "");
-		//User user = backend.loadUser(scan);
-		//log.info(user.getId() + " | " + user.getScanValue());
-		//scan = new Scan("scanValueU4", "");
-		//user = backend.loadUser(scan);
-		//log.info(user.getId() + " | " + user.getScanValue());
+		log.info("Scan User:");
+		log.info(backend.scanRecieved(scan) + "\n");
 
-		log.info("End");
+		scan.setUser("23482364326842334");
+		scan.setDevice("23482364326842334");
+
+		log.info("Scan Device not taken out:");
+		log.info(backend.scanRecieved(scan) + "\n");
+
 		return;
 	}
 }

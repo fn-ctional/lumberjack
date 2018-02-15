@@ -381,7 +381,7 @@ public class Backend implements FromCardReader{
     private boolean insertIntoAssignmentHistory(Assignment assignment, String returningUserID) throws Exception{
 
         boolean returnedSuccessfully = false;
-        if(assignment.getUserID() == returningUserID){
+        if(assignment.getUserID().equals(returningUserID)){
             returnedSuccessfully = true;
         }
 
@@ -397,6 +397,8 @@ public class Backend implements FromCardReader{
         stmt.setTime(7, assignment.getTimeAssigned());
         stmt.setBoolean(8, returnedSuccessfully);
         stmt.setString(9,returningUserID);
+
+        stmt.execute();
         return true;
     }
 
@@ -450,7 +452,7 @@ public class Backend implements FromCardReader{
                 "\nTimeAssigned TIME," +
                 "\nDateReturned DATE," +
                 "\nTimeReturned TIME," +
-                "\nTimeRemovedFor time," +
+                "\nTimeRemovedFor TIME," +
                 "\nReturnedSuccessfully bit," +
                 "\nReturnedBy varchar(100) NOT NULL," +
                 "\nPRIMARY KEY (id)," +
@@ -464,22 +466,22 @@ public class Backend implements FromCardReader{
 
         resetDatabase();
 
-        User user = new User("Aidan9876", "scanValueU1", 2, 0, true);
+        User user = new User("Aidan9876", "1314831486", 2, 0, true);
         insertIntoUsers(user);
-        user = new User("Betty1248", "scanValueU2", 1, 1, true);
+        user = new User("Betty1248", "457436545", 1, 1, true);
         insertIntoUsers(user);
-        user = new User("Callum2468", "scanValueU3", 3, 0, false);
+        user = new User("Callum2468", "845584644", 3, 0, false);
         insertIntoUsers(user);
-        user = new User("Dorathy0369", "scanValueU4", 1, 0, true);
+        user = new User("Dorathy0369", "94648329837", 1, 0, true);
         insertIntoUsers(user);
 
-        Device device = new Device("laptop01", "scanValueD1", "laptop", true, false);
+        Device device = new Device("laptop01", "36109839730967812", "laptop", true, false);
         insertIntoDevices(device);
-        device = new Device("laptop02", "scanValueD2", "laptop", true, true);
+        device = new Device("laptop02", "23482364326842334", "laptop", true, true);
         insertIntoDevices(device);
-        device = new Device("laptop03", "scanValueD3", "laptop", false, false);
+        device = new Device("laptop03", "93482364723648725", "laptop", false, false);
         insertIntoDevices(device);
-        device = new Device("camera01", "scanValueD4", "camera", true, false);
+        device = new Device("camera01", "03457237295732925", "camera", true, false);
         insertIntoDevices(device);
 
         java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
