@@ -266,7 +266,7 @@ public class Backend implements FromCardReader{
     private String returnDevice(Device device, User returningUser) throws Exception{
 
         try{
-            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ");
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ?");
             stmt.setString(1, device.getId());
             ResultSet rs = stmt.executeQuery();
             Assignment assignment = loadAssignmentFromResultSet(rs);
@@ -285,10 +285,10 @@ public class Backend implements FromCardReader{
             stmt4.setString(1, device.getId());
             stmt4.execute();
 
-            if(returningUser.getId() != assignment.getUserID()){
+            if(!returningUser.getId().equals(assignment.getUserID())){
 
                 takeOutDevice(device, returningUser);
-                return successReturnAndRemoval;
+                return "[" + returningUser.getId() + assignment.getUserID() + "]";
             }
 
             return successReturn;
