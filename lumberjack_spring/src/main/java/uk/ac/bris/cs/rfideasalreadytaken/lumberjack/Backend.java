@@ -128,7 +128,7 @@ public class Backend implements FromCardReader{
                     if (isUserAtDeviceLimit(currentUser)) {
                         return failUserAtDeviceLimit;
                     }
-                    else if (canUserRemoveDevices(currentUser)) {
+                    else if (!canUserRemoveDevices(currentUser)) {
                         return failUserNotPermittedToRemove;
                     }
 
@@ -323,7 +323,7 @@ public class Backend implements FromCardReader{
     }
 
     private boolean insertIntoDevices(Device device) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Devices (id, scanValue, Type, Available, CurrentlyAssigned) VALUES (?,?,?,?,?)");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Devices (id, ScanValue, Type, Available, CurrentlyAssigned) VALUES (?,?,?,?,?)");
         stmt.setString(1, device.getId());
         stmt.setString(2, device.getScanValue());
         stmt.setString(3, device.getType());
@@ -341,7 +341,7 @@ public class Backend implements FromCardReader{
     }
 
     private boolean insertIntoUsers(User user) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users (id, scanValue, DeviceLimit, DevicesRemoved, CanRemove)" +
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users (id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove)" +
                 "VALUES (?,?,?,?,?)");
         stmt.setString(1, user.getId());
         stmt.setString(2, user.getScanValue());
