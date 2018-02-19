@@ -16,15 +16,29 @@ public interface FromFrontEnd {
 
     //void getStatus(Device device);
 
+    void insertUser(User user);
+
+    void insertDevice(Device device);
+
+    void deleteUser(User user);
+
+    void deleteDevice(Device device);
+
+    void resetTable();
+
+    void resetDatabase();
+
+    void getUserAssignmentsHistory(User user);
+
+    void getDeviceAssignmentHistory(Device device);
+
+
+
+
 
 
 //view select record from id
 //view all for each table
-//insert user/device
-//delete user/device
-//reset table/Database
-//inserts users/devices
-//get assignments/assignmenthistories of user or device
 
 
 }
