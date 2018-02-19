@@ -10,9 +10,21 @@ public interface FromFrontEnd {
 
     void setUserMaxDevices(User user, int max);
 
-    void setDeadline(Device device, Date date);
+    //void setDeadline(Device device, Date date);
 
     void setDeviceType(Device device, String type);
 
-    void getStatus(Device device);
+    //void getStatus(Device device);
+
+
+
+//view select record from id
+//view all for each table
+//insert user/device
+//delete user/device
+//reset table/Database
+//inserts users/devices
+//get assignments/assignmenthistories of user or device
+
+
 }

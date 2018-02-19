@@ -8,8 +8,21 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
 
+//Unite testing Database
+
+//rename existing tables
+//reset databases
+//load test cases
+//run function to test
+//check resutl is now correct
+//delete tables
+//rename old tables
+
+
+
+
 @Service
-public class Backend implements FromCardReader{
+public class Backend implements FromCardReader, FromFrontEnd{
 
     private boolean userLoaded = false;
     private User currentUser = new User("","",0,0,false);
