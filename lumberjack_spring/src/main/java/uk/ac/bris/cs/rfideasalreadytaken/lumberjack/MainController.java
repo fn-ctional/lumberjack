@@ -15,7 +15,6 @@ public class MainController extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("index");
     }
 
     @RequestMapping(value={"", "/"})
@@ -29,9 +28,7 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping(value = {"/download"})
-    public String download() {
-        return "templates/download.html";
-    }
+    public String download() { return "templates/download.html"; }
 
     /**
      * Handler for taking out and returning device scans.
