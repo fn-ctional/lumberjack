@@ -18,9 +18,7 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping(value={"", "/"})
-    public String index() {
-        return "templates/home.html";
-    }
+    public String index() { return "templates/home.html"; }
 
     @RequestMapping(value={"/about"})
     public String about() {

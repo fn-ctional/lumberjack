@@ -22,7 +22,7 @@ import java.sql.PreparedStatement;
 
 
 @Service
-public class Backend implements FromCardReader, FromFrontEnd{
+public class Backend implements FromCardReader{
 
     private boolean userLoaded = false;
     private User currentUser = new User("","",0,0,false);
