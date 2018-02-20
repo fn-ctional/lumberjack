@@ -346,11 +346,20 @@ public class Backend implements FromCardReader, FromFrontEnd{
         return true;
     }
 
+    void insertDevice(Device device){
+        boolean ignore = insertIntoDevices(device);
+    }
+
+
     private boolean deleteFromDevices(String deviceID) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM Devices WHERE id = ?");
         stmt.setString(1, deviceID);
         stmt.execute();
         return true;
+    }
+
+    void deleteDevice(Device device){
+        boolean ignore = deleteFromDevices(device.getId());
     }
 
     private boolean insertIntoUsers(User user) throws Exception{

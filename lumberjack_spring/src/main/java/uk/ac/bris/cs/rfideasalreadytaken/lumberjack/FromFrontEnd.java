@@ -18,11 +18,11 @@ public interface FromFrontEnd {
 
     void insertUser(User user);
 
-    //void insertDevice(Device device);
+    void insertDevice(Device device);
 
     void deleteUser(User user);
 
-   // void deleteDevice(Device device);
+   void deleteDevice(Device device);
 
    // void resetTable();
 
