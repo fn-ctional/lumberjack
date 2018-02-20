@@ -346,11 +346,20 @@ public class Backend implements FromCardReader{
         return true;
     }
 
+    void insertDevice(Device device){
+        boolean ignore = insertIntoDevices(device);
+    }
+
+
     private boolean deleteFromDevices(String deviceID) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM Devices WHERE id = ?");
         stmt.setString(1, deviceID);
         stmt.execute();
         return true;
+    }
+
+    void deleteDevice(Device device){
+        boolean ignore = deleteFromDevices(device.getId());
     }
 
     private boolean insertIntoUsers(User user) throws Exception{
@@ -370,6 +379,22 @@ public class Backend implements FromCardReader{
         stmt.setString(1, userID);
         stmt.execute();
         return true;
+    }
+
+    void deleteUser(User user) throws Exception{
+        boolean ignore = deleteFromUsers(user.getId());
+    }
+
+    void insertUser(User user){
+        boolean ignore = insertIntoUsers(user);
+    }
+
+    void setDeviceType(Device device, String type){
+        device.setType(type);
+    }
+
+    void setUserMaxDevices(User user, int max){
+        user.setDeviceLimit(max);
     }
 
     private boolean insertIntoAssignments(Assignment assignment) throws Exception{
