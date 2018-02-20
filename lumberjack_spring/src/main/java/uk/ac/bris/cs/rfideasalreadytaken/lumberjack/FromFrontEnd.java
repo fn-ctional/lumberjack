@@ -8,29 +8,29 @@ public interface FromFrontEnd {
 
     Map<Device,User> getDevicesOut();
 
-    void setUserMaxDevices(User user, int max);
+   // void setUserMaxDevices(User user, int max);
 
     //void setDeadline(Device device, Date date);
 
-    void setDeviceType(Device device, String type);
+  //  void setDeviceType(Device device, String type);
 
     //void getStatus(Device device);
 
     void insertUser(User user);
 
-    void insertDevice(Device device);
+    //void insertDevice(Device device);
 
     void deleteUser(User user);
 
-    void deleteDevice(Device device);
+   // void deleteDevice(Device device);
 
-    void resetTable();
+   // void resetTable();
 
-    void resetDatabase();
+   // void resetDatabase();
 
-    void getUserAssignmentsHistory(User user);
+  //  void getUserAssignmentsHistory(User user);
 
-    void getDeviceAssignmentHistory(Device device);
+  //  void getDeviceAssignmentHistory(Device device);
 
 
 

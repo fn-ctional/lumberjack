@@ -372,6 +372,14 @@ public class Backend implements FromCardReader, FromFrontEnd{
         return true;
     }
 
+    void deleteUser(User user) throws Exception{
+        boolean ignore = deleteFromUsers(user.getId());
+    }
+
+    void insertUser(User user){
+        boolean ignore = insertIntoUsers(user);
+    }
+
     private boolean insertIntoAssignments(Assignment assignment) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
                 "VALUES (?,?,?,?)");
