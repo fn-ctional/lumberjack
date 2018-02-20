@@ -389,6 +389,14 @@ public class Backend implements FromCardReader, FromFrontEnd{
         boolean ignore = insertIntoUsers(user);
     }
 
+    void setDeviceType(Device device, String type){
+        device.setType(type);
+    }
+
+    void setUserMaxDevices(User user, int max){
+        user.setDeviceLimit(max);
+    }
+
     private boolean insertIntoAssignments(Assignment assignment) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
                 "VALUES (?,?,?,?)");

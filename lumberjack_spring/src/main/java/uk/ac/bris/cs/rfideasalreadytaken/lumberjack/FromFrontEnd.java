@@ -8,11 +8,11 @@ public interface FromFrontEnd {
 
     Map<Device,User> getDevicesOut();
 
-   // void setUserMaxDevices(User user, int max);
+    void setUserMaxDevices(User user, int max);
 
     //void setDeadline(Device device, Date date);
 
-  //  void setDeviceType(Device device, String type);
+    void setDeviceType(Device device, String type);
 
     //void getStatus(Device device);
 
@@ -22,7 +22,7 @@ public interface FromFrontEnd {
 
     void deleteUser(User user);
 
-   void deleteDevice(Device device);
+    void deleteDevice(Device device);
 
    // void resetTable();
 
