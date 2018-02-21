@@ -16,12 +16,14 @@ public class MainController extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
+            registry.addViewController("/test");
     }
 
-    @RequestMapping(value={"", "/"})
-    public String index() { return "templates/home.html"; }
-
+    //@RequestMapping(value={"", "/"})
+    //public String index() { return "templates/home.html"; }
+/*
     @RequestMapping(value={"/about"})
+
     public String about() {
         return "templates/about.html";
     }
@@ -29,9 +31,9 @@ public class MainController extends WebMvcConfigurerAdapter {
     @RequestMapping(value = {"/download"})
     public String download() { return "templates/download.html"; }
 
-    @RequestMapping(value = {"/test"})
-    public String test() { return "templates/test.html"; }
-
+    @GetMapping("/")
+    public String test(Model model) { return "test"; }
+*/
     /**
      * Handler for taking out and returning device scans.
      * @param scan A JSON containing device and user strings.
