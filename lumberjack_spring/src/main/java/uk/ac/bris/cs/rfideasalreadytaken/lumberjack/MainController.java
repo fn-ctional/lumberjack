@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.ui.Model;
 
 @Controller
 public class MainController extends WebMvcConfigurerAdapter {
@@ -27,6 +28,9 @@ public class MainController extends WebMvcConfigurerAdapter {
 
     @RequestMapping(value = {"/download"})
     public String download() { return "templates/download.html"; }
+
+    @RequestMapping(value = {"/test"})
+    public String test() { return "templates/test.html"; }
 
     /**
      * Handler for taking out and returning device scans.

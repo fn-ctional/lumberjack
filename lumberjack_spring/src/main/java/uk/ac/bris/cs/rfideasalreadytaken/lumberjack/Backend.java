@@ -347,7 +347,7 @@ public class Backend implements FromCardReader{
     }
 
     void insertDevice(Device device){
-        boolean ignore = insertIntoDevices(device);
+        //boolean ignore = insertIntoDevices(device);
     }
 
 
@@ -359,7 +359,7 @@ public class Backend implements FromCardReader{
     }
 
     void deleteDevice(Device device){
-        boolean ignore = deleteFromDevices(device.getId());
+        //boolean ignore = deleteFromDevices(device.getId());
     }
 
     private boolean insertIntoUsers(User user) throws Exception{
@@ -386,7 +386,7 @@ public class Backend implements FromCardReader{
     }
 
     void insertUser(User user){
-        boolean ignore = insertIntoUsers(user);
+        //boolean ignore = insertIntoUsers(user);
     }
 
     void setDeviceType(Device device, String type){

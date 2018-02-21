@@ -2,16 +2,19 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto" rel="stylesheet">
+<head th:include ="fragments/header :: head (title='Test')">
 </head>
 
 <body>
+
+<div th:replace="fragments/header :: navbar">
+
+</div>
+
 <h1>heading</h1>
 <p>it works</p>
 <div class="test">tester</div>
+
 </body>
+
 </html>
