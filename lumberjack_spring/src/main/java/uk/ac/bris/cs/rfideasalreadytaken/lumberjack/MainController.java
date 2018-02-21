@@ -17,6 +17,8 @@ public class MainController extends WebMvcConfigurerAdapter {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("home");
+        registry.addViewController("/about");
+        registry.addViewController("/download");
     }
 
     /**

@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:include ="fragments/header :: head (title='lumberjack - Template')">
+<head th:include ="fragments/header :: head (title='lumberjack - Error')">
 </head>
 
 <body>
@@ -12,7 +12,14 @@
 <!-- Page Content -->
 
 <div class="container">
-
+    <h1 th:text="${error}">Error</h1>
+    <p class="lead">
+        <span th:text="${status}"></span>
+    </p>
+    <p>
+        <span th:text="${message}"></span><br/>
+        <code th:text="${trace}"></code>
+    </p>
 </div>
 
 <div th:replace="fragments/footer :: footer"></div>
