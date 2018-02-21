@@ -19,6 +19,7 @@ public class MainController extends WebMvcConfigurerAdapter {
         registry.addViewController("/").setViewName("home");
         registry.addViewController("/about");
         registry.addViewController("/download");
+        registry.addViewController("/login");
     }
 
     /**
