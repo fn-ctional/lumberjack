@@ -16,24 +16,9 @@ public class MainController extends WebMvcConfigurerAdapter {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-            registry.addViewController("/test");
+        registry.addViewController("/").setViewName("home");
     }
 
-    //@RequestMapping(value={"", "/"})
-    //public String index() { return "templates/home.html"; }
-/*
-    @RequestMapping(value={"/about"})
-
-    public String about() {
-        return "templates/about.html";
-    }
-
-    @RequestMapping(value = {"/download"})
-    public String download() { return "templates/download.html"; }
-
-    @GetMapping("/")
-    public String test(Model model) { return "test"; }
-*/
     /**
      * Handler for taking out and returning device scans.
      * @param scan A JSON containing device and user strings.
