@@ -6,6 +6,13 @@ import java.util.Map;
 
 public interface FromFrontEnd {
 
+    /* Functions we need for the front-end
+
+    
+
+    */
+
+
     Map<Device,User> getDevicesOut();
 
     void setUserMaxDevices(User user, int max);
