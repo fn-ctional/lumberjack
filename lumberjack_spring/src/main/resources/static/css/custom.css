@@ -8,7 +8,6 @@ html {
 }
 
 body {
-    padding-top: 60px;
     margin-bottom: 60px;
 }
 
@@ -30,6 +29,10 @@ h1 {
 
 body > .container {
     padding: 90px 15px 0;
+}
+
+body > .container-fluid {
+    padding-top: 60px;
 }
 
 .footer > .container {
@@ -99,30 +102,4 @@ SPECIFIC ELEMENTS
 #youtube {
     background-color: #d8d8d8;
     padding: 2em 24%;
-}
-
-
-
-/*------------------------------------------------------------------*/
-
-
-
-/*
- * Sidebar
- */
-
-
-
-/*
- * Dashboard
- */
-
-/* Placeholders */
-.placeholders {
-    padding-bottom: 3rem;
-}
-
-.placeholder img {
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
 }

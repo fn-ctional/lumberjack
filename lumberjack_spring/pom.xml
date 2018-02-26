@@ -84,11 +84,8 @@
 			<systemPath>${project.basedir}/src/main/resources/com.mysql.jdbc.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>com.mysql.jdbc.jar</artifactId>
-			<version>1.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/resources/com.mysql.jdbc.jar</systemPath>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
 		</dependency>
 	</dependencies>
 

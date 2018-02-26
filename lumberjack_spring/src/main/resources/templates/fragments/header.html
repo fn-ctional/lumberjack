@@ -58,8 +58,12 @@
                 </a>
             </li>
         </ul>
+
         <ul class="nav my-2 my-md-0">
-            <li class="nav-item">
+            <li sec:authorize="isAuthenticated()" class="nav-item">
+                <a class="btn btn-primary" href="/logout" role="button">Logout</a>
+            </li>
+            <li sec:authorize="isAnonymous()" class="nav-item">
                 <a class="btn btn-primary" href="/login" role="button">Login</a>
             </li>
         </ul>
