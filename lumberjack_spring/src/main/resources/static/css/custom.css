@@ -1,10 +1,21 @@
+/*
+GENERAL STYLING & POSITIONING
+*/
+
 html {
     position: relative;
     min-height: 100%;
 }
 
 body {
+    padding-top: 60px;
     margin-bottom: 60px;
+}
+
+h1 {
+    margin-bottom: 20px;
+    padding-bottom: 9px;
+    border-bottom: 1px solid #eee;
 }
 
 .footer {
@@ -14,6 +25,7 @@ body {
     height: 60px;
     line-height: 60px;
     background-color: #f5f5f5;
+    z-index: 2000;
 }
 
 body > .container {
@@ -24,6 +36,42 @@ body > .container {
     padding-right: 15px;
     padding-left: 15px;
 }
+
+/*
+SIDEBAR
+*/
+
+.sidebar {
+    position: fixed;
+    top: 60px;
+    bottom: 0;
+    left: 0;
+    padding: 20px 0;
+    z-index: 1000;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-right: 1px solid #eee;
+}
+
+.sidebar .nav {
+    margin-bottom: 20px;
+}
+
+.sidebar .nav-item {
+    width: 100%;
+}
+
+.sidebar .nav-item + .nav-item {
+    margin-left: 0;
+}
+
+.sidebar .nav-link {
+    border-radius: 0;
+}
+
+/*
+HOVER STYLING
+*/
 
 .hover-fade {
     transition: opacity .2s ease-out;
@@ -37,6 +85,10 @@ body > .container {
     opacity: 0.6;
 }
 
+/*
+SPECIFIC ELEMENTS
+*/
+
 #video {
     -moz-box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 10px;
     -webkit-box-shadow: rgba(0, 0, 0, 0.4) 3px 3px 10px;
@@ -47,4 +99,30 @@ body > .container {
 #youtube {
     background-color: #d8d8d8;
     padding: 2em 24%;
+}
+
+
+
+/*------------------------------------------------------------------*/
+
+
+
+/*
+ * Sidebar
+ */
+
+
+
+/*
+ * Dashboard
+ */
+
+/* Placeholders */
+.placeholders {
+    padding-bottom: 3rem;
+}
+
+.placeholder img {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
 }

@@ -23,6 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .formLogin()
                     .loginPage("/login")
+                    .defaultSuccessUrl("/dashboard")
                     .permitAll()
                 .and()
                     .authorizeRequests()
@@ -30,7 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated()
                 .and()
                     .logout()
-                    .logoutSuccessUrl("/login")
+                    .logoutSuccessUrl("/")
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .and()
                     .csrf().disable();//this should be fixed and enabled for release

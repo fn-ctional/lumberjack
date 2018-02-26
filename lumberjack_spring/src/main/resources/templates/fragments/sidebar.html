@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+
+</head>
+
+<body>
+
+<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar" th:fragment="sidebar">
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard' ? 'active':''}" href="/dashboard">
+                <strong>Dashboard</strong>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+</body>
+
+</html>
