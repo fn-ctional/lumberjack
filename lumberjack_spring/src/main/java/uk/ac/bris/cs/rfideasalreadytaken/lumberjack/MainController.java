@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.ui.Model;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Controller
 public class MainController extends WebMvcConfigurerAdapter {
@@ -20,7 +22,6 @@ public class MainController extends WebMvcConfigurerAdapter {
         registry.addViewController("/about");
         registry.addViewController("/download");
         registry.addViewController("/login");
-        registry.addViewController("/dashboard");
     }
 
     /**
@@ -75,5 +76,13 @@ public class MainController extends WebMvcConfigurerAdapter {
     public DeviceState checkIfDeviceOut(@PathVariable String id) {
 
         return null;
+    }
+
+    @RequestMapping("/dashboard")
+    public String dashboard(Model model){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        model.addAttribute("name", name);
+        return "dashboard";
     }
 }

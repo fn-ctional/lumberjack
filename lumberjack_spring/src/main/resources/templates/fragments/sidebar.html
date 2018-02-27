@@ -15,6 +15,9 @@
             <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard' ? 'active':''}" href="/dashboard">
                 <strong>Dashboard</strong>
             </a>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/help' ? 'active':''}" href="/help">
+                Help
+            </a>
         </li>
     </ul>
 </nav>

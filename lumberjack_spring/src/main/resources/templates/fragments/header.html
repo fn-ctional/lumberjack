@@ -50,6 +50,9 @@
             <li class="nav-item" th:classappend="${#httpServletRequest.getRequestURI() == '/download' ? 'active':''}">
                 <a class="nav-link" href="/download">Download</a>
             </li>
+            <li class="nav-item" sec:authorize="isAuthenticated()" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard' ? 'active':''}">
+                <a class="nav-link" href="/dashboard"><strong>Dashboard</strong></a>
+            </li>
         </ul>
         <ul class="navbar-nav">
             <li class="nav-item">

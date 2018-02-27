@@ -10,6 +10,8 @@ public interface FromFrontEnd {
 
     ----------    Things we need for the front-end    ----------
 
+    - get stats about users, devices etc like how many users are there, how many devices, how many devices taken out etc
+
     - get single user details (including groups they are in)
     - get multiple user details (e.g. in a list or something)
     - get multiple user details filtered by group
