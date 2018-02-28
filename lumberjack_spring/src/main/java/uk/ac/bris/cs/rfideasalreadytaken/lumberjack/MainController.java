@@ -83,7 +83,7 @@ public class MainController extends WebMvcConfigurerAdapter {
         }
     }
 
-    @RequestMapping(value = "/user/registration", method = RequestMethod.GET)
+    @GetMapping(value = "/user/registration")
     public String showRegistrationForm(WebRequest request, Model model) {
         AdminUserDTO userDto = new AdminUserDTO();
         model.addAttribute("user", userDto);
@@ -116,9 +116,10 @@ public class MainController extends WebMvcConfigurerAdapter {
         }
     }
 
-    @RequestMapping("/dashboard")
+    @GetMapping("/dashboard")
     public String dashboard(Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        //TODO: Make this use name instead of email
         String name = auth.getName();
         model.addAttribute("name", name);
         return "dashboard";
