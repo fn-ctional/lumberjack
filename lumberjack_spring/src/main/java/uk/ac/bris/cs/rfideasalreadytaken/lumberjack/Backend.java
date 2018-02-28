@@ -23,7 +23,8 @@ public class Backend implements FromCardReader{
     private Connection conn = null;
     private Statement stmt = null;
 
-    public ScanReturn scanRecieved(Scan scan) throws Exception{
+    //TODO add time limit before curretn user resets
+    public ScanReturn scanReceived(Scan scan) throws Exception{
 
         if(connectToDatabase()) {
 
