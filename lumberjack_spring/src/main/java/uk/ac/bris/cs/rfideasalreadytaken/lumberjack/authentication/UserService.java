@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 @Service
 public class UserService implements IUserService {
@@ -15,22 +17,22 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public AdminUser registerNewUserAccount(AdminUserDTO accountDTO) throws EmailExistsException {
+    public AdminUser registerNewUserAccount(AdminUserDTO accountDTO) throws EmailExistsException, EmailNotPermittedException {
 
-        if (emailExist(accountDTO.getEmail())) {
-            throw new EmailExistsException("There is already an account with that email address:"  + accountDTO.getEmail());
+        if (authenticationDatabaseManager.userExists(accountDTO.getEmail())) {
+            throw new EmailExistsException("There is already an account with that email address: "  + accountDTO.getEmail());
+        }
+
+        if (!authenticationDatabaseManager.emailPermitted(accountDTO.getEmail())) {
+            throw new EmailNotPermittedException("The following email is not on the list of permitted emails: "  + accountDTO.getEmail());
         }
 
         AdminUser user = new AdminUser();
         user.setName(accountDTO.getName());
         user.setPassword(accountDTO.getPassword());
         user.setEmail(accountDTO.getEmail());
-        user.setRoles(Arrays.asList("ADMIN"));
+        user.setRoles(Collections.singletonList("ADMIN"));
         authenticationDatabaseManager.addAdminUser(user);
         return user;
-    }
-
-    private boolean emailExist(String email) {
-        return (authenticationDatabaseManager.userExists(email));
     }
 }

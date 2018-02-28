@@ -15,9 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.AdminUserDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.EmailExistsException;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.EmailNotPermittedException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.UserService;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.DeviceState;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 
 import javax.validation.Valid;
@@ -83,14 +83,6 @@ public class MainController extends WebMvcConfigurerAdapter {
         }
     }
 
-
-    @GetMapping(value = "/devices/{id}", produces = "application/json")
-    @ResponseBody
-    public DeviceState checkIfDeviceOut(@PathVariable String id) {
-
-        return null;
-    }
-
     @RequestMapping(value = "/user/registration", method = RequestMethod.GET)
     public String showRegistrationForm(WebRequest request, Model model) {
         AdminUserDTO userDto = new AdminUserDTO();
@@ -98,16 +90,23 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "registration";
     }
 
+    @Autowired
+    private UserService userService;
+
     public ModelAndView registerUserAccount(
             @ModelAttribute("user") @Valid AdminUserDTO accountDTO,
             BindingResult result, WebRequest request, Errors errors) {
 
         AdminUser registered = new AdminUser();
         if (!result.hasErrors()) {
-            registered = createUserAccount(accountDTO, result);
-        }
-        if (registered == null) {
-            result.rejectValue("email", "message.regError");
+            try {
+                userService.registerNewUserAccount(accountDTO);
+            } catch (EmailExistsException e) {
+                result.rejectValue("email", "message.regError");
+            } catch (EmailNotPermittedException e) {
+                //TODO: This should say something different but I can't work out where it is
+                result.rejectValue("email", "message.regError");
+            }
         }
         if (result.hasErrors()) {
             return new ModelAndView("registration", "user", accountDTO);
@@ -115,19 +114,6 @@ public class MainController extends WebMvcConfigurerAdapter {
         else {
             return new ModelAndView("successRegister", "user", accountDTO);
         }
-    }
-
-    @Autowired
-    private UserService userService;
-
-    private AdminUser createUserAccount(AdminUserDTO accountDTO, BindingResult result) {
-        AdminUser registered = null;
-        try {
-            registered = userService.registerNewUserAccount(accountDTO);
-        } catch (EmailExistsException e) {
-            return null;
-        }
-        return registered;
     }
 
     @RequestMapping("/dashboard")

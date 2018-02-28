@@ -44,7 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
+        auth.userDetailsService(userDetailsService)
+                //TODO: remove this testing user when user authentication works
+                .and().inMemoryAuthentication().withUser("test@lumberjack").password("password1").roles("ADMINISTRATOR");
     }
 
 }

@@ -47,13 +47,24 @@ public class AuthenticationDatabaseManager {
        //TODO: implement please
     }
 
-
     public AdminUser findByEmail(String email) {
         //TODO: implement please
         return null;
     }
 
     public boolean userExists(String email) {
+        //TODO: implement please
+        return true;
+    }
+
+    /**
+     * Whether the email being used to register as an admin is on the permitted list of emails.
+     * An empty list returns true and the email is used as the first entry.
+     * @param email Email being used to register.
+     * @return Whether the email is on the list.
+     *  If the list is empty, the email being checked is added, and it returns true.
+     */
+    public boolean emailPermitted(String email) {
         //TODO: implement please
         return true;
     }
