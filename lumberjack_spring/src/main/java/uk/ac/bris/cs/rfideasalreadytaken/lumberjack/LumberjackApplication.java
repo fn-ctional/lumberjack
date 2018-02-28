@@ -5,8 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 
 @SpringBootApplication
 public class LumberjackApplication {
