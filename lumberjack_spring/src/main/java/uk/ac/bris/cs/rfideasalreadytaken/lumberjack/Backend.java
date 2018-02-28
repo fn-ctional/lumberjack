@@ -312,13 +312,29 @@ public class Backend implements FromCardReader{
         }
     }
 
+    private boolean insertIntoRules(Rule rule) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Rules (id)" +
+                "VALUES (?)");
+        stmt.setString(1, rule.getId());
+        stmt.execute();
+        return true;
+    }
+
+    private boolean deleteFromRules(String ruleID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Rules WHERE id = ?");
+        stmt.setString(1, ruleID);
+        stmt.execute();
+        return true;
+    }
+
     private boolean insertIntoDevices(Device device) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Devices (id, ScanValue, Type, Available, CurrentlyAssigned) VALUES (?,?,?,?,?)");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Devices (id, ScanValue, Type, Available, CurrentlyAssigned, RuleID) VALUES (?,?,?,?,?,?)");
         stmt.setString(1, device.getId());
         stmt.setString(2, device.getScanValue());
         stmt.setString(3, device.getType());
         stmt.setBoolean(4, device.isAvailable());
         stmt.setBoolean(5, device.isCurrentlyAssigned());
+        stmt.setString(6, device.getRuleID());
         stmt.execute();
         return true;
     }
@@ -432,9 +448,14 @@ public class Backend implements FromCardReader{
         stmt.execute("DROP TABLE IF EXISTS Assignments");
         stmt.execute("DROP TABLE IF EXISTS Users");
         stmt.execute("DROP TABLE IF EXISTS Devices");
+        stmt.execute("DROP TABLE IF EXISTS Rules");
+
+        stmt.execute("CREATE TABLE IF NOT EXISTS Rules (" +
+                "\nid varchar(100)," +
+                "\nPRIMARY KEY (id));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Users (" +
-                "\nid varchar(100) NOT NULL," +
+                "\nid varchar(100)," +
                 "\nScanValue varchar(100) NOT NULL UNIQUE," +
                 "\nDeviceLimit int," +
                 "\nDevicesRemoved int," +
@@ -442,15 +463,17 @@ public class Backend implements FromCardReader{
                 "\nPRIMARY KEY (id));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Devices (" +
-                "\nid varchar(100) NOT NULL," +
+                "\nid varchar(100)," +
                 "\nScanValue varchar(100) NOT NULL UNIQUE," +
                 "\nType varchar(100)," +
                 "\nAvailable bit," +
                 "\nCurrentlyAssigned bit," +
+                "\nRuleID varchar(100)," +
+                "\nCONSTRAINT FOREIGN KEY (RuleID) REFERENCES Rules(id)," +
                 "\nPRIMARY KEY (id));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Assignments (" +
-                "\nid int NOT NULL AUTO_INCREMENT,\n" +
+                "\nid int AUTO_INCREMENT,\n" +
                 "\nDeviceID varchar(100) NOT NULL," +
                 "\nUserID varchar(100) NOT NULL," +
                 "\nDateAssigned DATE," +
@@ -460,7 +483,7 @@ public class Backend implements FromCardReader{
                 "\nCONSTRAINT FOREIGN KEY (UserID) REFERENCES Users(id));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS AssignmentHistory (" +
-                "\nid int NOT NULL AUTO_INCREMENT,\n" +
+                "\nid int AUTO_INCREMENT,\n" +
                 "\nDeviceID varchar(100) NOT NULL," +
                 "\nUserID varchar(100) NOT NULL," +
                 "\nDateAssigned DATE," +
@@ -481,6 +504,11 @@ public class Backend implements FromCardReader{
 
         resetDatabase();
 
+        Rule rule = new Rule("ruleSet1");
+        insertIntoRules(rule);
+        rule = new Rule("ruleSet2");
+        insertIntoRules(rule);
+
         User user = new User("Aidan9876", "1314831486", 2, 0, true);
         insertIntoUsers(user);
         user = new User("Betty1248", "457436545", 1, 1, true);
@@ -490,13 +518,13 @@ public class Backend implements FromCardReader{
         user = new User("Dorathy0369", "94648329837", 1, 0, true);
         insertIntoUsers(user);
 
-        Device device = new Device("laptop01", "36109839730967812", "laptop", true, false);
+        Device device = new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1");
         insertIntoDevices(device);
-        device = new Device("laptop02", "23482364326842334", "laptop", true, true);
+        device = new Device("laptop02", "23482364326842334", "laptop", true, true, "ruleSet2");
         insertIntoDevices(device);
-        device = new Device("laptop03", "93482364723648725", "laptop", false, false);
+        device = new Device("laptop03", "93482364723648725", "laptop", false, false, "ruleSet1");
         insertIntoDevices(device);
-        device = new Device("camera01", "03457237295732925", "camera", true, false);
+        device = new Device("camera01", "03457237295732925", "camera", true, false, "ruleSet2");
         insertIntoDevices(device);
 
         java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
