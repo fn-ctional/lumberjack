@@ -18,9 +18,6 @@ import java.sql.PreparedStatement;
 //delete tables
 //rename old tables
 
-
-
-
 @Service
 public class Backend implements FromCardReader{
 
