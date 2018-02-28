@@ -17,19 +17,11 @@ public class LumberjackApplication implements CommandLineRunner{
 
 	public static void main(String[] args) {
 		SpringApplication.run(LumberjackApplication.class, args);
-		return;
 	}
 
 	@Override
 	public void run(String... strings) throws Exception {
-		/*Properties p = System.getProperties();
-		Enumeration keys = p.keys();
-		while (keys.hasMoreElements()) {
-			String key = (String)keys.nextElement();
-			String value = (String)p.get(key);
-			System.out.println(key + ": " + value);
-		}*/
-	/*
+
 		Backend backend = new Backend();
 		backend.resetDatabase();
 		backend.insertTestCases();
@@ -58,7 +50,6 @@ public class LumberjackApplication implements CommandLineRunner{
 
 		log.info("Scan Device not taken out:");
 		log.info(backend.scanReceived(scan) + "\n");
-*/
-		return;
+		log.info(backend.scanReceived(scan) + "\n");
 	}
 }

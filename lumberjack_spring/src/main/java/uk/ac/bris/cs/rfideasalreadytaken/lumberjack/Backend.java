@@ -3,10 +3,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
+import java.sql.*;
 
 //Unite testing Database
 
@@ -18,9 +15,6 @@ import java.sql.PreparedStatement;
 //delete tables
 //rename old tables
 
-
-
-
 @Service
 public class Backend implements FromCardReader{
 
@@ -30,28 +24,12 @@ public class Backend implements FromCardReader{
     private Connection conn = null;
     private Statement stmt = null;
 
-    public final String successReturn = "Device returned successfully";
-    public final String successRemoval = "Device taken out successfully";
-    public final String successReturnAndRemoval = "Device was not returned correctly, so has been taken out under new user";
-    public final String successUserLoaded = "User loaded sucessfully";
-    public final String failScanNotRecognised = "Scan not recognised";
-    public final String failNoLoadedUser = "No user has been loaded";
-    public final String failUserAtDeviceLimit = "User is at their limit of removable devices";
-    public final String failUserNotPermittedToRemove = "User is not permitted to remove devices";
-    public final String failDeviceIsNotAvailable = "Device cannot be taken out";
-    public final String errorConnectionFailed = "Error connecting to Database";
-    public final String errorUserNotLoaded = "Error loading user";
-    public final String errorDeviceNotLoaded = "Error loading device";
-    public final String errorDeviceHandlingFailed = "Error handling device return or takeout";
-    public final String errorReturnFailed = "Error returning device";
-    public final String errorRemovalFailed = "Error taking out device";
-
     //TODO add time limit before curretn user resets
-    public String scanReceived(Scan scan) throws Exception{
+    public ScanReturn scanReceived(Scan scan) throws Exception{
 
         if(connectToDatabase()) {
 
-            String result;
+            ScanReturn result;
 
             if (isValidUser(scan)) {
                 result = userScanned(scan);
@@ -60,17 +38,17 @@ public class Backend implements FromCardReader{
             else if (isValidDevice(scan)) {
                 result = deviceScanned(scan);
 
-                if(result == successReturn || result == successRemoval || result == successReturnAndRemoval){
+                if(result == ScanReturn.SUCCESSRETURN || result == ScanReturn.SUCCESSREMOVAL || result == ScanReturn.SUCCESSRETURNANDREMOVAL){
                     userLoaded = false;
                 }
 
                 return result;
             }
 
-            return failScanNotRecognised;
+            return ScanReturn.FAILDEVICENOTRECOGNISED;
         }
         else{
-            return errorConnectionFailed;
+            return ScanReturn.ERRORCONNECTIONFAILED;
         }
     }
 
@@ -101,20 +79,20 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    private String userScanned(Scan scan) throws Exception{
+    private ScanReturn userScanned(Scan scan) throws Exception{
 
         try {
             User loadedUser = loadUser(scan);
             currentUser = loadedUser;
             userLoaded = true;
-            return successUserLoaded;
+            return ScanReturn.SUCCESSUSERLOADED;
         }
         catch(Exception e){
-            return errorUserNotLoaded;
+            return ScanReturn.ERRORUSERNOTLOADED;
         }
     }
 
-    private String deviceScanned(Scan scan) throws Exception{
+    private ScanReturn deviceScanned(Scan scan) throws Exception{
 
         Device loadedDevice;
 
@@ -122,14 +100,14 @@ public class Backend implements FromCardReader{
             loadedDevice = loadDevice(scan);
         }
         catch(Exception e){
-            return errorDeviceNotLoaded;
+            return ScanReturn.ERRORDEVICENOTLOADED;
         }
 
         try {
             if (canDeviceBeRemoved(loadedDevice)) {
 
                 if (!userLoaded) {
-                    return failNoLoadedUser;
+                    return ScanReturn.FAILUSERNOTRECOGNISED;
                 }
 
                 if (isDeviceCurrentlyOut(loadedDevice)) {
@@ -139,21 +117,21 @@ public class Backend implements FromCardReader{
                 else {
 
                     if (isUserAtDeviceLimit(currentUser)) {
-                        return failUserAtDeviceLimit;
+                        return ScanReturn.FAILUSERATDEVICELIMIT;
                     }
                     else if (!canUserRemoveDevices(currentUser)) {
-                        return failUserNotPermittedToRemove;
+                        return ScanReturn.FAILUSERNORPERMITTEDTOREMOVE;
                     }
 
                     return takeOutDevice(loadedDevice, currentUser);
                 }
             }
             else {
-                return failDeviceIsNotAvailable;
+                return ScanReturn.FAILDEVICEUNAVIALABLE;
             }
         }
         catch(Exception e){
-            return errorDeviceHandlingFailed;
+            return ScanReturn.ERRORDEVICEHANDLINGFAILED;
         }
     }
 
@@ -276,7 +254,7 @@ public class Backend implements FromCardReader{
         return false;
     }
 
-    private String returnDevice(Device device, User returningUser) throws Exception{
+    private ScanReturn returnDevice(Device device, User returningUser) throws Exception{
 
         try{
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ?");
@@ -301,18 +279,18 @@ public class Backend implements FromCardReader{
             if(!returningUser.getId().equals(assignment.getUserID())){
 
                 takeOutDevice(device, returningUser);
-                return "[" + returningUser.getId() + assignment.getUserID() + "]";
+                return ScanReturn.SUCCESSRETURNANDREMOVAL;
             }
 
-            return successReturn;
+            return ScanReturn.SUCCESSRETURN;
         }
         catch(Exception e) {
-            return errorReturnFailed;
+            return ScanReturn.ERRORRETURNFAILED;
         }
     }
 
     //TODO get current date and time and calculate time removed for
-    public String takeOutDevice(Device device, User user) throws Exception{
+    public ScanReturn takeOutDevice(Device device, User user) throws Exception{
         try {
             PreparedStatement stmt = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = true WHERE id = ?");
             stmt.setString(1, device.getId());
@@ -324,14 +302,14 @@ public class Backend implements FromCardReader{
             stmt3.setString(2, user.getId());
             stmt3.execute();
 
-            java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
-            java.sql.Time time = java.sql.Time.valueOf("14:45:20");
+            Date date = Date.valueOf("2018-02-10");
+            Time time = Time.valueOf("14:45:20");
             Assignment assignment = new Assignment(device.getId(), user.getId(), date, time);
             insertIntoAssignments(assignment);
-            return successRemoval;
+            return ScanReturn.SUCCESSREMOVAL;
         }
         catch(Exception e) {
-            return errorRemovalFailed;
+            return ScanReturn.ERRORREMOVALFAILED;
         }
     }
 
