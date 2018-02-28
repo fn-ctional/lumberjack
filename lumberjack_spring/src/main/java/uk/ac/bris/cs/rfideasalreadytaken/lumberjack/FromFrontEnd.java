@@ -1,7 +1,8 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
-import java.util.Date;
-import java.util.List;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
+
 import java.util.Map;
 
 public interface FromFrontEnd {

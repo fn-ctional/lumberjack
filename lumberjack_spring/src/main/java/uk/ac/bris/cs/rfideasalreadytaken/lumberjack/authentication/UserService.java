@@ -3,13 +3,15 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
 
 import java.util.Arrays;
 
 @Service
 public class UserService implements IUserService {
-    //Put autowire object database here
+
+    @Autowired
+    private AuthenticationDatabaseManager authenticationDatabaseManager;
 
     @Transactional
     @Override
@@ -24,11 +26,11 @@ public class UserService implements IUserService {
         user.setPassword(accountDTO.getPassword());
         user.setEmail(accountDTO.getEmail());
         user.setRoles(Arrays.asList("ADMIN"));
-        //Save user in database
+        authenticationDatabaseManager.addAdminUser(user);
         return user;
     }
+
     private boolean emailExist(String email) {
-        //TODO: implement this
-        return false;
+        return (authenticationDatabaseManager.userExists(email));
     }
 }

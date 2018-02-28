@@ -1,4 +1,4 @@
-package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
+package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data;
 
 import org.springframework.context.annotation.Role;
 
@@ -13,6 +13,9 @@ public class AdminUser {
 
     private String password;
 
+    /**
+     * Whether the account has been activated via email.
+     */
     private boolean enabled;
 
     private Collection<String> roles;

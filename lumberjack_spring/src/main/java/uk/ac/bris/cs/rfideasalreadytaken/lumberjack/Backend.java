@@ -2,6 +2,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import org.springframework.stereotype.Service;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.*;
 
 import java.sql.*;
 
@@ -24,20 +25,20 @@ public class Backend implements FromCardReader{
     private Statement stmt = null;
 
     //TODO add time limit before curretn user resets
-    public ScanReturn scanReceived(Scan scan) throws Exception{
+    public ScanReturn scanReceived(ScanDTO scanDTO) throws Exception{
 
         if(connectToDatabase()) {
 
             ScanReturn result;
 
-            if (isValidUser(scan)) {
+            if (isValidUser(scanDTO)) {
 
-                result = userScanned(scan);
+                result = userScanned(scanDTO);
                 if(result == ScanReturn.SUCCESSUSERLOADED) {
 
-                    if (isValidDevice(scan)) {
+                    if (isValidDevice(scanDTO)) {
 
-                        result = deviceScanned(scan);
+                        result = deviceScanned(scanDTO);
                         return result;
                     }
                     else {
@@ -84,10 +85,10 @@ public class Backend implements FromCardReader{
         return true;
     }
 
-    private ScanReturn userScanned(Scan scan) throws Exception{
+    private ScanReturn userScanned(ScanDTO scanDTO) throws Exception{
 
         try {
-            User loadedUser = loadUser(scan);
+            User loadedUser = loadUser(scanDTO);
             currentUser = loadedUser;
             return ScanReturn.SUCCESSUSERLOADED;
         }
@@ -96,12 +97,12 @@ public class Backend implements FromCardReader{
         }
     }
 
-    private ScanReturn deviceScanned(Scan scan) throws Exception{
+    private ScanReturn deviceScanned(ScanDTO scanDTO) throws Exception{
 
         Device loadedDevice;
 
         try {
-            loadedDevice = loadDevice(scan);
+            loadedDevice = loadDevice(scanDTO);
         }
         catch(Exception e){
             return ScanReturn.ERRORDEVICENOTLOADED;
@@ -192,35 +193,35 @@ public class Backend implements FromCardReader{
         return null;
     }
 
-    //TODO switch scan value to be correct thing
-    private boolean isValidUser(Scan scan) throws Exception{
+    //TODO switch scanDTO value to be correct thing
+    private boolean isValidUser(ScanDTO scanDTO) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT id FROM Users WHERE ScanValue = ?");
-        stmt.setString(1, scan.getUser());
+        stmt.setString(1, scanDTO.getUser());
         ResultSet rs = stmt.executeQuery();
         return rs.next();
     }
 
-    //TODO switch scan value to be correct thing
-    private boolean isValidDevice(Scan scan) throws Exception{
+    //TODO switch scanDTO value to be correct thing
+    private boolean isValidDevice(ScanDTO scanDTO) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT id FROM Devices WHERE ScanValue = ?");
-        stmt.setString(1, scan.getDevice());
+        stmt.setString(1, scanDTO.getDevice());
         ResultSet rs = stmt.executeQuery();
         return rs.next();
     }
 
-    //TODO switch scan value to be correct thing
-    private User loadUser(Scan scan) throws Exception{
+    //TODO switch scanDTO value to be correct thing
+    private User loadUser(ScanDTO scanDTO) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE ScanValue = ?");
-        stmt.setString(1, scan.getUser());
+        stmt.setString(1, scanDTO.getUser());
         ResultSet rs = stmt.executeQuery();
         User user = loadUserFromResultSet(rs);
         return user;
     }
 
-    //TODO switch scan value to be correct thing
-    private Device loadDevice(Scan scan) throws Exception{
+    //TODO switch scanDTO value to be correct thing
+    private Device loadDevice(ScanDTO scanDTO) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Devices WHERE ScanValue = ?");
-        stmt.setString(1, scan.getDevice());
+        stmt.setString(1, scanDTO.getDevice());
         ResultSet rs = stmt.executeQuery();
         Device device = loadDeviceFromResultSet(rs);
         return device;

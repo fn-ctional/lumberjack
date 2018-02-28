@@ -16,6 +16,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.AdminUserDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.EmailExistsException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.UserService;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.DeviceState;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 
 import javax.validation.Valid;
 
@@ -35,37 +38,37 @@ public class MainController extends WebMvcConfigurerAdapter {
 
     /**
      * Handler for taking out and returning device scans.
-     * @param scan A JSON containing device and user strings.
+     * @param scanDTO A JSON containing device and user strings.
          * @return An HTTP status code and body description of error or action performed.
      */
     @PatchMapping(value = "/devices", consumes = "application/json", produces = "text/plain")
     @ResponseBody
-    public ResponseEntity changeDeviceState(@RequestBody Scan scan) {
+    public ResponseEntity changeDeviceState(@RequestBody ScanDTO scanDTO) {
         try {
-            ScanReturn result = backend.scanReceived(scan);
+            ScanReturn result = backend.scanReceived(scanDTO);
             switch (result) {
                 case SUCCESSRETURN:
-                    return ResponseEntity.status(200).body("Device " + scan.getDevice() + " successfully returned by " + scan.getUser() + ".");
+                    return ResponseEntity.status(200).body("Device " + scanDTO.getDevice() + " successfully returned by " + scanDTO.getUser() + ".");
                 case SUCCESSREMOVAL:
-                    return ResponseEntity.status(200).body("Device " + scan.getDevice() + " successfully taken out by " + scan.getUser() + ".");
+                    return ResponseEntity.status(200).body("Device " + scanDTO.getDevice() + " successfully taken out by " + scanDTO.getUser() + ".");
                 case SUCCESSRETURNANDREMOVAL:
-                    return ResponseEntity.status(200).body("Device " + scan.getDevice() + " successfully returned and taken out by " + scan.getUser() + ".");
+                    return ResponseEntity.status(200).body("Device " + scanDTO.getDevice() + " successfully returned and taken out by " + scanDTO.getUser() + ".");
                 case FAILUSERNOTRECOGNISED:
                     return ResponseEntity.status(500).body("User not recognised");
                 case FAILDEVICENOTRECOGNISED:
                     return ResponseEntity.status(500).body("Device not recognised");
                 case FAILUSERATDEVICELIMIT:
-                    return ResponseEntity.status(403).body("User " + scan.getUser() + " is at their limit of removable devices.");
+                    return ResponseEntity.status(403).body("User " + scanDTO.getUser() + " is at their limit of removable devices.");
                 case FAILUSERNORPERMITTEDTOREMOVE:
-                    return ResponseEntity.status(403).body("User " + scan.getUser() + " is not permitted to remove");
+                    return ResponseEntity.status(403).body("User " + scanDTO.getUser() + " is not permitted to remove");
                 case FAILDEVICEUNAVIALABLE:
-                    return ResponseEntity.status(403).body("Device " + scan.getDevice() + " can not be taken out.");
+                    return ResponseEntity.status(403).body("Device " + scanDTO.getDevice() + " can not be taken out.");
                 case ERRORCONNECTIONFAILED:
                     return ResponseEntity.status(500).body("Error connecting to database.");
                 case ERRORUSERNOTLOADED:
-                    return ResponseEntity.status(403).body("User " + scan.getUser() + " not recognised.");
+                    return ResponseEntity.status(403).body("User " + scanDTO.getUser() + " not recognised.");
                 case ERRORDEVICENOTLOADED:
-                    return ResponseEntity.status(403).body("Device " + scan.getDevice() + " not recognised.");
+                    return ResponseEntity.status(403).body("Device " + scanDTO.getDevice() + " not recognised.");
                 case ERRORDEVICEHANDLINGFAILED:
                     return ResponseEntity.status(500).body("Error handling device return or takeout.");
                 case ERRORRETURNFAILED:
@@ -106,9 +109,6 @@ public class MainController extends WebMvcConfigurerAdapter {
         if (registered == null) {
             result.rejectValue("email", "message.regError");
         }
-        if (registered == null) {
-            result.rejectValue("email", "message.regError");
-        }
         if (result.hasErrors()) {
             return new ModelAndView("registration", "user", accountDTO);
         }
@@ -118,7 +118,7 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     private AdminUser createUserAccount(AdminUserDTO accountDTO, BindingResult result) {
         AdminUser registered = null;

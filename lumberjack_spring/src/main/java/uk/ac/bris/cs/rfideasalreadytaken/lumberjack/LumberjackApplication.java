@@ -6,9 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
-
-import java.util.Enumeration;
-import java.util.Properties;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 
 @SpringBootApplication
 public class LumberjackApplication implements CommandLineRunner{
@@ -26,32 +24,32 @@ public class LumberjackApplication implements CommandLineRunner{
 		backend.resetDatabase();
 		backend.insertTestCases();
 
-		Scan scan = new Scan();
-		scan.setUser("1314831486");
-		scan.setDevice("1314831486");
+		ScanDTO scanDTO = new ScanDTO();
+		scanDTO.setUser("1314831486");
+		scanDTO.setDevice("1314831486");
 
-		log.info("Scan User:");
-		log.info(backend.scanReceived(scan) + "\n");
+		log.info("ScanDTO User:");
+		log.info(backend.scanReceived(scanDTO) + "\n");
 
-		scan.setUser("36109839730967812");
-		scan.setDevice("36109839730967812");
+		scanDTO.setUser("36109839730967812");
+		scanDTO.setDevice("36109839730967812");
 
-		log.info("Scan User:");
-		log.info("Scan Device not taken out:");
-		log.info(backend.scanReceived(scan) + "\n");
+		log.info("ScanDTO User:");
+		log.info("ScanDTO Device not taken out:");
+		log.info(backend.scanReceived(scanDTO) + "\n");
 
-		scan.setUser("457436545");
-		scan.setDevice("457436545");
+		scanDTO.setUser("457436545");
+		scanDTO.setDevice("457436545");
 
-		log.info("Scan User:");
-		log.info(backend.scanReceived(scan) + "\n");
+		log.info("ScanDTO User:");
+		log.info(backend.scanReceived(scanDTO) + "\n");
 
-		scan.setUser("23482364326842334");
-		scan.setDevice("23482364326842334");
+		scanDTO.setUser("23482364326842334");
+		scanDTO.setDevice("23482364326842334");
 
-		log.info("Scan User:");
-		log.info("Scan Device not taken out:");
-		log.info(backend.scanReceived(scan) + "\n");
-		log.info(backend.scanReceived(scan) + "\n");
+		log.info("ScanDTO User:");
+		log.info("ScanDTO Device not taken out:");
+		log.info(backend.scanReceived(scanDTO) + "\n");
+		log.info(backend.scanReceived(scanDTO) + "\n");
 	}
 }

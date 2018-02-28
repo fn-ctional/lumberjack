@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,20 +18,23 @@ import java.util.List;
 @Transactional
 public class MyUserDetailsService implements UserDetailsService {
 
-    //Autowired database thing here
+    @Autowired
+    AuthenticationDatabaseManager authenticationDatabaseManager;
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-       // AdminUser user = userRepository.findByEmail(email);
-        AdminUser user = null; //remove this
+        AdminUser user = authenticationDatabaseManager.findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException(
                     "No user found with username: "+ email);
         }
-        boolean enabled = true;
-        boolean accountNonExpired = true;
-        boolean credentialsNonExpired = true;
-        boolean accountNonLocked = true;
+
+        boolean enabled = user.isEnabled();
+
+        final boolean accountNonExpired = true;
+        final boolean credentialsNonExpired = true;
+        final boolean accountNonLocked = true;
+
         return  new org.springframework.security.core.userdetails.User
                 (user.getEmail(),
                         user.getPassword().toLowerCase(), enabled, accountNonExpired,

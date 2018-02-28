@@ -1,4 +1,4 @@
-package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
+package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data;
 
 public class Device {
 
