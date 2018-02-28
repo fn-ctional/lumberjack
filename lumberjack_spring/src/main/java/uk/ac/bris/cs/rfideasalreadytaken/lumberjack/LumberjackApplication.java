@@ -36,6 +36,7 @@ public class LumberjackApplication implements CommandLineRunner{
 		scan.setUser("36109839730967812");
 		scan.setDevice("36109839730967812");
 
+		log.info("Scan User:");
 		log.info("Scan Device not taken out:");
 		log.info(backend.scanReceived(scan) + "\n");
 
@@ -48,6 +49,7 @@ public class LumberjackApplication implements CommandLineRunner{
 		scan.setUser("23482364326842334");
 		scan.setDevice("23482364326842334");
 
+		log.info("Scan User:");
 		log.info("Scan Device not taken out:");
 		log.info(backend.scanReceived(scan) + "\n");
 		log.info(backend.scanReceived(scan) + "\n");

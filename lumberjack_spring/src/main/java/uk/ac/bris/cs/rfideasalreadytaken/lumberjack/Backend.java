@@ -18,7 +18,6 @@ import java.sql.*;
 @Service
 public class Backend implements FromCardReader{
 
-    private boolean userLoaded = false;
     private User currentUser = new User("","",0,0,false);
     private boolean connected = false;
     private Connection conn = null;
@@ -32,20 +31,26 @@ public class Backend implements FromCardReader{
             ScanReturn result;
 
             if (isValidUser(scan)) {
+
                 result = userScanned(scan);
-                return result;
-            }
-            else if (isValidDevice(scan)) {
-                result = deviceScanned(scan);
+                if(result == ScanReturn.SUCCESSUSERLOADED) {
 
-                if(result == ScanReturn.SUCCESSRETURN || result == ScanReturn.SUCCESSREMOVAL || result == ScanReturn.SUCCESSRETURNANDREMOVAL){
-                    userLoaded = false;
+                    if (isValidDevice(scan)) {
+
+                        result = deviceScanned(scan);
+                        return result;
+                    }
+                    else {
+                        return ScanReturn.FAILDEVICENOTRECOGNISED;
+                    }
                 }
-
-                return result;
+                else {
+                    return result;
+                }
             }
-
-            return ScanReturn.FAILDEVICENOTRECOGNISED;
+            else {
+                return ScanReturn.FAILUSERNOTRECOGNISED;
+            }
         }
         else{
             return ScanReturn.ERRORCONNECTIONFAILED;
@@ -84,7 +89,6 @@ public class Backend implements FromCardReader{
         try {
             User loadedUser = loadUser(scan);
             currentUser = loadedUser;
-            userLoaded = true;
             return ScanReturn.SUCCESSUSERLOADED;
         }
         catch(Exception e){
@@ -105,10 +109,6 @@ public class Backend implements FromCardReader{
 
         try {
             if (canDeviceBeRemoved(loadedDevice)) {
-
-                if (!userLoaded) {
-                    return ScanReturn.FAILUSERNOTRECOGNISED;
-                }
 
                 if (isDeviceCurrentlyOut(loadedDevice)) {
 
@@ -203,7 +203,7 @@ public class Backend implements FromCardReader{
     //TODO switch scan value to be correct thing
     private boolean isValidDevice(Scan scan) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT id FROM Devices WHERE ScanValue = ?");
-        stmt.setString(1, scan.getUser());
+        stmt.setString(1, scan.getDevice());
         ResultSet rs = stmt.executeQuery();
         return rs.next();
     }
@@ -220,7 +220,7 @@ public class Backend implements FromCardReader{
     //TODO switch scan value to be correct thing
     private Device loadDevice(Scan scan) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Devices WHERE ScanValue = ?");
-        stmt.setString(1, scan.getUser());
+        stmt.setString(1, scan.getDevice());
         ResultSet rs = stmt.executeQuery();
         Device device = loadDeviceFromResultSet(rs);
         return device;
