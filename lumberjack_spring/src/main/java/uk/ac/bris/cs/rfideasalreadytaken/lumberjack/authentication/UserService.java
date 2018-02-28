@@ -1,6 +1,7 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
@@ -11,6 +12,9 @@ import java.util.Collections;
 
 @Service
 public class UserService implements IUserService {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private AuthenticationDatabaseManager authenticationDatabaseManager;
@@ -29,7 +33,7 @@ public class UserService implements IUserService {
 
         AdminUser user = new AdminUser();
         user.setName(accountDTO.getName());
-        user.setPassword(accountDTO.getPassword());
+        user.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
         user.setEmail(accountDTO.getEmail());
         user.setRoles(Collections.singletonList("ADMIN"));
         authenticationDatabaseManager.addAdminUser(user);

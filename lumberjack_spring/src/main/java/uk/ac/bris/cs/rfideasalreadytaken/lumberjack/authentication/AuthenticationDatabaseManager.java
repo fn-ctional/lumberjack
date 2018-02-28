@@ -43,6 +43,10 @@ public class AuthenticationDatabaseManager {
         }
     }
 
+    /**
+     * Adds a new AdminUser to the database. Passwords are already encoded before reaching function.
+     * @param adminUser
+     */
     public void addAdminUser(AdminUser adminUser) {
        //TODO: implement please
     }
