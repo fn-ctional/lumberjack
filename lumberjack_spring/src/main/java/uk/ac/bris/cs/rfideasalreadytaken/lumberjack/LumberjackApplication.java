@@ -30,6 +30,7 @@ public class LumberjackApplication implements CommandLineRunner{
 			System.out.println(key + ": " + value);
 		}*/
 
+		/*
 		Backend backend = new Backend();
 		backend.resetDatabase();
 		backend.insertTestCases();
@@ -58,7 +59,7 @@ public class LumberjackApplication implements CommandLineRunner{
 
 		log.info("Scan Device not taken out:");
 		log.info(backend.scanRecieved(scan) + "\n");
-
+		*/
 		return;
 	}
 }
