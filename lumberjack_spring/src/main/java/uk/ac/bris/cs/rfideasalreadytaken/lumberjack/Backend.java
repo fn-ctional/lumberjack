@@ -47,7 +47,7 @@ public class Backend implements FromCardReader{
     public final String errorRemovalFailed = "Error taking out device";
 
     //TODO add time limit before curretn user resets
-    public String scanRecieved(Scan scan) throws Exception{
+    public String scanReceived(Scan scan) throws Exception{
 
         if(connectToDatabase()) {
 

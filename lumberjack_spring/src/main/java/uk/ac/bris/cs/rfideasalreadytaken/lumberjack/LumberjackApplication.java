@@ -39,25 +39,25 @@ public class LumberjackApplication implements CommandLineRunner{
 		scan.setDevice("1314831486");
 
 		log.info("Scan User:");
-		log.info(backend.scanRecieved(scan) + "\n");
+		log.info(backend.scanReceived(scan) + "\n");
 
 		scan.setUser("36109839730967812");
 		scan.setDevice("36109839730967812");
 
 		log.info("Scan Device not taken out:");
-		log.info(backend.scanRecieved(scan) + "\n");
+		log.info(backend.scanReceived(scan) + "\n");
 
 		scan.setUser("457436545");
 		scan.setDevice("457436545");
 
 		log.info("Scan User:");
-		log.info(backend.scanRecieved(scan) + "\n");
+		log.info(backend.scanReceived(scan) + "\n");
 
 		scan.setUser("23482364326842334");
 		scan.setDevice("23482364326842334");
 
 		log.info("Scan Device not taken out:");
-		log.info(backend.scanRecieved(scan) + "\n");
+		log.info(backend.scanReceived(scan) + "\n");
 */
 		return;
 	}
