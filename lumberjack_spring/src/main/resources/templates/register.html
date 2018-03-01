@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include ="fragments/header :: head (title='lumberjack - Register')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container">
+
+    <h1>Register</h1>
+
+    <form name='register-form' action="/" method="POST" enctype="utf8">
+
+        <div class="form-group">
+            <label for="name">Username: </label>
+            <input class="form-control" id="name" name="name" placeholder="Enter username"/>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email: </label>
+            <input class="form-control" id="email" type="email" name="email" placeholder="Enter email"/>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password: </label>
+            <input class="form-control" id="password" type="password" name="password" placeholder="Password"/>
+        </div>
+
+        <div class="form-group">
+            <label for="matchingPassword">Confirm Password: </label>
+            <input class="form-control" id="matchingPassword" type="password" name="matchingPassword" placeholder="Password"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+
+    </form>
+
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
