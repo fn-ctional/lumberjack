@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include ="fragments/header :: head (title='lumberjack - Users')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+            <h1>Dashboard</h1>
+
+            <h2>Users</h2>
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Scan Value</th>
+                        <th>Devices Removed</th>
+                        <th>Device Limit</th>
+                        <th>Can Remove?</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="user : ${userList}">
+                        <tr>
+                            <td th:text="${user.getId()}">ID</td>
+                            <td th:text="${user.getScanValue()}">Scan Value</td>
+                            <td th:text="${user.getDevicesRemoved()}">Devices Removed</td>
+                            <td th:text="${user.getDeviceLimit()}">Device Limit</td>
+                            <td th:text="${user.canRemove() == true ? '✓' : '✗'}">Can Remove?</td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

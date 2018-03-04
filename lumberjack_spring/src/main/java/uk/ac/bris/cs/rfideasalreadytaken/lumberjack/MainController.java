@@ -19,8 +19,11 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.EmailNotPermi
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.UserService;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class MainController extends WebMvcConfigurerAdapter {
@@ -123,5 +126,17 @@ public class MainController extends WebMvcConfigurerAdapter {
         String name = auth.getName();
         model.addAttribute("name", name);
         return "dashboard";
+    }
+
+    @GetMapping("/users")
+    public String allUsers(Model model){
+        // Add dummy data
+        User test1 = new User("1", "812937528", 2, 0, true);
+        User test2 = new User("2", "127482930", 1, 1, false);
+        List<User> userList = new ArrayList<>();
+        userList.add(test1);
+        userList.add(test2);
+        model.addAttribute(userList);
+        return "users";
     }
 }
