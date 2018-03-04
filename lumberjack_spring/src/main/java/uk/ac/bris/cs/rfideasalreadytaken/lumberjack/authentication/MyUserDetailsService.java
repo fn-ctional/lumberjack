@@ -19,7 +19,7 @@ import java.util.List;
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
-    AuthenticationDatabaseManager authenticationDatabaseManager;
+    private AuthenticationDatabaseManager authenticationDatabaseManager;
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 

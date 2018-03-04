@@ -61,6 +61,18 @@ public class AuthenticationDatabaseManager {
         return true;
     }
 
+    public VerificationToken findByToken(String verificationToken) {
+        //TODO: implement please
+        return null;
+    }
+
+    public void save(VerificationToken verificationToken) {
+        //TODO: implement please
+    }
+
+    public void save(AdminUser user) {
+        //TODO: implement please
+    }
     /**
      * Whether the email being used to register as an admin is on the permitted list of emails.
      * An empty list returns true and the email is used as the first entry.

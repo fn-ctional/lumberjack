@@ -39,4 +39,26 @@ public class UserService implements IUserService {
         authenticationDatabaseManager.addAdminUser(user);
         return user;
     }
+
+    @Override
+    public AdminUser getUser(String verificationToken) {
+        AdminUser user = authenticationDatabaseManager.findByToken(verificationToken).getAdminUser();
+        return user;
+    }
+
+    @Override
+    public VerificationToken getVerificationToken(String VerificationToken) {
+        return authenticationDatabaseManager.findByToken(VerificationToken);
+    }
+
+    @Override
+    public void saveRegisteredUser(AdminUser user) {
+        authenticationDatabaseManager.save(user);
+    }
+
+    @Override
+    public void createVerificationToken(AdminUser user, String token) {
+        VerificationToken myToken = new VerificationToken(token, user);
+        authenticationDatabaseManager.save(myToken);
+    }
 }
