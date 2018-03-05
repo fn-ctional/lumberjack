@@ -2,7 +2,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 import org.springframework.stereotype.Service;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
 import java.sql.Connection;
 import java.sql.SQLException;

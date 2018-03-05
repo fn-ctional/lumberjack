@@ -1,6 +1,7 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
 public interface IUserService {
 

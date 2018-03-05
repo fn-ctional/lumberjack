@@ -4,10 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 
 @Service

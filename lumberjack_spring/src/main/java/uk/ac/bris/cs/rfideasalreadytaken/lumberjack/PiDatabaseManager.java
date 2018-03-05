@@ -17,7 +17,7 @@ import java.sql.*;
 //rename old tables
 
 @Service
-public class Backend implements FromCardReader{
+public class PiDatabaseManager extends GenericDatabaseManager implements FromCardReader{
 
     private User currentUser = new User("","",0,0,false);
     private boolean connected = false;

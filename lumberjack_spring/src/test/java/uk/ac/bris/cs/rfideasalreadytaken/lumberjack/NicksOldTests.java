@@ -12,44 +12,44 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class DatabaseTests {
+public class NicksOldTests {
 
     @Autowired
-    private Backend backend;
+    private PiDatabaseManager piDatabaseManager;
 
 	@Test
     public void nicksOldTests() throws Exception {
         final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
-		backend.resetDatabase();
-		backend.insertTestCases();
+		piDatabaseManager.resetDatabase();
+		piDatabaseManager.insertTestCases();
 
 		ScanDTO scanDTO = new ScanDTO();
 		scanDTO.setUser("1314831486");
 		scanDTO.setDevice("1314831486");
 
 		log.info("ScanDTO User:");
-		log.info(backend.scanReceived(scanDTO) + "\n");
+		log.info(piDatabaseManager.scanReceived(scanDTO) + "\n");
 
 		scanDTO.setUser("36109839730967812");
 		scanDTO.setDevice("36109839730967812");
 
 		log.info("ScanDTO User:");
 		log.info("ScanDTO Device not taken out:");
-		log.info(backend.scanReceived(scanDTO) + "\n");
+		log.info(piDatabaseManager.scanReceived(scanDTO) + "\n");
 
 		scanDTO.setUser("457436545");
 		scanDTO.setDevice("457436545");
 
 		log.info("ScanDTO User:");
-		log.info(backend.scanReceived(scanDTO) + "\n");
+		log.info(piDatabaseManager.scanReceived(scanDTO) + "\n");
 
 		scanDTO.setUser("23482364326842334");
 		scanDTO.setDevice("23482364326842334");
 
 		log.info("ScanDTO User:");
 		log.info("ScanDTO Device not taken out:");
-		log.info(backend.scanReceived(scanDTO) + "\n");
-		log.info(backend.scanReceived(scanDTO) + "\n");
+		log.info(piDatabaseManager.scanReceived(scanDTO) + "\n");
+		log.info(piDatabaseManager.scanReceived(scanDTO) + "\n");
 	}
 
 

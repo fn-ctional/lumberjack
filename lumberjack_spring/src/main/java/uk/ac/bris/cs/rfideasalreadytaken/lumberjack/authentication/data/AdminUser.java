@@ -1,4 +1,4 @@
-package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data;
+package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data;
 
 import org.springframework.context.annotation.Role;
 

@@ -10,7 +10,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -18,7 +17,8 @@ import org.springframework.ui.Model;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.*;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 
 import javax.validation.Valid;
@@ -29,7 +29,7 @@ import java.util.Locale;
 public class MainController extends WebMvcConfigurerAdapter {
 
     @Autowired
-    private Backend backend;
+    private PiDatabaseManager piDatabaseManager;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -48,7 +48,7 @@ public class MainController extends WebMvcConfigurerAdapter {
     @ResponseBody
     public ResponseEntity changeDeviceState(@RequestBody ScanDTO scanDTO) {
         try {
-            ScanReturn result = backend.scanReceived(scanDTO);
+            ScanReturn result = piDatabaseManager.scanReceived(scanDTO);
             switch (result) {
                 case SUCCESSRETURN:
                     return ResponseEntity.status(200).body("Device " + scanDTO.getDevice() + " successfully returned by " + scanDTO.getUser() + ".");

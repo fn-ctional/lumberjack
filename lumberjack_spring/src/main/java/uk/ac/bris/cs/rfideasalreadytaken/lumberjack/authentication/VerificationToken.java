@@ -1,6 +1,6 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
 import java.sql.Date;
 import java.sql.Timestamp;

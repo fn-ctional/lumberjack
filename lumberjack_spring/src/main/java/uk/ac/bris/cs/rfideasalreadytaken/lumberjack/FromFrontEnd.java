@@ -3,7 +3,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
 
-import java.util.Map;
+import java.util.List;
 
 public interface FromFrontEnd {
 
@@ -51,40 +51,78 @@ public interface FromFrontEnd {
 
     */
 
+    //------------------------------------------------------------------------------------------------------------------
 
-    Map<Device,User> getDevicesOut();
+    int getNumberOfUsers();
 
-    void setUserMaxDevices(User user, int max);
+    int getNumberOfDevices();
 
-    //void setDeadline(Device device, Date date);
+    int getNumberOfDevicesTakenOut();
 
-    void setDeviceType(Device device, String type);
+    //------------------------------------------------------------------------------------------------------------------
 
-    //void getStatus(Device device);
+    User getUser(String id) throws NotFoundException;
 
-    void insertUser(User user);
+    List<User> getAllUsers();
 
-    void insertDevice(Device device);
+    List<User> getUsers(List<String> ids) throws NotFoundException;
 
-    void deleteUser(User user);
+    //List<User> getUsers(String userGroup) throws NotFoundException;
 
-    void deleteDevice(Device device);
+    //------------------------------------------------------------------------------------------------------------------
 
-   // void resetTable();
+    Device getDevice(String id) throws NotFoundException;
 
-   // void resetDatabase();
+    List<Device> getAllDevices();
 
-  //  void getUserAssignmentsHistory(User user);
+    List<Device> getDevices(List<String> ids) throws NotFoundException;
 
-  //  void getDeviceAssignmentHistory(Device device);
+    //List<Device> getDevices(String deviceType) throws NotFoundException;
 
+    //------------------------------------------------------------------------------------------------------------------
 
+    //Group functionality not yet implemented at object/database level
 
+    //------------------------------------------------------------------------------------------------------------------
 
+    //Discussion needed for best log implementation
 
+    //------------------------------------------------------------------------------------------------------------------
 
-//view select record from id
-//view all for each table
+    //Rules functionality not yet implemented at object/database level
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    void setUserDetails(User user) throws NotFoundException;
+
+    void setDeviceDetails(Device device) throws NotFoundException;
+
+    // Setting groups, deviceTypes and rules not yet implemented
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    void removeUser(User user) throws NotFoundException;
+
+    void removeUsers(List<User> users) throws NotFoundException;
+
+    void removeDevice(Device device) throws NotFoundException;
+
+    void removeDevices(List<Device> devices) throws NotFoundException;
+
+    // Removing groups, deviceTypes and rules not yet implemented
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    void addUser(User user);
+
+    void addUsers(List<User> users);
+
+    void addDevice(Device device);
+
+    void addDevices(List<Device> devices);
+
+    // Adding groups, deviceTypes and rules not yet implemented
+
 
 
 }

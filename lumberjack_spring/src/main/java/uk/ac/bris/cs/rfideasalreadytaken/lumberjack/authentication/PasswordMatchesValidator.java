@@ -1,5 +1,7 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 

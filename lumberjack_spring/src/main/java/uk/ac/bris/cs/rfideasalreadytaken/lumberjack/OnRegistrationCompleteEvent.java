@@ -1,7 +1,7 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 import org.springframework.context.ApplicationEvent;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
 import java.util.Locale;
 

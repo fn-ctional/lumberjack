@@ -1,5 +1,7 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data;
 
+import java.util.Objects;
+
 public class User {
 
     private String id;
@@ -56,5 +58,16 @@ public class User {
 
     public void setCanRemove(boolean canRemove) {
         this.canRemove = canRemove;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (getClass() != o.getClass()) return false;
+        User u = (User) o;
+        return Objects.equals(id, u.id) &&
+                Objects.equals(scanValue, u.scanValue) &&
+                deviceLimit == u.deviceLimit &&
+                devicesRemoved == u.devicesRemoved &&
+                canRemove == u.canRemove;
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Component;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.OnRegistrationCompleteEvent;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
 
 import java.util.Properties;
