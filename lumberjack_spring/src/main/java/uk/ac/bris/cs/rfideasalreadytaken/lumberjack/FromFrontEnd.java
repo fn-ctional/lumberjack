@@ -3,6 +3,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface FromFrontEnd {
@@ -51,6 +52,23 @@ public interface FromFrontEnd {
 
     */
 
+    boolean insertUser(User user) throws Exception;
+
+    boolean insertUsers(ArrayList<User> users) throws Exception;
+
+    boolean deleteUser(User user) throws Exception;
+
+    boolean resetUsers() throws Exception;
+
+    User getUser(String userID) throws Exception;
+
+    ArrayList<User> getUsers() throws Exception;
+
+    boolean editUser(String userID, User newValues) throws Exception;
+
+
+
+
 
     //Map<Device,User> getDevicesOut();
 
@@ -62,11 +80,8 @@ public interface FromFrontEnd {
 
     //void getStatus(Device device);
 
-    void insertUser(User user);
 
     void insertDevice(Device device);
-
-    void deleteUser(User user) throws Exception;
 
     void deleteDevice(Device device);
 
