@@ -45,7 +45,7 @@ public interface FromFrontEnd {
     - delete groups
     - delete rules
 
-    - add users (single and batch)
+    - add users (single and batch)---------------
     - add devices (single and batch)
     - add groups
     - add rules
@@ -55,6 +55,10 @@ public interface FromFrontEnd {
     boolean insertUser(User user) throws Exception;
 
     boolean insertUsers(ArrayList<User> users) throws Exception;
+
+    boolean insertDevice(Device device) throws Exception;
+
+    boolean insertDevice(ArrayList<Device> devices) throws Exception;
 
     boolean removeUser(User user) throws Exception;
 

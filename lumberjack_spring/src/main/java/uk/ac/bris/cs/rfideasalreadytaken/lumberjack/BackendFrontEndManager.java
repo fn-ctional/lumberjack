@@ -33,6 +33,29 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
         }
     }
 
+    public boolean insertDevice(Device device) throws Exception{
+        try {
+            insertIntoDevices(device);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
+
+    public boolean insertDevices(ArrayList<Device> devices) throws Exception{
+
+        try {
+            for(int i = 0; i < devices.size(); i++) {
+                insertDevice(devices.get(i));
+            }
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
+
     public boolean removeUser(User user) throws Exception{
         try {
             deleteFromUsers(user.getId());
@@ -105,9 +128,6 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
         //boolean ignore = deleteFromDevices(device.getId());
     }
 
-    public void insertDevice(Device device){
-        //boolean ignore = insertIntoDevices(device);
-    }
 
     public void setDeviceType(Device device, String type){
         device.setType(type);
