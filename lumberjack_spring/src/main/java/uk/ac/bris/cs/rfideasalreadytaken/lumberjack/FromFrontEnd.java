@@ -64,7 +64,7 @@ public interface FromFrontEnd {
 
     ArrayList<User> getUsers() throws Exception;
 
-    boolean editUser(String userID, User newValues) throws Exception;
+    boolean editUser(String userID, User newValue) throws Exception;
 
 
 

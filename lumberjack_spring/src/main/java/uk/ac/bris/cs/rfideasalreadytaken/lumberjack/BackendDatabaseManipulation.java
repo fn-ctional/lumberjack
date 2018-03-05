@@ -62,9 +62,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
                 "\nTimeRemovedFor TIME," +
                 "\nReturnedSuccessfully bit," +
                 "\nReturnedBy varchar(100) NOT NULL," +
-                "\nPRIMARY KEY (id)," +
-                "\nCONSTRAINT FOREIGN KEY (DeviceID) REFERENCES Devices(id)," +
-                "\nCONSTRAINT FOREIGN KEY (UserID) REFERENCES Users(id));");
+                "\nPRIMARY KEY (id))");
 
         return true;
     }
@@ -153,6 +151,19 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         stmt.setInt(3, user.getDeviceLimit());
         stmt.setInt(4, user.getDevicesRemoved());
         stmt.setBoolean(5, user.canRemove());
+        stmt.execute();
+        return true;
+    }
+
+    protected boolean updateUser(String userID, User user) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Users SET id = ?, ScanValue = ?, DeviceLimit = ?, DevicesRemoved = ?, CanRemove = ? " +
+                "WHERE id = ?");
+        stmt.setString(1, user.getId());
+        stmt.setString(2, user.getScanValue());
+        stmt.setInt(3, user.getDeviceLimit());
+        stmt.setInt(4, user.getDevicesRemoved());
+        stmt.setBoolean(5, user.canRemove());
+        stmt.setString(6, userID);
         stmt.execute();
         return true;
     }

@@ -19,7 +19,7 @@ public class LumberjackApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... strings) throws Exception {
-
+	/*
 		BackendFromCardReader backend = new BackendFromCardReader();
 		final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
 		backend.resetDatabase();
@@ -39,7 +39,7 @@ public class LumberjackApplication implements CommandLineRunner{
 		log.info("ScanDTO User:");
 		log.info(backend.scanReceived(scanDTO) + "\n");
 
-
+		*/
 		return;
 	}
 

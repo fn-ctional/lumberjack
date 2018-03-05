@@ -3,37 +3,99 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
 
+import javax.validation.constraints.Null;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class BackendFromFrontEnd extends BackendFromCardReader implements FromFrontEnd {
 
     public boolean insertUser(User user) throws Exception{
-        return true;
+        try {
+            insertIntoUsers(user);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
     }
 
     public boolean insertUsers(ArrayList<User> users) throws Exception{
-        return true;
+
+        try {
+            for(int i = 0; i < users.size(); i++) {
+                insertUser(users.get(i));
+            }
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
     }
 
     public boolean deleteUser(User user) throws Exception{
-        return true;
+        try {
+            deleteFromUsers(user.getId());
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
     }
 
     public boolean resetUsers() throws Exception{
-        return true;
+        try {
+            ArrayList<User> users = getUsers();
+            for(int i = 0; i < users.size(); i++) {
+                deleteFromUsers(users.get(i).getId());
+            }
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
     }
 
     public User getUser(String userID) throws Exception{
-        return new User();
+        try {
+            User user = getUser(userID);
+            return user;
+        }
+        catch (Exception e){
+            return new User();
+        }
     }
 
     public ArrayList<User> getUsers() throws Exception{
-        return new ArrayList<>();
+        try {
+            ArrayList<User> users = new ArrayList<User>();
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users");
+            ResultSet rs = stmt.executeQuery();
+
+            rs.last();
+            int total = rs.getRow();
+            rs.beforeFirst();
+
+            while(rs.next()) {
+                users.add(loadUserFromResultSet(rs));
+            }
+
+            return users;
+        }
+        catch (Exception e){
+            return new ArrayList<>();
+        }
     }
 
-    public boolean editUser(String userID, User newValues) throws Exception
+    public boolean editUser(String userID, User newValue) throws Exception
     {
-        return true;
+        try {
+            updateUser(userID, newValue);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
     }
 
     public void deleteDevice(Device device){
