@@ -52,7 +52,7 @@ public interface FromFrontEnd {
     */
 
 
-    Map<Device,User> getDevicesOut();
+    //Map<Device,User> getDevicesOut();
 
     void setUserMaxDevices(User user, int max);
 
@@ -66,7 +66,7 @@ public interface FromFrontEnd {
 
     void insertDevice(Device device);
 
-    void deleteUser(User user);
+    void deleteUser(User user) throws Exception;
 
     void deleteDevice(Device device);
 
