@@ -442,6 +442,8 @@ public class Backend implements FromCardReader{
         return true;
     }
 
+    AssignmentHistory getUserAssignmentsHistory(User user)
+
     public boolean resetDatabase() throws Exception{
 
         connectToDatabase();
@@ -501,6 +503,7 @@ public class Backend implements FromCardReader{
 
         return true;
     }
+
 
     public boolean insertTestCases() throws Exception{
 

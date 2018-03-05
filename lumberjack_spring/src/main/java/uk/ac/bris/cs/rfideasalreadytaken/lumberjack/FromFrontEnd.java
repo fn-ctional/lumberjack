@@ -13,22 +13,22 @@ public interface FromFrontEnd {
 
     - get stats about users, devices etc like how many users are there, how many devices, how many devices taken out etc
 
-    - get single user details (including groups they are in)
-    - get multiple user details (e.g. in a list or something)
-    - get multiple user details filtered by group
+    - get single user details (including groups they are in)-
+    - get multiple user details (e.g. in a list or something)-
+    - get multiple user details filtered by group-
 
-    - get single device details
-    - get multiple device details (e.g. in a list or something)
-    - get multiple device details filtered by group
+    - get single device details-
+    - get multiple device details (e.g. in a list or something)-
+    - get multiple device details filtered by group-
 
     - get single group details
     - get multiple group details
 
-    - getting the log for a user
-    - getting the log for a device
-    - getting the log for a group/subset of users
-    - getting the log for a group/subset of devices
-    - getting the entire log (why not)
+    - getting the log for a user-
+    - getting the log for a device-
+    - getting the log for a group/subset of users-
+    - getting the log for a group/subset of devices-
+    - getting the entire log (why not)-
 
     - get single rule (applied to groups)
     - get all rules
@@ -38,9 +38,9 @@ public interface FromFrontEnd {
     - edit group details (e.g. add users too a group)
     - edit rules
 
-    - delete certain logs (e.g. by device, user, time frame)
-    - delete users
-    - delete devices
+    - delete certain logs (e.g. by device, user, time frame)-
+    - delete users-
+    - delete devices-
     - delete groups
     - delete rules
 
@@ -50,6 +50,56 @@ public interface FromFrontEnd {
     - add rules
 
     */
+
+    void getUserDetails(User user);
+
+    void getUsersDetails(User... users);
+
+    void getUserDetailsFilt(User user);
+
+    void getDeviceDetails(Device device);
+
+    void getDeviceDetails(Device... devices);
+
+    void getDeviceDetailsFilt(Device device);
+
+    void getDeviceLog(Device device);
+
+    void getUserLog(User user);
+
+    void getDeviceLog(Device... devices);
+
+    void getUserLog(User... users);
+
+    void getLog();
+
+    void deleteLog(Device device);
+
+    void deleteLog(User user);
+
+    void deleteLog(Time time);
+
+    void deleteUser(User user);
+
+    void deleteDevice(Device device);
+
+    void deleteGroup();
+
+    void deleteRule();
+
+    void addUser(String... id, String... scanValue, int... deviceLimit, int... devicesRemoved, boolean... canRemove);
+
+   // void addUser(String id, String scanValue, int deviceLimit, int devicesRemoved, boolean canRemove);
+
+
+    void addDevice(String id, String scanValue, String type, boolean available, boolean currentlyAssigned, String ruleID);
+
+    //void addDevice(String... id, String... scanValue, String... type, boolean... available, boolean... currentlyAssigned, String... ruleID);
+
+
+
+
+
 
 
     Map<Device,User> getDevicesOut();
@@ -72,19 +122,12 @@ public interface FromFrontEnd {
 
    // void resetTable();
 
-   // void resetDatabase();
+    void resetDatabase();
 
-  //  void getUserAssignmentsHistory(User user);
+    Class getUserAssignmentsHistory(User user);
 
   //  void getDeviceAssignmentHistory(Device device);
 
-
-
-
-
-
-//view select record from id
-//view all for each table
 
 
 }
