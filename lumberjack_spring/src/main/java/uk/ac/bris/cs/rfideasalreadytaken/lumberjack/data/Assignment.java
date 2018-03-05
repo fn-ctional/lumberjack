@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class Assignment {
 
-    private String id;
+    private int id;
     private String deviceID;
     private String userID;
     private java.sql.Date dateAssigned;
@@ -14,14 +14,14 @@ public class Assignment {
     public Assignment(){};
 
     public Assignment(String deviceID, String userID, java.sql.Date dateAssigned, java.sql.Time timeAssigned){
-        this.id = "";
+        this.id = 0;
         this.deviceID = deviceID;
         this.userID = userID;
         this.dateAssigned = dateAssigned;
         this.timeAssigned = timeAssigned;
     }
 
-    public String getId() { return id; }
+    public int getId() { return id; }
 
     public String getDeviceID() { return deviceID; }
 
@@ -37,7 +37,7 @@ public class Assignment {
         return timeAssigned;
     }
 
-    public void setAssignmentID(String id) {
+    public void setAssignmentID(int id) {
         this.id = id;
     }
 
