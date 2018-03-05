@@ -1,9 +1,6 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Assignment;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Rule;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.*;
 
 import java.sql.PreparedStatement;
 
@@ -17,11 +14,34 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         stmt.execute("DROP TABLE IF EXISTS Assignments");
         stmt.execute("DROP TABLE IF EXISTS Users");
         stmt.execute("DROP TABLE IF EXISTS Devices");
+        stmt.execute("DROP TABLE IF EXISTS GroupPermissions");
         stmt.execute("DROP TABLE IF EXISTS Rules");
+        stmt.execute("DROP TABLE IF EXISTS UserGroups");
+        stmt.execute("DROP TABLE IF EXISTS Admins");
+
+        stmt.execute("CREATE TABLE IF NOT EXISTS Admins (" +
+                "\nEmail varchar(100),\n" +
+                "\nUsername varchar(100) NOT NULL," +
+                "\nPassword varchar(100) NOT NULL," +
+                "\nAccessLevel int," +
+                "\nPRIMARY KEY (Email));");
+
+        stmt.execute("CREATE TABLE IF NOT EXISTS UserGroups (" +
+                "\nid varchar(100),\n" +
+                "\nPRIMARY KEY (id));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Rules (" +
                 "\nid varchar(100)," +
+                "\nMaximumRemovalTime TIME," +
                 "\nPRIMARY KEY (id));");
+
+        stmt.execute("CREATE TABLE IF NOT EXISTS GroupPermissions (" +
+                "\nid int AUTO_INCREMENT,\n" +
+                "\nRuleID varchar(100) NOT NULL," +
+                "\nUserGroupID varchar(100) NOT NULL," +
+                "\nPRIMARY KEY (id)," +
+                "\nCONSTRAINT FOREIGN KEY (UserGroupID) REFERENCES UserGroups(id)," +
+                "\nCONSTRAINT FOREIGN KEY (RuleID) REFERENCES Rules(id));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Users (" +
                 "\nid varchar(100)," +
@@ -71,10 +91,24 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
 
         resetDatabase();
 
-        Rule rule = new Rule("ruleSet1");
+        java.sql.Time time = java.sql.Time.valueOf("10:20:30");
+
+        Rule rule = new Rule("ruleSet1", time);
         insertIntoRules(rule);
-        rule = new Rule("ruleSet2");
+        rule = new Rule("ruleSet2",time);
         insertIntoRules(rule);
+
+        UserGroup group = new UserGroup("groupOne");
+        insertIntoUserGroups(group);
+        group = new UserGroup("groupTwo");
+        insertIntoUserGroups(group);
+
+        GroupPermission permission = new GroupPermission("ruleset1", "groupOne");
+        insertIntoGroupPermissions(permission);
+        permission = new GroupPermission("ruleset1", "groupTwo");
+        insertIntoGroupPermissions(permission);
+        permission = new GroupPermission("ruleset2", "groupOne");
+        insertIntoGroupPermissions(permission);
 
         User user = new User("Aidan9876", "1314831486", 2, 0, true);
         insertIntoUsers(user);
@@ -95,7 +129,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         insertIntoDevices(device);
 
         java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
-        java.sql.Time time = java.sql.Time.valueOf("14:45:20");
+        time = java.sql.Time.valueOf("14:45:20");
 
         Assignment assignment = new Assignment("laptop02", "Betty1248", date,time);
         insertIntoAssignments(assignment);
@@ -109,10 +143,42 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         return true;
     }
 
-    protected boolean insertIntoRules(Rule rule) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Rules (id)" +
+    protected boolean insertIntoUserGroups(UserGroup group) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO UserGroups (id)" +
                 "VALUES (?)");
+        stmt.setString(1, group.getId());
+        stmt.execute();
+        return true;
+    }
+
+    protected boolean deleteFromUserGroups(String groupID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM UserGroups WHERE id = ?");
+        stmt.setString(1, groupID);
+        stmt.execute();
+        return true;
+    }
+
+    protected boolean insertIntoGroupPermissions(GroupPermission groupPermission) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO GroupPermissions (RuleID, UserGroupID)\n" +
+                "VALUES (?,?)");
+        stmt.setString(1, groupPermission.getRuleID());
+        stmt.setString(2, groupPermission.getUserGroupID());
+        stmt.execute();
+        return true;
+    }
+
+    protected boolean deleteFromGroupPermissions(String groupPermissionID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM GroupPermissions WHERE id = ?");
+        stmt.setString(1, groupPermissionID);
+        stmt.execute();
+        return true;
+    }
+
+    protected boolean insertIntoRules(Rule rule) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Rules (id, MaximumRemovalTime)" +
+                "VALUES (?,?)");
         stmt.setString(1, rule.getId());
+        stmt.setTime(2, rule.getMaximumRemovalTime());
         stmt.execute();
         return true;
     }
@@ -186,9 +252,9 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         return true;
     }
 
-    protected boolean deleteFromAssignments(String assignmentID) throws Exception{
+    protected boolean deleteFromAssignments(int assignmentID) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM Assignments WHERE id = ?");
-        stmt.setString(1, assignmentID);
+        stmt.setInt(1, assignmentID);
         stmt.execute();
         return true;
     }

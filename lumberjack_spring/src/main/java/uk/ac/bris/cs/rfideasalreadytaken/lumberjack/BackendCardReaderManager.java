@@ -129,6 +129,13 @@ public class BackendCardReaderManager extends BackendDatabaseLoading implements 
 
             if(!returningUser.getId().equals(assignment.getUserID())){
 
+                if (isUserAtDeviceLimit(returningUser)) {
+                    return ScanReturn.SUCCESSRETURN;
+                }
+                else if (!canUserRemoveDevices(returningUser)) {
+                    return ScanReturn.SUCCESSRETURN;
+                }
+
                 takeOutDevice(device, returningUser);
                 return ScanReturn.SUCCESSRETURNANDREMOVAL;
             }

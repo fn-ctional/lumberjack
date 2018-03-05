@@ -55,7 +55,7 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
             assignment.setDeviceID(rs.getString("DeviceID"));
             assignment.setUserID(rs.getString("UserID"));
             assignment.setDateAssigned(rs.getDate("DateAssigned"));
-            assignment.setAssignmentID(rs.getString("id"));
+            assignment.setAssignmentID(rs.getInt("id"));
             assignment.setTimeAssigned(rs.getTime("TimeAssigned"));
             return assignment;
         }
