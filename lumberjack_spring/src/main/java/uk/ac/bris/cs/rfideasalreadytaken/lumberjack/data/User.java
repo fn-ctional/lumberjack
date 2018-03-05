@@ -7,15 +7,17 @@ public class User {
     private int deviceLimit;
     private int devicesRemoved;
     private boolean canRemove;
+    private String groupID;
 
     public User(){}
 
-    public User(String id, String scanValue, int deviceLimit, int devicesRemoved, boolean canRemove){
+    public User(String id, String scanValue, int deviceLimit, int devicesRemoved, boolean canRemove, String groupID){
         this.id = id;
         this.scanValue = scanValue;
         this.deviceLimit = deviceLimit;
         this.devicesRemoved = devicesRemoved;
         this.canRemove = canRemove;
+        this.groupID = groupID;
     }
 
     public String getId() {
@@ -38,9 +40,11 @@ public class User {
         return canRemove;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getGroupId() {
+        return groupID;
     }
+
+    public void setId(String id) { this.id = id; }
 
     public void setScanValue(String scanValue) {
         this.scanValue = scanValue;
@@ -57,4 +61,6 @@ public class User {
     public void setCanRemove(boolean canRemove) {
         this.canRemove = canRemove;
     }
+
+    public void setGroupId(String groupID) { this.groupID = groupID; }
 }

@@ -131,8 +131,8 @@ public class MainController extends WebMvcConfigurerAdapter {
     @GetMapping("/users")
     public String allUsers(Model model){
         // Add dummy data
-        User test1 = new User("1", "812937528", 2, 0, true);
-        User test2 = new User("2", "127482930", 1, 1, false);
+        User test1 = new User("1", "812937528", 2, 0, true,"group1");
+        User test2 = new User("2", "127482930", 1, 1, false,"group1");
         List<User> userList = new ArrayList<>();
         userList.add(test1);
         userList.add(test2);

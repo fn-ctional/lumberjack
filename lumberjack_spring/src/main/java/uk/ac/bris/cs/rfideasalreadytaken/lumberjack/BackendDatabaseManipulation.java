@@ -49,6 +49,8 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
                 "\nDeviceLimit int," +
                 "\nDevicesRemoved int," +
                 "\nCanRemove bit," +
+                "\nGroupID varchar(100)," +
+                "\nCONSTRAINT FOREIGN KEY (GroupID) REFERENCES UserGroups(id)," +
                 "\nPRIMARY KEY (id));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS Devices (" +
@@ -110,13 +112,13 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         permission = new GroupPermission("ruleset2", "groupOne");
         insertIntoGroupPermissions(permission);
 
-        User user = new User("Aidan9876", "1314831486", 2, 0, true);
+        User user = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
         insertIntoUsers(user);
-        user = new User("Betty1248", "457436545", 1, 1, true);
+        user = new User("Betty1248", "457436545", 1, 1, true, "groupTwo");
         insertIntoUsers(user);
-        user = new User("Callum2468", "845584644", 3, 0, false);
+        user = new User("Callum2468", "845584644", 3, 0, false, "groupTwo");
         insertIntoUsers(user);
-        user = new User("Dorathy0369", "94648329837", 1, 0, true);
+        user = new User("Dorathy0369", "94648329837", 1, 0, true,"groupOne");
         insertIntoUsers(user);
 
         Device device = new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1");
@@ -210,26 +212,28 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
     }
 
     protected boolean insertIntoUsers(User user) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users (id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove)" +
-                "VALUES (?,?,?,?,?)");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users (id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove, GroupID)" +
+                "VALUES (?,?,?,?,?,?)");
         stmt.setString(1, user.getId());
         stmt.setString(2, user.getScanValue());
         stmt.setInt(3, user.getDeviceLimit());
         stmt.setInt(4, user.getDevicesRemoved());
         stmt.setBoolean(5, user.canRemove());
+        stmt.setString(6, user.getGroupId());
         stmt.execute();
         return true;
     }
 
     protected boolean updateUser(String userID, User user) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("UPDATE Users SET id = ?, ScanValue = ?, DeviceLimit = ?, DevicesRemoved = ?, CanRemove = ? " +
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Users SET id = ?, ScanValue = ?, DeviceLimit = ?, DevicesRemoved = ?, CanRemove = ?, GroupID = ? " +
                 "WHERE id = ?");
         stmt.setString(1, user.getId());
         stmt.setString(2, user.getScanValue());
         stmt.setInt(3, user.getDeviceLimit());
         stmt.setInt(4, user.getDevicesRemoved());
         stmt.setBoolean(5, user.canRemove());
-        stmt.setString(6, userID);
+        stmt.setString(6, user.getGroupId());
+        stmt.setString(7, userID);
         stmt.execute();
         return true;
     }

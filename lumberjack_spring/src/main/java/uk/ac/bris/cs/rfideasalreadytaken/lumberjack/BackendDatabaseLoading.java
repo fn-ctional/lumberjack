@@ -31,6 +31,7 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
             user.setDevicesRemoved(rs.getInt("DevicesRemoved"));
             user.setId(rs.getString("id"));
             user.setScanValue(rs.getString("ScanValue"));
+            user.setGroupId(rs.getString("GroupID"));
             return user;
         }
         return null;

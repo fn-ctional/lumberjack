@@ -18,7 +18,7 @@ import java.sql.*;
 @Service
 public class BackendCardReaderManager extends BackendDatabaseLoading implements FromCardReader{
 
-    private User currentUser = new User("","",0,0,false);
+    private User currentUser = new User("","",0,0,false,"");
 
     public ScanReturn scanReceived(ScanDTO scanDTO) throws Exception{
 
