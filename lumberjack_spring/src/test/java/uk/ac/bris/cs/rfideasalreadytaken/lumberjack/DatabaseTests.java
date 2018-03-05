@@ -15,7 +15,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 public class DatabaseTests {
 
     @Autowired
-    private BackendFromCardReader backend;
+    private BackendCardReaderManager backend;
 
 	@Test
     public void nicksOldTests() throws Exception {

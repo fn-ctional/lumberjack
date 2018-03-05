@@ -56,7 +56,7 @@ public interface FromFrontEnd {
 
     boolean insertUsers(ArrayList<User> users) throws Exception;
 
-    boolean deleteUser(User user) throws Exception;
+    boolean removeUser(User user) throws Exception;
 
     boolean resetUsers() throws Exception;
 

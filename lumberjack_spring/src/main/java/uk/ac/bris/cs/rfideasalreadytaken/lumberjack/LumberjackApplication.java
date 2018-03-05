@@ -20,7 +20,7 @@ public class LumberjackApplication implements CommandLineRunner{
 	@Override
 	public void run(String... strings) throws Exception {
 	/*
-		BackendFromCardReader backend = new BackendFromCardReader();
+		BackendCardReaderManager backend = new BackendCardReaderManager();
 		final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
 		backend.resetDatabase();
 		backend.insertTestCases();

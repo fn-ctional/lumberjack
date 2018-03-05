@@ -8,7 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-public class BackendFromFrontEnd extends BackendFromCardReader implements FromFrontEnd {
+public class BackendFrontEndManager extends BackendDatabaseLoading implements FromFrontEnd {
 
     public boolean insertUser(User user) throws Exception{
         try {
@@ -33,7 +33,7 @@ public class BackendFromFrontEnd extends BackendFromCardReader implements FromFr
         }
     }
 
-    public boolean deleteUser(User user) throws Exception{
+    public boolean removeUser(User user) throws Exception{
         try {
             deleteFromUsers(user.getId());
             return true;
@@ -87,8 +87,7 @@ public class BackendFromFrontEnd extends BackendFromCardReader implements FromFr
         }
     }
 
-    public boolean editUser(String userID, User newValue) throws Exception
-    {
+    public boolean editUser(String userID, User newValue) throws Exception {
         try {
             updateUser(userID, newValue);
             return true;
@@ -97,6 +96,10 @@ public class BackendFromFrontEnd extends BackendFromCardReader implements FromFr
             return false;
         }
     }
+
+
+
+
 
     public void deleteDevice(Device device){
         //boolean ignore = deleteFromDevices(device.getId());

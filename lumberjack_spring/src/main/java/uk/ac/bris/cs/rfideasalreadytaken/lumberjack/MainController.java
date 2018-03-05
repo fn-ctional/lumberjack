@@ -29,7 +29,7 @@ import java.util.List;
 public class MainController extends WebMvcConfigurerAdapter {
 
     @Autowired
-    private BackendFromCardReader backend;
+    private BackendCardReaderManager backend;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
