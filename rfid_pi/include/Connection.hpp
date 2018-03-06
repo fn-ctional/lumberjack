@@ -8,8 +8,8 @@ namespace Connection {
 
   class Response {
   public:
-    unsigned int code;
-    std::string body;
+    unsigned int code = 0;
+    char *body = nullptr;
   };
 
   class Connection {
