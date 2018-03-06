@@ -2,6 +2,10 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Rule;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.UserGroup;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.GroupPermission;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Assignment;
 
 import javax.validation.constraints.Null;
 import java.sql.PreparedStatement;
@@ -122,10 +126,13 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
 
 
 
-
-
-    public void deleteDevice(Device device){
-        //boolean ignore = deleteFromDevices(device.getId());
+    public boolean deleteDevice(Device device){
+        try{
+        deleteFromDevices(device.getId());
+        return true;
+    } catch (Exception e) {
+        return false;
+    }
     }
 
 
@@ -136,4 +143,64 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
     public void setUserMaxDevices(User user, int max){
         user.setDeviceLimit(max);
     }
+
+
+    public boolean deleteUserGroup(User user) throws Exception {
+        try {
+            deleteFromUserGroups(user.getId());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean deleteRule(Rule rule) throws Exception {
+        try {
+            deleteFromRules(rule.getId());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean deleteAssignment(Assignment assignment) throws Exception {
+        try {
+            deleteFromAssignments(assignment.getId());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean deletePermission(GroupPermission groupPermission) throws Exception {
+        try {
+            deleteFromGroupPermissions(groupPermission.getId());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean addUserToGroup(User user, UserGroup group) throws Exception {
+        try {
+            user.setGroupId(group.getId());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean editGroup(ArrayList<User> users, UserGroup group) throws Exception {
+        try {
+            boolean hold = false;
+            for (int i = 0; i < users.size(); i++) {
+                hold = addUserToGroup(users.get(i), group);
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
 }

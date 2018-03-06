@@ -2,7 +2,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data;
 
 public class GroupPermission {
 
-    private int id;
+    private String id;
     private String ruleID;
     private String userGroupID;
 
@@ -14,7 +14,7 @@ public class GroupPermission {
         this.userGroupID = userGroupID;
     }
 
-    public int getId() { return id; }
+    public String getId() { return id; }
 
     public String getRuleID() { return ruleID; }
 
@@ -22,7 +22,7 @@ public class GroupPermission {
         return userGroupID;
     }
 
-    public void setAssignmentID(int id) {
+    public void setAssignmentID(String id) {
         this.id = id;
     }
 

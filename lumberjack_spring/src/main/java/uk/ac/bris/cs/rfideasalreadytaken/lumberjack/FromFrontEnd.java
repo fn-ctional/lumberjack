@@ -2,7 +2,10 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
-
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Rule;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.UserGroup;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.GroupPermission;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Assignment;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -36,17 +39,17 @@ public interface FromFrontEnd {
 
     - edit user details (single and batch)
     - edit device details (single and batch)
-    - edit group details (e.g. add users too a group)
+    - edit group details (e.g. add users to a group)---------------
     - edit rules
 
     - delete certain logs (e.g. by device, user, time frame)
-    - delete users
-    - delete devices
-    - delete groups
-    - delete rules
+    - delete users--------------
+    - delete devices---------
+    - delete groups------------
+    - delete rules----------
 
     - add users (single and batch)---------------
-    - add devices (single and batch)
+    - add devices (single and batch)---------------
     - add groups
     - add rules
 
@@ -58,7 +61,7 @@ public interface FromFrontEnd {
 
     boolean insertDevice(Device device) throws Exception;
 
-    boolean insertDevice(ArrayList<Device> devices) throws Exception;
+    boolean insertDevices(ArrayList<Device> devices) throws Exception;
 
     boolean removeUser(User user) throws Exception;
 
@@ -69,8 +72,6 @@ public interface FromFrontEnd {
     ArrayList<User> getUsers() throws Exception;
 
     boolean editUser(String userID, User newValue) throws Exception;
-
-
 
 
 
@@ -85,10 +86,6 @@ public interface FromFrontEnd {
     //void getStatus(Device device);
 
 
-    void insertDevice(Device device);
-
-    void deleteDevice(Device device);
-
    // void resetTable();
 
    // void resetDatabase();
@@ -98,6 +95,22 @@ public interface FromFrontEnd {
   //  void getDeviceAssignmentHistory(Device device);
 
 
+
+    boolean deleteUserGroup(User user) throws Exception;
+
+    boolean deleteDevice(Device device) throws Exception;
+
+    boolean deleteRule(Rule rule) throws Exception;
+
+    boolean deleteAssignment(Assignment assignment) throws Exception;
+
+    boolean deletePermission(GroupPermission groupPermission) throws Exception;
+
+
+
+    boolean addUserToGroup(User user, UserGroup group) throws Exception;
+
+    boolean editGroup(ArrayList<User> users, UserGroup group) throws Exception;
 
 
 
