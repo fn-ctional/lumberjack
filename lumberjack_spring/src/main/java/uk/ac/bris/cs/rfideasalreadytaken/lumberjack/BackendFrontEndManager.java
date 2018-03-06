@@ -15,6 +15,9 @@ import java.util.ArrayList;
 public class BackendFrontEndManager extends BackendDatabaseLoading implements FromFrontEnd {
 
     public boolean insertUser(User user) throws Exception{
+
+        connectToDatabase();
+
         try {
             insertIntoUsers(user);
             return true;
@@ -25,6 +28,8 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
     }
 
     public boolean insertUsers(ArrayList<User> users) throws Exception{
+
+        connectToDatabase();
 
         try {
             for(int i = 0; i < users.size(); i++) {
@@ -38,6 +43,9 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
     }
 
     public boolean insertDevice(Device device) throws Exception{
+
+        connectToDatabase();
+
         try {
             insertIntoDevices(device);
             return true;
@@ -48,6 +56,8 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
     }
 
     public boolean insertDevices(ArrayList<Device> devices) throws Exception{
+
+        connectToDatabase();
 
         try {
             for(int i = 0; i < devices.size(); i++) {
@@ -61,6 +71,9 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
     }
 
     public boolean removeUser(User user) throws Exception{
+
+        connectToDatabase();
+
         try {
             deleteFromUsers(user.getId());
             return true;
@@ -71,6 +84,9 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
     }
 
     public boolean resetUsers() throws Exception{
+
+        connectToDatabase();
+
         try {
             ArrayList<User> users = getUsers();
             for(int i = 0; i < users.size(); i++) {
@@ -84,8 +100,11 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
     }
 
     public User getUser(String userID) throws Exception{
+
+        connectToDatabase();
+
         try {
-            User user = getUser(userID);
+            User user = loadUser(userID);
             return user;
         }
         catch (Exception e){
@@ -94,6 +113,9 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
     }
 
     public ArrayList<User> getUsers() throws Exception{
+
+        connectToDatabase();
+
         try {
             ArrayList<User> users = new ArrayList<User>();
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users");
@@ -103,7 +125,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
             int total = rs.getRow();
             rs.beforeFirst();
 
-            while(rs.next()) {
+            for(int i = 0; i < total; i++) {
                 users.add(loadUserFromResultSet(rs));
             }
 
@@ -115,6 +137,9 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
     }
 
     public boolean editUser(String userID, User newValue) throws Exception {
+
+        connectToDatabase();
+
         try {
             updateUser(userID, newValue);
             return true;
@@ -127,6 +152,8 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
 
 
     public boolean deleteDevice(Device device){
+
+
         try{
         deleteFromDevices(device.getId());
         return true;

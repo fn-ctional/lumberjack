@@ -15,6 +15,14 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
         return user;
     }
 
+    protected User loadUser(String userID) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE id = ?");
+        stmt.setString(1, userID);
+        ResultSet rs = stmt.executeQuery();
+        User user = loadUserFromResultSet(rs);
+        return user;
+    }
+
     protected Device loadDevice(ScanDTO scanDTO) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Devices WHERE ScanValue = ?");
         stmt.setString(1, scanDTO.getDevice());

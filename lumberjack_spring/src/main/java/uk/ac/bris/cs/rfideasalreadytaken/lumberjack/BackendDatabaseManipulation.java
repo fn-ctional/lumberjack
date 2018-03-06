@@ -212,16 +212,19 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
     }
 
     protected boolean insertIntoUsers(User user) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users (id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove, GroupID)" +
-                "VALUES (?,?,?,?,?,?)");
-        stmt.setString(1, user.getId());
-        stmt.setString(2, user.getScanValue());
-        stmt.setInt(3, user.getDeviceLimit());
-        stmt.setInt(4, user.getDevicesRemoved());
-        stmt.setBoolean(5, user.canRemove());
-        stmt.setString(6, user.getGroupId());
-        stmt.execute();
-        return true;
+        try {
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users (id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove, GroupID)" +
+                    "VALUES (?,?,?,?,?,?)");
+            stmt.setString(1, user.getId());
+            stmt.setString(2, user.getScanValue());
+            stmt.setInt(3, user.getDeviceLimit());
+            stmt.setInt(4, user.getDevicesRemoved());
+            stmt.setBoolean(5, user.canRemove());
+            stmt.setString(6, user.getGroupId());
+            stmt.execute();
+            return true;
+        }
+        catch (Exception e){return false;}
     }
 
     protected boolean updateUser(String userID, User user) throws Exception{
@@ -239,10 +242,13 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
     }
 
     protected boolean deleteFromUsers(String userID) throws Exception{
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Users WHERE id = ?");
-        stmt.setString(1, userID);
-        stmt.execute();
-        return true;
+        try {
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM Users WHERE id = ?");
+            stmt.setString(1, userID);
+            stmt.execute();
+            return true;
+        }
+        catch (Exception e){return false;}
     }
 
     protected boolean insertIntoAssignments(Assignment assignment) throws Exception{
