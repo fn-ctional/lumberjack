@@ -45,7 +45,7 @@ public interface FromFrontEnd {
 
     - delete certain logs (e.g. by device, user, time frame)
     - delete users--------------
-    - delete devices---------
+    - delete devices----------
     - delete groups------------
     - delete rules----------
 
