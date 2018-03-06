@@ -28,7 +28,7 @@ public class LumberjackApplication implements CommandLineRunner{
 		final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
 		backend.resetDatabase();
 		backend.insertTestCases();
-		/*
+
 		ScanDTO scanDTO = new ScanDTO();
 		scanDTO.setUser("1314831486");
 		scanDTO.setDevice("36109839730967812");
@@ -42,7 +42,7 @@ public class LumberjackApplication implements CommandLineRunner{
 
 		log.info("ScanDTO User:");
 		log.info(backend.scanReceived(scanDTO) + "\n");
-		*/
+
 
 		//log.info("ScanDTO User:");
 
