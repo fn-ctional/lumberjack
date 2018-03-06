@@ -1,9 +1,17 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.*;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Rule;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.UserGroup;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.GroupPermission;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Assignment;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AssignmentHistory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class BackendDatabaseLoading extends BackendDatabaseLogic {
 
@@ -15,12 +23,30 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
         return user;
     }
 
+    protected ArrayList<AssignmentHistory> loadUserAssignmentHistory(User user) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM AssignmentHistory WHERE UserId = ?");
+        stmt.setString(1, user.getId());
+        ResultSet rs = stmt.executeQuery();
+        ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
+        while(rs.next()) assignmentHistorys.add(loadAssignmentHistoryFromResultSet(rs));
+        return assignmentHistorys;
+    }
+
     protected Device loadDevice(ScanDTO scanDTO) throws Exception{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Devices WHERE ScanValue = ?");
         stmt.setString(1, scanDTO.getDevice());
         ResultSet rs = stmt.executeQuery();
         Device device = loadDeviceFromResultSet(rs);
         return device;
+    }
+
+    protected ArrayList<AssignmentHistory> loadDeviceAssignmentHistory(Device device) throws Exception{
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM AssignmentHistory WHERE DeviceId = ?");
+        stmt.setString(1, device.getId());
+        ResultSet rs = stmt.executeQuery();
+        ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
+        while(rs.next()) assignmentHistorys.add(loadAssignmentHistoryFromResultSet(rs));
+        return assignmentHistorys;
     }
 
     protected User loadUserFromResultSet(ResultSet rs) throws Exception{

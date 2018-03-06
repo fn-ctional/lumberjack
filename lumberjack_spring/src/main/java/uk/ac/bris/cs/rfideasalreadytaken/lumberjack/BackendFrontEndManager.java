@@ -6,6 +6,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Rule;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.UserGroup;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.GroupPermission;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Assignment;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AssignmentHistory;
 
 import javax.validation.constraints.Null;
 import java.sql.PreparedStatement;
@@ -59,6 +60,38 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
             return false;
         }
     }
+
+    public boolean insertUserGroup(UserGroup group){
+        try {
+            insertIntoUserGroups(group);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
+
+    public boolean insertRule(Rule rule){
+        try {
+            insertIntoRules(rule);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
+
+    public boolean insertGroupPermission(GroupPermission groupPermission){
+        try {
+            insertIntoGroupPermissions(groupPermission);
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
+
+
 
     public boolean removeUser(User user) throws Exception{
         try {
@@ -123,6 +156,57 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
             return false;
         }
     }
+
+    public ArrayList<AssignmentHistory> getUserAH(User user){
+        try {
+            ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
+        assignmentHistorys = loadUserAssignmentHistory(user);
+        return assignmentHistorys;
+        }
+        catch (Exception e){
+            return new ArrayList<>();
+        }
+    }
+
+    public ArrayList<AssignmentHistory> getUsersAH(ArrayList<User> users){
+        try {
+            ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
+            for(int i = 0; i < users.size(); i++) {
+                assignmentHistorys.addAll(loadUserAssignmentHistory(users.get(i)));
+            }
+            return assignmentHistorys;
+        }
+        catch (Exception e){
+            return new ArrayList<>();
+        }
+    }
+
+
+    public ArrayList<AssignmentHistory> getDeviceAH(Device device){
+        try {
+            ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
+            assignmentHistorys = loadDeviceAssignmentHistory(device);
+            return assignmentHistorys;
+        }
+        catch (Exception e){
+            return new ArrayList<>();
+        }
+    }
+
+   public ArrayList<AssignmentHistory> getDevicesAH(ArrayList<Device> devices){
+        try {
+            ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
+            for(int i = 0; i < devices.size(); i++) {
+                assignmentHistorys.addAll(loadDeviceAssignmentHistory(devices.get(i)));
+            }
+            return assignmentHistorys;
+        }
+        catch (Exception e){
+            return new ArrayList<>();
+        }
+    }
+
+
 
 
 

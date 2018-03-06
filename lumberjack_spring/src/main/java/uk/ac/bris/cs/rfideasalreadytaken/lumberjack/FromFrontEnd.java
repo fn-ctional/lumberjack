@@ -6,6 +6,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Rule;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.UserGroup;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.GroupPermission;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Assignment;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AssignmentHistory;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -28,10 +29,10 @@ public interface FromFrontEnd {
     - get single group details
     - get multiple group details
 
-    - getting the log for a user
-    - getting the log for a device
-    - getting the log for a group/subset of users
-    - getting the log for a group/subset of devices
+    - getting the log for a user-----------------------------
+    - getting the log for a device---------------------------
+    - getting the log for a subset of users-------------
+    - getting the log for a subset of devices----------
     - getting the entire log (why not)
 
     - get single rule (applied to groups)
@@ -50,8 +51,9 @@ public interface FromFrontEnd {
 
     - add users (single and batch)---------------
     - add devices (single and batch)---------------
-    - add groups
-    - add rules
+    - add groups---------------
+    - add rules------
+
 
     */
 
@@ -59,9 +61,21 @@ public interface FromFrontEnd {
 
     boolean insertUsers(ArrayList<User> users) throws Exception;
 
+    ArrayList<AssignmentHistory> getUserAH(User user);
+
+    ArrayList<AssignmentHistory> getUsersAH(ArrayList<User> users);
+
     boolean insertDevice(Device device) throws Exception;
 
     boolean insertDevices(ArrayList<Device> devices) throws Exception;
+
+    ArrayList<AssignmentHistory> getDeviceAH(Device device);
+
+    ArrayList<AssignmentHistory> getDevicesAH(ArrayList<Device> devices);
+
+    boolean insertGroupPermission(GroupPermission groupPermission);
+
+    boolean insertRule(Rule rule);
 
     boolean removeUser(User user) throws Exception;
 
@@ -111,6 +125,8 @@ public interface FromFrontEnd {
     boolean addUserToGroup(User user, UserGroup group) throws Exception;
 
     boolean editGroup(ArrayList<User> users, UserGroup group) throws Exception;
+
+    boolean insertUserGroup(UserGroup group);
 
 
 
