@@ -16,11 +16,25 @@ import java.util.ArrayList;
 public class BackendDatabaseLoading extends BackendDatabaseLogic {
 
     protected User loadUser(ScanDTO scanDTO) throws Exception{
+        try{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE ScanValue = ?");
         stmt.setString(1, scanDTO.getUser());
         ResultSet rs = stmt.executeQuery();
         User user = loadUserFromResultSet(rs);
         return user;
+        }
+        catch (Exception e){return new User();}
+    }
+
+    protected User loadUser(String userID) throws Exception{
+        try{
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE id = ?");
+        stmt.setString(1, userID);
+        ResultSet rs = stmt.executeQuery();
+        User user = loadUserFromResultSet(rs);
+        return user;
+        }
+        catch (Exception e){return new User();}
     }
 
     protected ArrayList<AssignmentHistory> loadUserAssignmentHistory(User user) throws Exception{
@@ -33,11 +47,14 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
     }
 
     protected Device loadDevice(ScanDTO scanDTO) throws Exception{
+        try{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Devices WHERE ScanValue = ?");
         stmt.setString(1, scanDTO.getDevice());
         ResultSet rs = stmt.executeQuery();
         Device device = loadDeviceFromResultSet(rs);
         return device;
+        }
+        catch (Exception e){return new Device();}
     }
 
     protected ArrayList<AssignmentHistory> loadDeviceAssignmentHistory(Device device) throws Exception{

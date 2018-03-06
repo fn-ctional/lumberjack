@@ -77,26 +77,19 @@ public class BackendCardReaderManager extends BackendDatabaseLoading implements 
         }
 
         try {
-            if (canDeviceBeRemoved(loadedDevice)) {
+            if (isDeviceCurrentlyOut(loadedDevice)) {
 
-                if (isDeviceCurrentlyOut(loadedDevice)) {
-
-                    return returnDevice(loadedDevice, currentUser);
-                }
-                else {
-
-                    if (isUserAtDeviceLimit(currentUser)) {
-                        return ScanReturn.FAILUSERATDEVICELIMIT;
-                    }
-                    else if (!canUserRemoveDevices(currentUser)) {
-                        return ScanReturn.FAILUSERNORPERMITTEDTOREMOVE;
-                    }
-
-                    return takeOutDevice(loadedDevice, currentUser);
-                }
+                return returnDevice(loadedDevice, currentUser);
             }
             else {
-                return ScanReturn.FAILDEVICEUNAVIALABLE;
+
+                ScanReturn value = canDeviceBeRemoved(currentUser, loadedDevice);
+
+                if(value != ScanReturn.SUCCESSSCANREMOVE){
+                    return value;
+                }
+
+                return takeOutDevice(loadedDevice, currentUser);
             }
         }
         catch(Exception e){
@@ -129,10 +122,9 @@ public class BackendCardReaderManager extends BackendDatabaseLoading implements 
 
             if(!returningUser.getId().equals(assignment.getUserID())){
 
-                if (isUserAtDeviceLimit(returningUser)) {
-                    return ScanReturn.SUCCESSRETURN;
-                }
-                else if (!canUserRemoveDevices(returningUser)) {
+                ScanReturn value = canDeviceBeRemoved(returningUser, device);
+
+                if(value != ScanReturn.SUCCESSSCANREMOVE){
                     return ScanReturn.SUCCESSRETURN;
                 }
 
@@ -148,7 +140,7 @@ public class BackendCardReaderManager extends BackendDatabaseLoading implements 
     }
 
     //TODO get current date and time and calculate time removed for
-    public ScanReturn takeOutDevice(Device device, User user) throws Exception{
+    private ScanReturn takeOutDevice(Device device, User user) throws Exception{
         try {
             PreparedStatement stmt = conn.prepareStatement("UPDATE Devices SET CurrentlyAssigned = true WHERE id = ?");
             stmt.setString(1, device.getId());
@@ -170,5 +162,22 @@ public class BackendCardReaderManager extends BackendDatabaseLoading implements 
             return ScanReturn.ERRORREMOVALFAILED;
         }
     }
+
+    private ScanReturn canDeviceBeRemoved(User user, Device device) throws Exception{
+
+        if (isUserAtDeviceLimit(user)) {
+            return ScanReturn.FAILUSERATDEVICELIMIT;
+        }
+        else if (!canUserRemoveDevices(user)) {
+            return ScanReturn.FAILUSERNORPERMITTEDTOREMOVE;
+        }
+        else if(!canDeviceBeRemoved(device)){
+            return ScanReturn.FAILDEVICEUNAVIALABLE;
+        }
+
+        return ScanReturn.SUCCESSSCANREMOVE;
+    }
+
+
 
 }
