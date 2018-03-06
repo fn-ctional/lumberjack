@@ -7,89 +7,93 @@ import java.sql.PreparedStatement;
 public class BackendDatabaseManipulation extends BackendDatabaseConnection{
 
     public boolean resetDatabase() throws Exception{
+        try {
 
-        connectToDatabase();
+            connectToDatabase();
 
-        stmt.execute("DROP TABLE IF EXISTS AssignmentHistory");
-        stmt.execute("DROP TABLE IF EXISTS Assignments");
-        stmt.execute("DROP TABLE IF EXISTS Users");
-        stmt.execute("DROP TABLE IF EXISTS Devices");
-        stmt.execute("DROP TABLE IF EXISTS GroupPermissions");
-        stmt.execute("DROP TABLE IF EXISTS Rules");
-        stmt.execute("DROP TABLE IF EXISTS UserGroups");
-        stmt.execute("DROP TABLE IF EXISTS Admins");
+            stmt.execute("DROP TABLE IF EXISTS AssignmentHistory");
+            stmt.execute("DROP TABLE IF EXISTS Assignments");
+            stmt.execute("DROP TABLE IF EXISTS Users");
+            stmt.execute("DROP TABLE IF EXISTS Devices");
+            stmt.execute("DROP TABLE IF EXISTS GroupPermissions");
+            stmt.execute("DROP TABLE IF EXISTS Rules");
+            stmt.execute("DROP TABLE IF EXISTS UserGroups");
+            stmt.execute("DROP TABLE IF EXISTS Admins");
 
-        stmt.execute("CREATE TABLE IF NOT EXISTS Admins (" +
-                "\nEmail varchar(100),\n" +
-                "\nUsername varchar(100) NOT NULL," +
-                "\nPassword varchar(100) NOT NULL," +
-                "\nAccessLevel int," +
-                "\nPRIMARY KEY (Email));");
+            stmt.execute("CREATE TABLE IF NOT EXISTS Admins (" +
+                    "\nEmail varchar(100),\n" +
+                    "\nUsername varchar(100) NOT NULL," +
+                    "\nPassword varchar(100) NOT NULL," +
+                    "\nAccessLevel int," +
+                    "\nPRIMARY KEY (Email));");
 
-        stmt.execute("CREATE TABLE IF NOT EXISTS UserGroups (" +
-                "\nid varchar(100),\n" +
-                "\nPRIMARY KEY (id));");
+            stmt.execute("CREATE TABLE IF NOT EXISTS UserGroups (" +
+                    "\nid varchar(100),\n" +
+                    "\nPRIMARY KEY (id));");
 
-        stmt.execute("CREATE TABLE IF NOT EXISTS Rules (" +
-                "\nid varchar(100)," +
-                "\nMaximumRemovalTime TIME," +
-                "\nPRIMARY KEY (id));");
+            stmt.execute("CREATE TABLE IF NOT EXISTS Rules (" +
+                    "\nid varchar(100)," +
+                    "\nMaximumRemovalTime TIME," +
+                    "\nPRIMARY KEY (id));");
 
-        stmt.execute("CREATE TABLE IF NOT EXISTS GroupPermissions (" +
-                "\nid int AUTO_INCREMENT,\n" +
-                "\nRuleID varchar(100) NOT NULL," +
-                "\nUserGroupID varchar(100) NOT NULL," +
-                "\nPRIMARY KEY (id)," +
-                "\nCONSTRAINT FOREIGN KEY (UserGroupID) REFERENCES UserGroups(id)," +
-                "\nCONSTRAINT FOREIGN KEY (RuleID) REFERENCES Rules(id));");
+            stmt.execute("CREATE TABLE IF NOT EXISTS GroupPermissions (" +
+                    "\nid int AUTO_INCREMENT,\n" +
+                    "\nRuleID varchar(100) NOT NULL," +
+                    "\nUserGroupID varchar(100) NOT NULL," +
+                    "\nPRIMARY KEY (id)," +
+                    "\nCONSTRAINT FOREIGN KEY (UserGroupID) REFERENCES UserGroups(id)," +
+                    "\nCONSTRAINT FOREIGN KEY (RuleID) REFERENCES Rules(id));");
 
-        stmt.execute("CREATE TABLE IF NOT EXISTS Users (" +
-                "\nid varchar(100)," +
-                "\nScanValue varchar(100) NOT NULL UNIQUE," +
-                "\nDeviceLimit int," +
-                "\nDevicesRemoved int," +
-                "\nCanRemove bit," +
-                "\nGroupID varchar(100)," +
-                "\nCONSTRAINT FOREIGN KEY (GroupID) REFERENCES UserGroups(id)," +
-                "\nPRIMARY KEY (id));");
+            stmt.execute("CREATE TABLE IF NOT EXISTS Users (" +
+                    "\nid varchar(100)," +
+                    "\nScanValue varchar(100) NOT NULL UNIQUE," +
+                    "\nDeviceLimit int," +
+                    "\nDevicesRemoved int," +
+                    "\nCanRemove bit," +
+                    "\nGroupID varchar(100)," +
+                    "\nCONSTRAINT FOREIGN KEY (GroupID) REFERENCES UserGroups(id)," +
+                    "\nPRIMARY KEY (id));");
 
-        stmt.execute("CREATE TABLE IF NOT EXISTS Devices (" +
-                "\nid varchar(100)," +
-                "\nScanValue varchar(100) NOT NULL UNIQUE," +
-                "\nType varchar(100)," +
-                "\nAvailable bit," +
-                "\nCurrentlyAssigned bit," +
-                "\nRuleID varchar(100)," +
-                "\nCONSTRAINT FOREIGN KEY (RuleID) REFERENCES Rules(id)," +
-                "\nPRIMARY KEY (id));");
+            stmt.execute("CREATE TABLE IF NOT EXISTS Devices (" +
+                    "\nid varchar(100)," +
+                    "\nScanValue varchar(100) NOT NULL UNIQUE," +
+                    "\nType varchar(100)," +
+                    "\nAvailable bit," +
+                    "\nCurrentlyAssigned bit," +
+                    "\nRuleID varchar(100)," +
+                    "\nCONSTRAINT FOREIGN KEY (RuleID) REFERENCES Rules(id)," +
+                    "\nPRIMARY KEY (id));");
 
-        stmt.execute("CREATE TABLE IF NOT EXISTS Assignments (" +
-                "\nid int AUTO_INCREMENT,\n" +
-                "\nDeviceID varchar(100) NOT NULL," +
-                "\nUserID varchar(100) NOT NULL," +
-                "\nDateAssigned DATE," +
-                "\nTimeAssigned TIME," +
-                "\nPRIMARY KEY (id)," +
-                "\nCONSTRAINT FOREIGN KEY (DeviceID) REFERENCES Devices(id)," +
-                "\nCONSTRAINT FOREIGN KEY (UserID) REFERENCES Users(id));");
+            stmt.execute("CREATE TABLE IF NOT EXISTS Assignments (" +
+                    "\nid int AUTO_INCREMENT,\n" +
+                    "\nDeviceID varchar(100) NOT NULL," +
+                    "\nUserID varchar(100) NOT NULL," +
+                    "\nDateAssigned DATE," +
+                    "\nTimeAssigned TIME," +
+                    "\nPRIMARY KEY (id)," +
+                    "\nCONSTRAINT FOREIGN KEY (DeviceID) REFERENCES Devices(id)," +
+                    "\nCONSTRAINT FOREIGN KEY (UserID) REFERENCES Users(id));");
 
-        stmt.execute("CREATE TABLE IF NOT EXISTS AssignmentHistory (" +
-                "\nid int AUTO_INCREMENT,\n" +
-                "\nDeviceID varchar(100) NOT NULL," +
-                "\nUserID varchar(100) NOT NULL," +
-                "\nDateAssigned DATE," +
-                "\nTimeAssigned TIME," +
-                "\nDateReturned DATE," +
-                "\nTimeReturned TIME," +
-                "\nTimeRemovedFor TIME," +
-                "\nReturnedSuccessfully bit," +
-                "\nReturnedBy varchar(100) NOT NULL," +
-                "\nPRIMARY KEY (id))");
+            stmt.execute("CREATE TABLE IF NOT EXISTS AssignmentHistory (" +
+                    "\nid int AUTO_INCREMENT,\n" +
+                    "\nDeviceID varchar(100) NOT NULL," +
+                    "\nUserID varchar(100) NOT NULL," +
+                    "\nDateAssigned DATE," +
+                    "\nTimeAssigned TIME," +
+                    "\nDateReturned DATE," +
+                    "\nTimeReturned TIME," +
+                    "\nTimeRemovedFor TIME," +
+                    "\nReturnedSuccessfully bit," +
+                    "\nReturnedBy varchar(100) NOT NULL," +
+                    "\nPRIMARY KEY (id))");
 
-        return true;
+            return true;
+        }
+        catch (Exception e){return false;}
     }
 
     public boolean insertTestCases() throws Exception{
+        try {
 
         resetDatabase();
 
@@ -144,23 +148,32 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
 
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     protected boolean insertIntoUserGroups(UserGroup group) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO UserGroups (id)" +
                 "VALUES (?)");
         stmt.setString(1, group.getId());
         stmt.execute();
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     protected boolean deleteFromUserGroups(String groupID) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM UserGroups WHERE id = ?");
         stmt.setString(1, groupID);
         stmt.execute();
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     protected boolean insertIntoGroupPermissions(GroupPermission groupPermission) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO GroupPermissions (RuleID, UserGroupID)\n" +
                 "VALUES (?,?)");
         stmt.setString(1, groupPermission.getRuleID());
@@ -168,15 +181,21 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         stmt.execute();
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     protected boolean deleteFromGroupPermissions(String groupPermissionID) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM GroupPermissions WHERE id = ?");
         stmt.setString(1, groupPermissionID);
         stmt.execute();
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     protected boolean insertIntoRules(Rule rule) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Rules (id, MaximumRemovalTime)" +
                 "VALUES (?,?)");
         stmt.setString(1, rule.getId());
@@ -184,15 +203,21 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         stmt.execute();
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     protected boolean deleteFromRules(String ruleID) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM Rules WHERE id = ?");
         stmt.setString(1, ruleID);
         stmt.execute();
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     protected boolean insertIntoDevices(Device device) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Devices (id, ScanValue, Type, Available, CurrentlyAssigned, RuleID) VALUES (?,?,?,?,?,?)");
         stmt.setString(1, device.getId());
         stmt.setString(2, device.getScanValue());
@@ -203,12 +228,17 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         stmt.execute();
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     protected boolean deleteFromDevices(String deviceID) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM Devices WHERE id = ?");
         stmt.setString(1, deviceID);
         stmt.execute();
         return true;
+    }
+        catch (Exception e){return false;}
     }
 
     protected boolean insertIntoUsers(User user) throws Exception{
@@ -228,6 +258,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
     }
 
     protected boolean updateUser(String userID, User user) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("UPDATE Users SET id = ?, ScanValue = ?, DeviceLimit = ?, DevicesRemoved = ?, CanRemove = ?, GroupID = ? " +
                 "WHERE id = ?");
         stmt.setString(1, user.getId());
@@ -239,6 +270,8 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         stmt.setString(7, userID);
         stmt.execute();
         return true;
+    }
+        catch (Exception e){return false;}
     }
 
     protected boolean deleteFromUsers(String userID) throws Exception{
@@ -252,6 +285,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
     }
 
     protected boolean insertIntoAssignments(Assignment assignment) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
                 "VALUES (?,?,?,?)");
         stmt.setString(1, assignment.getDeviceID());
@@ -261,16 +295,22 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         stmt.execute();
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     protected boolean deleteFromAssignments(int assignmentID) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM Assignments WHERE id = ?");
         stmt.setInt(1, assignmentID);
         stmt.execute();
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     //TODO get current date and time and calculate time removed for
     protected boolean insertIntoAssignmentHistory(Assignment assignment, String returningUserID) throws Exception{
+        try {
 
         boolean returnedSuccessfully = false;
         if(assignment.getUserID().equals(returningUserID)){
@@ -293,11 +333,16 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         stmt.execute();
         return true;
     }
+        catch (Exception e){return false;}
+    }
 
     protected boolean deleteFromAssignmentHistory(String assignmentHistoryID) throws Exception{
+        try {
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM AssignmentHistory WHERE id = ?");
         stmt.setString(1, assignmentHistoryID);
         stmt.execute();
         return true;
+    }
+        catch (Exception e){return false;}
     }
 }
