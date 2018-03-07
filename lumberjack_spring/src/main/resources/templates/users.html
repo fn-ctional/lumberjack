@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:include ="fragments/header :: head (title='lumberjack - Users')">
+<head th:include="fragments/header :: head (title='lumberjack - Users')">
 </head>
 
 <body>
@@ -19,9 +19,18 @@
         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
             <h1>Dashboard</h1>
 
-            <h2>Users</h2>
+            <h2 th:if="${multi} or ${blank}">Users</h2>
+            <h2 th:if="!${multi} and !${blank}">User <span th:text="${searchTerm}">123456789</span></h2>
 
-            <div class="table-responsive">
+            <p th:if="!${found} and !${multi} and !${blank}" class="lead">User not found.</p>
+
+            <p th:if="!${found} and ${multi}" class="lead">No users found.</p>
+
+            <p th:if="${blank}" class="lead">
+                View <a href="/users">all users</a> or <a href="/search/user">search</a> for one.
+            </p>
+
+            <div th:if="!${blank} and ${found}" class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                     <tr>
