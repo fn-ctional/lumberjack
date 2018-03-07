@@ -42,12 +42,13 @@ bool Connection::Connection::send(std::string body, Response &response) {
        header = curl_slist_append(header,  content_len.c_str());
        header = curl_slist_append(header,  "Transfer-Encoding:");
   curl_easy_setopt(handle, CURLOPT_HTTPHEADER, header);
-  curl_slist_free_all(header);
 
   curl_easy_setopt(handle, CURLOPT_READDATA, &data);
   curl_easy_setopt(handle, CURLOPT_UPLOAD, 1L);
   curl_easy_setopt(handle, CURLOPT_WRITEDATA, &response);
-  return curl_easy_perform(handle) == CURLE_OK;
+  bool success = curl_easy_perform(handle) == CURLE_OK;
+  curl_slist_free_all(header);
+  return success;
 }
 
 Connection::Connection::operator bool() const {
