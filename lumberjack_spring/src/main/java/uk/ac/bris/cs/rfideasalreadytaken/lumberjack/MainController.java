@@ -21,7 +21,6 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUse
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Search;
 
 import javax.validation.Valid;
 import java.util.Calendar;
@@ -93,13 +92,6 @@ public class MainController extends WebMvcConfigurerAdapter {
         }
     }
 
-    @GetMapping(value = "/registration")
-    public String showRegistrationForm(WebRequest request, Model model) {
-        AdminUserDTO userDto = new AdminUserDTO();
-        model.addAttribute("user", userDto);
-        return "registration";
-    }
-
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -165,6 +157,13 @@ public class MainController extends WebMvcConfigurerAdapter {
     */
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+
+    @GetMapping(value = "/registration")
+    public String showRegistrationForm(WebRequest request, Model model) {
+        AdminUserDTO userDto = new AdminUserDTO();
+        model.addAttribute("user", userDto);
+        return "registration";
+    }
 
     @PostMapping("/registration")
     public ModelAndView registerUserAccount(
