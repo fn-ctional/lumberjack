@@ -176,4 +176,16 @@ public class MainController extends WebMvcConfigurerAdapter {
         model.addAttribute(userList);
         return "users";
     }
+
+    @RequestMapping("/search")
+    public String search(Model model){
+        model.addAttribute("blank", true);
+        return "search";
+    }
+
+    @GetMapping("/search/{type}")
+    public String searchType(@PathVariable String type, Model model){
+        model.addAttribute("type", type);
+        return "search";
+    }
 }
