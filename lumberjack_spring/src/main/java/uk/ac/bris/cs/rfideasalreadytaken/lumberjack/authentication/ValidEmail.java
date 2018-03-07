@@ -1,7 +1,5 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
