@@ -3,7 +3,12 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
 
-import java.util.List;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Rule;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.UserGroup;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.GroupPermission;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Assignment;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AssignmentHistory;
+import java.util.ArrayList;
 
 public interface FromFrontEnd {
 
@@ -24,10 +29,10 @@ public interface FromFrontEnd {
     - get single group details
     - get multiple group details
 
-    - getting the log for a user
-    - getting the log for a device
-    - getting the log for a group/subset of users
-    - getting the log for a group/subset of devices
+    - getting the log for a user-----------------------------
+    - getting the log for a device---------------------------
+    - getting the log for a subset of users-------------
+    - getting the log for a subset of devices----------
     - getting the entire log (why not)
 
     - get single rule (applied to groups)
@@ -35,94 +40,67 @@ public interface FromFrontEnd {
 
     - edit user details (single and batch)
     - edit device details (single and batch)
-    - edit group details (e.g. add users too a group)
+    - edit group details (e.g. add users to a group)---------------
     - edit rules
 
     - delete certain logs (e.g. by device, user, time frame)
-    - delete users
-    - delete devices
-    - delete groups
-    - delete rules
+    - delete users--------------
+    - delete devices----------
+    - delete groups------------
+    - delete rules----------
 
-    - add users (single and batch)
-    - add devices (single and batch)
-    - add groups
-    - add rules
+    - add users (single and batch)---------------
+    - add devices (single and batch)---------------
+    - add groups---------------
+    - add rules------
+
 
     */
 
-    //------------------------------------------------------------------------------------------------------------------
+    boolean insertUser(User user) throws Exception;
 
-    int getNumberOfUsers();
+    boolean insertUsers(ArrayList<User> users) throws Exception;
 
-    int getNumberOfDevices();
+    ArrayList<AssignmentHistory> getUserAH(User user);
 
-    int getNumberOfDevicesTakenOut();
+    ArrayList<AssignmentHistory> getUsersAH(ArrayList<User> users);
 
-    //------------------------------------------------------------------------------------------------------------------
+    boolean insertDevice(Device device) throws Exception;
 
-    User getUser(String id) throws NotFoundException;
+    boolean insertDevices(ArrayList<Device> devices) throws Exception;
 
-    List<User> getAllUsers();
+    ArrayList<AssignmentHistory> getDeviceAH(Device device);
 
-    List<User> getUsers(List<String> ids) throws NotFoundException;
+    ArrayList<AssignmentHistory> getDevicesAH(ArrayList<Device> devices);
 
-    //List<User> getUsers(String userGroup) throws NotFoundException;
+    boolean insertGroupPermission(GroupPermission groupPermission);
 
-    //------------------------------------------------------------------------------------------------------------------
+    boolean insertRule(Rule rule);
 
-    Device getDevice(String id) throws NotFoundException;
+    boolean removeUser(User user) throws Exception;
 
-    List<Device> getAllDevices();
+    boolean resetUsers() throws Exception;
 
-    List<Device> getDevices(List<String> ids) throws NotFoundException;
+    User getUser(String userID) throws Exception;
 
-    //List<Device> getDevices(String deviceType) throws NotFoundException;
+    ArrayList<User> getUsers() throws Exception;
 
-    //------------------------------------------------------------------------------------------------------------------
+    boolean editUser(String userID, User newValue) throws Exception;
 
-    //Group functionality not yet implemented at object/database level
+    boolean deleteUserGroup(User user) throws Exception;
 
-    //------------------------------------------------------------------------------------------------------------------
+    boolean deleteDevice(Device device) throws Exception;
 
-    //Discussion needed for best log implementation
+    boolean deleteRule(Rule rule) throws Exception;
 
-    //------------------------------------------------------------------------------------------------------------------
+    boolean deleteAssignment(Assignment assignment) throws Exception;
 
-    //Rules functionality not yet implemented at object/database level
+    boolean deletePermission(GroupPermission groupPermission) throws Exception;
 
-    //------------------------------------------------------------------------------------------------------------------
+    boolean addUserToGroup(User user, UserGroup group) throws Exception;
 
-    void setUserDetails(User user) throws NotFoundException;
+    boolean editGroup(ArrayList<User> users, UserGroup group) throws Exception;
 
-    void setDeviceDetails(Device device) throws NotFoundException;
-
-    // Setting groups, deviceTypes and rules not yet implemented
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    void removeUser(User user) throws NotFoundException;
-
-    void removeUsers(List<User> users) throws NotFoundException;
-
-    void removeDevice(Device device) throws NotFoundException;
-
-    void removeDevices(List<Device> devices) throws NotFoundException;
-
-    // Removing groups, deviceTypes and rules not yet implemented
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    void addUser(User user);
-
-    void addUsers(List<User> users);
-
-    void addDevice(Device device);
-
-    void addDevices(List<Device> devices);
-
-    // Adding groups, deviceTypes and rules not yet implemented
-
-
+    boolean insertUserGroup(UserGroup group);
 
 }

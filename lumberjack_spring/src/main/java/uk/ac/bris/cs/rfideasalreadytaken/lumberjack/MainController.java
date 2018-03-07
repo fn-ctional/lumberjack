@@ -20,16 +20,19 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
 
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class MainController extends WebMvcConfigurerAdapter {
 
     @Autowired
-    private PiDatabaseManager piDatabaseManager;
+    private BackendCardReaderManager backend;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -48,7 +51,7 @@ public class MainController extends WebMvcConfigurerAdapter {
     @ResponseBody
     public ResponseEntity changeDeviceState(@RequestBody ScanDTO scanDTO) {
         try {
-            ScanReturn result = piDatabaseManager.scanReceived(scanDTO);
+            ScanReturn result = backend.scanReceived(scanDTO);
             switch (result) {
                 case SUCCESSRETURN:
                     return ResponseEntity.status(200).body("Device " + scanDTO.getDevice() + " successfully returned by " + scanDTO.getUser() + ".");
@@ -191,5 +194,17 @@ public class MainController extends WebMvcConfigurerAdapter {
         String name = auth.getName();
         model.addAttribute("name", name);
         return "dashboard";
+    }
+
+    @GetMapping("/users")
+    public String allUsers(Model model){
+        // Add dummy data
+        User test1 = new User("1", "812937528", 2, 0, true,"group1");
+        User test2 = new User("2", "127482930", 1, 1, false,"group1");
+        List<User> userList = new ArrayList<>();
+        userList.add(test1);
+        userList.add(test2);
+        model.addAttribute(userList);
+        return "users";
     }
 }

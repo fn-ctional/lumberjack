@@ -24,46 +24,96 @@
                 Hello <span th:text="${name}">email@email.com</span>!
             </h3>
 
-            <p class="lead">
+            <p class="lead" id="instruction">
                 Select one of options on the navigation bar to the left, or <a href="/logout">logout</a>.
             </p>
 
-            <!--<div class="container-fluid">-->
-                <!--<div class="row">-->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm">
+                        <canvas id="takeouts"></canvas>
+                    </div>
+                    <div class="col-sm">
+                        <canvas id="device-status"></canvas>
+                    </div>
                     <!--<div class="col-sm">-->
-                        <!--One of three columns-->
+                        <!--<canvas id="doughnut-chart3"></canvas>-->
                     <!--</div>-->
-                    <!--<div class="col-sm">-->
-                        <!--One of three columns-->
-                    <!--</div>-->
-                    <!--<div class="col-sm">-->
-                        <!--One of three columns-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-
-            <canvas id="doughnut-chart" width="800" height="450"></canvas>
+                </div>
+            </div>
 
             <script>
-                new Chart(document.getElementById("doughnut-chart"), {
+                // Takeouts and Returns
+                tos = Array.from({length: 10}, () => Math.floor(Math.random() * 400));
+                rtn = Array.from({length: 10}, () => Math.floor(Math.random() * 400));
+                new Chart(document.getElementById("takeouts"), {
+                    type: 'line',
+                    data: {
+                        labels: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
+                        datasets: [{
+                            data: tos,
+                            label: "Takeouts",
+                            borderColor: "#7fb658",
+                            fill: false
+                        }, {
+                            data: rtn,
+                            label: "Returns",
+                            borderColor: "#e16f00",
+                            fill: false
+                        }
+                        ]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Takeout and Return Log'
+                        }
+                    }
+                });
+
+                // Devices Status
+                av  = Math.floor((Math.random() * 400) + 1);
+                tnk = Math.floor((Math.random() * (120)) + 1);
+                otr = Math.floor((Math.random() * 20) + 1);
+                vals = [av, tnk, otr];
+                new Chart(document.getElementById("device-status"), {
                     type: 'doughnut',
                     data: {
-                        labels: ["Africa", "Asia", "Europe", "Latin America", "North America"],
+                        labels: ["Available", "Taken", "Other"],
                         datasets: [
                             {
-                                label: "Population (millions)",
-                                backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                                data: [2478,5267,734,784,433]
+                                backgroundColor: ["#7fb658", "#e16f00","#a40b00"],
+                                data: vals
                             }
                         ]
                     },
                     options: {
                         title: {
                             display: true,
-                            text: 'Predicted world population (millions) in 2050'
+                            text: 'Status of Devices'
                         }
                     }
                 });
+
+                // new Chart(document.getElementById("doughnut-chart3"), {
+                //     type: 'doughnut',
+                //     data: {
+                //         labels: ["Africa3", "Asia", "Europe", "Latin America", "North America"],
+                //         datasets: [
+                //             {
+                //                 label: "Population (millions)",
+                //                 backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                //                 data: [2478,5267,734,784,433]
+                //             }
+                //         ]
+                //     },
+                //     options: {
+                //         title: {
+                //             display: true,
+                //             text: 'Predicted world population (millions) in 2050'
+                //         }
+                //     }
+                // });
             </script>
 
         </main>

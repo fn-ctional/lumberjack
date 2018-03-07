@@ -5,10 +5,9 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
-public class FrontEndDatabaseManager extends GenericDatabaseManager implements FromFrontEnd {
+public class FrontEndDatabaseManager implements FromFrontEnd {
 
 
     public int getNumberOfUsers() {
