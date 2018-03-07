@@ -93,7 +93,7 @@ public class MainController extends WebMvcConfigurerAdapter {
         }
     }
 
-    @GetMapping(value = "/register")
+    @GetMapping(value = "/registration")
     public String showRegistrationForm(WebRequest request, Model model) {
         AdminUserDTO userDto = new AdminUserDTO();
         model.addAttribute("user", userDto);
