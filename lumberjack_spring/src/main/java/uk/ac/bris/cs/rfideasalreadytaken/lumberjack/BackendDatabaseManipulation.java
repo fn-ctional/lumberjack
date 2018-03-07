@@ -1,8 +1,11 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.VerificationToken;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.*;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class BackendDatabaseManipulation extends BackendDatabaseConnection{
 
@@ -18,17 +21,26 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
             stmt.execute("DROP TABLE IF EXISTS GroupPermissions");
             stmt.execute("DROP TABLE IF EXISTS Rules");
             stmt.execute("DROP TABLE IF EXISTS UserGroups");
+            stmt.execute("DROP TABLE IF EXISTS PermittedEmails");
+            stmt.execute("DROP TABLE IF EXISTS Tokens");
             stmt.execute("DROP TABLE IF EXISTS Admins");
 
             stmt.execute("CREATE TABLE IF NOT EXISTS Admins (" +
-                    "\nEmail varchar(100),\n" +
+                    "\nEmail varchar(100)," +
                     "\nUsername varchar(100) NOT NULL," +
-                    "\nPassword varchar(100) NOT NULL," +
-                    "\nAccessLevel int," +
+                    "\nPassword varchar(60) NOT NULL," +
+                    "\nEnabled bit," +
                     "\nPRIMARY KEY (Email));");
 
+            stmt.execute("CREATE TABLE IF NOT EXISTS Tokens (" +
+                    "\nToken varchar(100)," +
+                    "\nAdminEmail varchar(100) NOT NULL," +
+                    "\nExpiryDate DATE," +
+                    "\nCONSTRAINT FOREIGN KEY (AdminEmail) REFERENCES Admins(Email), " +
+                    "\nPRIMARY KEY (Token));");
+
             stmt.execute("CREATE TABLE IF NOT EXISTS UserGroups (" +
-                    "\nid varchar(100),\n" +
+                    "\nid varchar(100)," +
                     "\nPRIMARY KEY (id));");
 
             stmt.execute("CREATE TABLE IF NOT EXISTS Rules (" +
@@ -87,9 +99,16 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
                     "\nReturnedBy varchar(100) NOT NULL," +
                     "\nPRIMARY KEY (id))");
 
+            stmt.execute("CREATE TABLE IF NOT EXISTS PermittedEmails (" +
+                    "\nEmail varchar(100) NOT NULL," +
+                    "\nPRIMARY KEY (Email))");
+
             return true;
         }
-        catch (Exception e){return false;}
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean insertTestCases() throws Exception{
@@ -338,11 +357,42 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
 
     protected boolean deleteFromAssignmentHistory(String assignmentHistoryID) throws Exception{
         try {
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM AssignmentHistory WHERE id = ?");
-        stmt.setString(1, assignmentHistoryID);
-        stmt.execute();
-        return true;
-    }
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM AssignmentHistory WHERE id = ?");
+            stmt.setString(1, assignmentHistoryID);
+            stmt.execute();
+            return true;
+        }
         catch (Exception e){return false;}
     }
+
+    protected void insertIntoAdminUsers(AdminUser adminUser) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Admins (Email, Username, Password, Enabled)" +
+            "VALUES (?,?,?,?)");
+        stmt.setString(1, adminUser.getEmail());
+        stmt.setString(2, adminUser.getName());
+        stmt.setString(3, adminUser.getPassword());
+        stmt.setBoolean(4, adminUser.isEnabled());
+        stmt.execute();
+    }
+
+    protected void updateAdminUser(String email, AdminUser adminUser) throws Exception {
+        PreparedStatement stmt = conn.prepareStatement("UPDATE Admins SET Email = ?, Username = ?, Password = ?, Enabled = ? " +
+                "WHERE Email = ?");
+        stmt.setString(1, adminUser.getEmail());
+        stmt.setString(2, adminUser.getName());
+        stmt.setString(3, adminUser.getPassword());
+        stmt.setBoolean(4, adminUser.isEnabled());
+        stmt.setString(5, email);
+        stmt.execute();
+    }
+
+    protected void insertIntoTokens(VerificationToken verificationToken) throws SQLException {
+         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Tokens (Token, Email, ExpiryDate)" +
+            "VALUES (?,?,?)");
+        stmt.setString(1, verificationToken.getToken());
+        stmt.setString(2, verificationToken.getAdminUser().getEmail());
+        stmt.setDate(3, verificationToken.getExpiryDate());
+        stmt.execute();
+    }
+
 }

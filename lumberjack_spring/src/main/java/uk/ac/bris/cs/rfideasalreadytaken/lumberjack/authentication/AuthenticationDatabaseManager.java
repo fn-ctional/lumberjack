@@ -1,78 +1,75 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.BackendDatabaseLoading;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 @Service
-public class AuthenticationDatabaseManager {
-
-    private boolean connected = false;
-    private Connection connection = null;
-    private Statement stmt = null;
-
-    protected AuthenticationDatabaseManager() {
-        try {
-            connectToDatabase();
-        } catch (SQLException e) {
-           //TODO: not sure what to do here
-        }
-    }
-
-    private void connectToDatabase() throws SQLException {
-
-        if(!connected) {
-            MysqlDataSource dataSource = new MysqlDataSource();
-
-            dataSource.setServerName("129.150.119.251");
-            dataSource.setPortNumber(3306);
-            dataSource.setDatabaseName("LumberjackDatabase");
-            dataSource.setUser("lumberjack");
-            dataSource.setPassword("Lumberjack1#");
-            dataSource.setConnectTimeout(5000);
-
-            this.connection = dataSource.getConnection();
-
-            stmt = this.connection.createStatement();
-
-            this.connected = true;
-        }
-    }
+public class AuthenticationDatabaseManager extends BackendDatabaseLoading {
 
     /**
      * Adds a new AdminUser to the database. Passwords are already encoded before reaching function.
      * @param adminUser
      */
-    public void addAdminUser(AdminUser adminUser) {
-       //TODO: implement please
+    public void addAdminUser(AdminUser adminUser) throws Exception {
+        connectToDatabase();
+
+        insertIntoAdminUsers(adminUser);
     }
 
-    public AdminUser findByEmail(String email) {
-        //TODO: implement please
-        return null;
+    //Throws UsernameNotFoundException in the case of a database error.
+    public AdminUser findByEmail(String email) throws UsernameNotFoundException {
+        try {
+            connectToDatabase();
+
+            return loadAdminUser(email);
+
+        } catch (Exception e) {
+            throw new UsernameNotFoundException("Database error!");
+        }
     }
 
     public boolean userExists(String email) {
-        //TODO: implement please
-        return true;
+        try {
+            connectToDatabase();
+
+            return adminUserExists(email);
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public VerificationToken findByToken(String verificationToken) {
-        //TODO: implement please
+        try {
+            connectToDatabase();
+
+            return loadToken(verificationToken);
+
+        } catch (Exception e) {
+            //TODO: something better here
+            e.printStackTrace();
+        }
         return null;
     }
 
-    public void save(VerificationToken verificationToken) {
-        //TODO: implement please
+    public void addToken(VerificationToken verificationToken) {
+        try {
+            connectToDatabase();
+
+            insertIntoTokens(verificationToken);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void save(AdminUser user) {
-        //TODO: implement please
+    public void save(AdminUser adminUser) throws Exception {
+        connectToDatabase();
+        updateAdminUser(adminUser.getEmail(), adminUser);
     }
+
     /**
      * Whether the email being used to register as an admin is on the permitted list of emails.
      * An empty list returns true and the email is used as the first entry.
@@ -81,7 +78,13 @@ public class AuthenticationDatabaseManager {
      *  If the list is empty, the email being checked is added, and it returns true.
      */
     public boolean emailPermitted(String email) {
-        //TODO: implement please
-        return true;
+        try {
+            connectToDatabase();
+
+            return isEmailPermitted(email);
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

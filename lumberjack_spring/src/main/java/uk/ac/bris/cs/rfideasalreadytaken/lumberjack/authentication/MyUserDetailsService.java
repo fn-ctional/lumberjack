@@ -12,6 +12,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUse
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -24,10 +25,6 @@ public class MyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         AdminUser user = authenticationDatabaseManager.findByEmail(email);
-        if (user == null) {
-            throw new UsernameNotFoundException(
-                    "No user found with username: "+ email);
-        }
 
         boolean enabled = user.isEnabled();
 
@@ -39,7 +36,7 @@ public class MyUserDetailsService implements UserDetailsService {
                 (user.getEmail(),
                         user.getPassword().toLowerCase(), enabled, accountNonExpired,
                         credentialsNonExpired, accountNonLocked,
-                        getAuthorities(user.getRoles()));
+                        getAuthorities(Collections.singletonList("ADMINISTRATOR")));
     }
 
     private static List<GrantedAuthority> getAuthorities (Collection<String> roles) {

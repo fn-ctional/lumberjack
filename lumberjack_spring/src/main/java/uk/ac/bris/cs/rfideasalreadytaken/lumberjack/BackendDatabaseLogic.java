@@ -1,5 +1,6 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
@@ -67,5 +68,31 @@ public class BackendDatabaseLogic extends BackendDatabaseManipulation{
         return rs.next();
         }
         catch (Exception e){return false;}
+    }
+
+    protected boolean adminUserExists(String email) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Admins WHERE Email = ?");
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    protected boolean isEmailPermitted(String email) {
+       try {
+          PreparedStatement stmt1 = conn.prepareStatement("SELECT * FROM PermittedEmails ");
+           ResultSet rs1 = stmt1.executeQuery();
+           if (!rs1.next()) return true;
+
+          PreparedStatement stmt2 = conn.prepareStatement("SELECT * FROM PermittedEmails WHERE Email = ?");
+           stmt2.setString(1, email);
+           ResultSet rs2 = stmt2.executeQuery();
+           return rs2.next();
+       } catch (Exception e) {
+           return false;
+       }
     }
 }

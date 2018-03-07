@@ -1,5 +1,8 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.VerificationToken;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
@@ -11,6 +14,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AssignmentHistory;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class BackendDatabaseLoading extends BackendDatabaseLogic {
@@ -120,6 +124,48 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
             assignmentHistory.setReturnedSuccessfully(rs.getBoolean("ReturnedSuccessfully"));
             assignmentHistory.setReturnedByID(rs.getString("ReturnedBy"));
             return assignmentHistory;
+        }
+        return null;
+    }
+
+    protected AdminUser loadAdminUser(String email) throws UsernameNotFoundException, Exception{
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Admins WHERE Email = ?");
+        stmt.setString(1, email);
+        ResultSet rs = stmt.executeQuery();
+        AdminUser adminUser = loadAdminUserFromResultSet(rs);
+        if (adminUser == null) throw new UsernameNotFoundException("Username not found: " + email);
+        return adminUser;
+    }
+
+    private AdminUser loadAdminUserFromResultSet(ResultSet rs) throws UsernameNotFoundException, SQLException {
+        if(rs.next()){
+            AdminUser adminUser = new AdminUser();
+            adminUser.setEmail(rs.getString("Email"));
+            adminUser.setPassword(rs.getString("Password"));
+            adminUser.setName(rs.getString("Username"));
+            adminUser.setEnabled(rs.getBoolean("Enabled"));
+            return adminUser;
+        }
+        return null;
+    }
+
+    protected VerificationToken loadToken(String verificationToken) throws Exception {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Tokens WHERE Token = ?");
+        stmt.setString(1, verificationToken);
+        ResultSet rs = stmt.executeQuery();
+        return loadTokenFromResultSet(rs);
+    }
+
+    private VerificationToken loadTokenFromResultSet(ResultSet rs) {
+        try {
+            if(rs.next()) {
+                //We never bother to set data here so it might break
+                AdminUser adminUser = loadAdminUser(rs.getString("Email"));
+                String token = rs.getString("Token");
+                return new VerificationToken(token, adminUser);
+            }
+        } catch (Exception e) {
+            return null;
         }
         return null;
     }

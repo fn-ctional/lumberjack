@@ -1,5 +1,6 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import org.springframework.stereotype.Service;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Rule;
@@ -13,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
+@Service
 public class BackendFrontEndManager extends BackendDatabaseLoading implements FromFrontEnd {
 
     public boolean insertUser(User user) throws Exception{

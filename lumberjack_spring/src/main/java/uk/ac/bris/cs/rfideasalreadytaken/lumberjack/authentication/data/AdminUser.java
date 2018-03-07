@@ -18,8 +18,6 @@ public class AdminUser {
      */
     private boolean enabled;
 
-    private Collection<String> roles;
-
     public String getName() {
         return name;
     }
@@ -52,11 +50,4 @@ public class AdminUser {
         this.enabled = enabled;
     }
 
-    public Collection<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(final Collection<String> roles) {
-        this.roles = roles;
-    }
 }

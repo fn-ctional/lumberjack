@@ -20,7 +20,7 @@ public class UserService implements IUserService {
 
     @Transactional
     @Override
-    public AdminUser registerNewUserAccount(AdminUserDTO accountDTO) throws EmailExistsException, EmailNotPermittedException {
+    public AdminUser registerNewUserAccount(AdminUserDTO accountDTO) throws EmailNotPermittedException, Exception {
 
         if (authenticationDatabaseManager.userExists(accountDTO.getEmail())) {
             throw new EmailExistsException("There is already an account with that email address: "  + accountDTO.getEmail());
@@ -34,7 +34,7 @@ public class UserService implements IUserService {
         user.setName(accountDTO.getName());
         user.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
         user.setEmail(accountDTO.getEmail());
-        user.setRoles(Collections.singletonList("ADMIN"));
+        user.setEnabled(false);
         authenticationDatabaseManager.addAdminUser(user);
         return user;
     }
@@ -51,13 +51,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void saveRegisteredUser(AdminUser user) {
+    public void saveRegisteredUser(AdminUser user) throws Exception {
         authenticationDatabaseManager.save(user);
     }
 
     @Override
     public void createVerificationToken(AdminUser user, String token) {
         VerificationToken myToken = new VerificationToken(token, user);
-        authenticationDatabaseManager.save(myToken);
+        authenticationDatabaseManager.addToken(myToken);
     }
 }

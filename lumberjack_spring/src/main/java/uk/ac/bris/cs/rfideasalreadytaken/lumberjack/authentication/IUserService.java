@@ -5,11 +5,11 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUse
 
 public interface IUserService {
 
-    AdminUser registerNewUserAccount(AdminUserDTO accountDTO) throws EmailExistsException, EmailNotPermittedException;
+    AdminUser registerNewUserAccount(AdminUserDTO accountDTO) throws EmailNotPermittedException, Exception;
 
     AdminUser getUser(String verificationToken);
 
-    void saveRegisteredUser(AdminUser user);
+    void saveRegisteredUser(AdminUser user) throws Exception;
 
     void createVerificationToken(AdminUser user, String token);
 

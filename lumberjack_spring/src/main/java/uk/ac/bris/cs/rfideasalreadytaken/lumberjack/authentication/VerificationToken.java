@@ -14,7 +14,7 @@ public class VerificationToken {
 
     private Date expiryDate;
 
-    VerificationToken(String token, AdminUser adminUser) {
+    public VerificationToken(String token, AdminUser adminUser) {
         this.token = token;
         this.adminUser = adminUser;
         this.expiryDate = calculateExpiryDate(60 * 24);

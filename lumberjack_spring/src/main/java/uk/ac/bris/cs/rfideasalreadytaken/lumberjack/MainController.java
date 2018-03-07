@@ -127,8 +127,12 @@ public class MainController extends WebMvcConfigurerAdapter {
         }
 
         user.setEnabled(true);
-        userService.saveRegisteredUser(user);
-        return "redirect:/login.html";
+        try {
+            userService.saveRegisteredUser(user);
+            return "redirect:/login.html";
+        } catch (Exception e) {
+            return "redirect:/databaseError.html";
+        }
     }
     /*
     @PostMapping("/register")
@@ -175,11 +179,14 @@ public class MainController extends WebMvcConfigurerAdapter {
             //TODO: Implement this
         } catch (EmailExistsException e) {
             //TODO: Implement this
+        } catch (Exception e) {
+            //TODO: Implement this
         }
+
         return new ModelAndView("successRegister", "user", accountDTO);
     }
 
-    private AdminUser createUserAccount(AdminUserDTO accountDTO, BindingResult result) throws EmailNotPermittedException, EmailExistsException {
+    private AdminUser createUserAccount(AdminUserDTO accountDTO, BindingResult result) throws EmailNotPermittedException, Exception {
         AdminUser registered = null;
 
         registered = userService.registerNewUserAccount(accountDTO);
