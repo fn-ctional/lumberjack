@@ -1,32 +1,49 @@
-<html xmlns:th="http://www.w3.org/1999/xhtml">
-<body>
-<h1 th:text="#{label.form.title}">form</h1>
-<form action="/" th:object="${user}" method="POST" enctype="utf8">
-    <div>
-        <label th:text="#{label.user.name}">name</label>
-        <input th:field="*{name}"/>
-        <p th:each="error: ${#fields.errors('name')}"
-           th:text="${error}">Validation error</p>
-    </div>
-    <div>
-        <label th:text="#{label.user.email}">email</label>
-        <input type="email" th:field="*{email}"/>
-        <p th:each="error : ${#fields.errors('email')}"
-           th:text="${error}">Validation error</p>
-    </div>
-    <div>
-        <label th:text="#{label.user.password}">password</label>
-        <input type="password" th:field="*{password}"/>
-        <p th:each="error : ${#fields.errors('password')}"
-           th:text="${error}">Validation error</p>
-    </div>
-    <div>
-        <label th:text="#{label.user.confirmPass}">confirm</label>
-        <input type="password" th:field="*{matchingPassword}"/>
-    </div>
-    <button type="submit" th:text="#{label.form.submit}">submit</button>
-</form>
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 
-<a th:href="@{/login.html}" th:text="#{label.form.loginLink}">login</a>
+<head th:include ="fragments/header :: head (title='lumberjack - Register')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container">
+
+    <h1>Register</h1>
+
+    <form name='register-form' action="/registration" method="POST" enctype="utf8">
+
+        <div class="form-group">
+            <label for="name">Username: </label>
+            <input class="form-control" id="name" name="name" placeholder="Enter username"/>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email: </label>
+            <input class="form-control" id="email" type="email" name="email" placeholder="Enter email"/>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password: </label>
+            <input class="form-control" id="password" type="password" name="password" placeholder="Password"/>
+        </div>
+
+        <div class="form-group">
+            <label for="matchingPassword">Confirm Password: </label>
+            <input class="form-control" id="matchingPassword" type="password" name="matchingPassword" placeholder="Password"/>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Register</button>
+
+    </form>
+
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
 </body>
 </html>

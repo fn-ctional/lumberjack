@@ -97,7 +97,7 @@ public class MainController extends WebMvcConfigurerAdapter {
     public String showRegistrationForm(WebRequest request, Model model) {
         AdminUserDTO userDto = new AdminUserDTO();
         model.addAttribute("user", userDto);
-        return "register";
+        return "registration";
     }
 
     @Autowired

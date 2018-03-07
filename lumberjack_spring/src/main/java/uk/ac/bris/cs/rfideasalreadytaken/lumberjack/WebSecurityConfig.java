@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        final String[] unlocked = {"/", "/about", "/download", "/register", "/css/**", "/js/**", "/images/**"};
+        final String[] unlocked = {"/", "/about", "/download", "/register", "/registration", "/css/**", "/js/**", "/images/**"};
 
         http
                     .authorizeRequests()
