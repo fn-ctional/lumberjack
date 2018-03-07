@@ -24,7 +24,7 @@ int main() {
     if ( !connection.send(data, response) ) {
       std::cerr << "[data send failed]" << std::endl;
     } else {
-      std::cout << data << std::endl;
+      std::cout << response.body << std::endl;
     }
 
   }

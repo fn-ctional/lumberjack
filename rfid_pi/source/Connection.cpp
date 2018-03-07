@@ -78,7 +78,7 @@ size_t reader(char *buff, size_t size, size_t nitems, Connection::Response *resp
     str[curr_size + copy_size] = '\x00';
     delete resp->body;
     resp->body = str;
-    return curr_size + copy_size;
+    return copy_size;
   }
   return 0;
 }
