@@ -12,6 +12,8 @@ auto future(int milliseconds) {
   return now() + std::chrono::milliseconds(milliseconds);
 }
 
+// A Source object stores a Channel and its reader.
+// The Writer is passed, along with the event source path, to a thread that runs the source_f function.
 Event::Source::Source(const char *path)
 : reader(channel.get_read())
 , source(source_f, path, channel.get_write()) {}
@@ -63,12 +65,15 @@ char toChar(Event::Code code) {
   return '\x00';
 }
 
+// Events are read from the file specified by path.
+// By communicating over a channel, a source object can perform non-blocking reads.
 void source_f(const char *path, Channel::Write<Event::Code> chan) {
   auto file = std::ifstream(path);
   Event::Event event;
   auto buffer = reinterpret_cast<char*>( &event );
   while ( file ) {
     file.read( buffer, sizeof( Event::Event ) );
+    // Keyboard events have the type and value 1
     if ( event.type == 1 && event.value == 1 ) {
       chan.write( event.code );
     }
