@@ -15,9 +15,25 @@
             <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/dashboard' ? 'active':''}" href="/dashboard">
                 <strong>Dashboard</strong>
             </a>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-link">
+            <strong>Users</strong>
+        </li>
+        <li>
             <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/users' ? 'active':''}" href="/users">
                 All Users
             </a>
+        </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/search/user' ? 'active':''}" href="/search/user">
+                Search Users
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
             <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/help' ? 'active':''}" href="/help">
                 Help
             </a>

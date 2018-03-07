@@ -20,6 +20,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.UserService;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Search;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -30,6 +31,9 @@ public class MainController extends WebMvcConfigurerAdapter {
 
     @Autowired
     private BackendCardReaderManager backend;
+
+    @Autowired
+    private BackendFrontEndManager backendFrontEndManager;
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -128,14 +132,47 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "dashboard";
     }
 
+    @GetMapping("/user")
+    public String user(Model model){
+        model.addAttribute("blank", true);
+        return "users";
+    }
+
     @GetMapping("/users")
     public String allUsers(Model model){
-        // Add dummy data
-        User test1 = new User("1", "812937528", 2, 0, true,"group1");
-        User test2 = new User("2", "127482930", 1, 1, false,"group1");
+        model.addAttribute("multi", true);
+        Boolean found = false;
         List<User> userList = new ArrayList<>();
-        userList.add(test1);
-        userList.add(test2);
+        try {
+            userList = backendFrontEndManager.getUsers();
+            if (!userList.isEmpty()){
+                found = true;
+            }
+        }
+        catch (Exception e){
+            System.out.println("SQL Error");
+        }
+        model.addAttribute("found", found);
+        model.addAttribute(userList);
+        return "users";
+    }
+
+    @GetMapping("/user/{id}")
+    public String userSpecified(@PathVariable String id, Model model){
+        List<User> userList = new ArrayList<>();
+        Boolean found = false;
+        model.addAttribute("searchTerm", id);
+        try {
+            User user = backendFrontEndManager.getUser(id);
+            if (user.getId().equals(id)){
+                userList.add(user);
+                found = true;
+            }
+        }
+        catch (Exception e){
+            System.out.println("SQL Error");
+        }
+        model.addAttribute("found", found);
         model.addAttribute(userList);
         return "users";
     }
