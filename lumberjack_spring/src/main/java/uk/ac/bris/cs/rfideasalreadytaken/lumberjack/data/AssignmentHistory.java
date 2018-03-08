@@ -11,13 +11,12 @@ public class AssignmentHistory {
     private java.sql.Time timeAssigned;
     private java.sql.Date dateReturned;
     private java.sql.Time timeReturned;
-    private java.sql.Time timeRemovedFor;
     private boolean returnedSuccessfully;
     private String returnedByID;
 
     public AssignmentHistory(){};
 
-    public AssignmentHistory(String assignmentHistoryID, String deviceID, String userID, java.sql.Date dateAssigned, java.sql.Time timeAssigned, java.sql.Date dateReturned, java.sql.Time timeReturned, java.sql.Time timeRemovedFor, boolean returnedSuccessfully, String returnedByID){
+    public AssignmentHistory(String assignmentHistoryID, String deviceID, String userID, java.sql.Date dateAssigned, java.sql.Time timeAssigned, java.sql.Date dateReturned, java.sql.Time timeReturned, boolean returnedSuccessfully, String returnedByID){
         this.assignmentHistoryID = assignmentHistoryID;
         this.deviceID = deviceID;
         this.userID = userID;
@@ -25,7 +24,6 @@ public class AssignmentHistory {
         this.timeAssigned = timeAssigned;
         this.dateReturned = dateReturned;
         this.timeReturned = timeReturned;
-        this.timeRemovedFor = timeRemovedFor;
         this.returnedSuccessfully = returnedSuccessfully;
         this.returnedByID = returnedByID;
     }
@@ -58,10 +56,6 @@ public class AssignmentHistory {
         return timeReturned;
     }
 
-    public Time getTimeRemovedFor() {
-        return timeRemovedFor;
-    }
-
     public boolean isReturnedSuccessfully() {
         return returnedSuccessfully;
     }
@@ -92,10 +86,6 @@ public class AssignmentHistory {
 
     public void setTimeReturned(Time timeReturned) {
         this.timeReturned = timeReturned;
-    }
-
-    public void setTimeRemovedFor(Time timeRemovedFor) {
-        this.timeRemovedFor = timeRemovedFor;
     }
 
     public void setReturnedSuccessfully(boolean returnedSuccessfully) { this.returnedSuccessfully = returnedSuccessfully; }

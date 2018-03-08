@@ -121,7 +121,6 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
             assignmentHistory.setTimeAssigned(rs.getTime("TimeAssigned"));
             assignmentHistory.setDateReturned(rs.getDate("DateReturned"));
             assignmentHistory.setTimeReturned(rs.getTime("TimeReturned"));
-            assignmentHistory.setTimeRemovedFor(rs.getTime("TimeRemovedFor"));
             assignmentHistory.setReturnedSuccessfully(rs.getBoolean("ReturnedSuccessfully"));
             assignmentHistory.setReturnedByID(rs.getString("ReturnedBy"));
             return assignmentHistory;

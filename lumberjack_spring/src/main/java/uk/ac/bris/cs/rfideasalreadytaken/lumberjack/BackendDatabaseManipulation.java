@@ -95,7 +95,6 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
                     "\nTimeAssigned TIME," +
                     "\nDateReturned DATE," +
                     "\nTimeReturned TIME," +
-                    "\nTimeRemovedFor TIME," +
                     "\nReturnedSuccessfully bit," +
                     "\nReturnedBy varchar(100) NOT NULL," +
                     "\nPRIMARY KEY (id))");
@@ -331,8 +330,8 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
             returnedSuccessfully = true;
         }
 
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, TimeRemovedFor, ReturnedSuccessfully, ReturnedBy)" +
-                "VALUES (?,?,?,?,?,?,?,?,?)");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, ReturnedSuccessfully, ReturnedBy)" +
+                "VALUES (?,?,?,?,?,?,?,?)");
 
         java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
         java.sql.Time time = new java.sql.Time(Calendar.getInstance().getTime().getTime());
@@ -343,9 +342,8 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         stmt.setTime(4, assignment.getTimeAssigned());
         stmt.setDate(5, date);
         stmt.setTime(6, time);
-        stmt.setTime(7, assignment.getTimeAssigned());
-        stmt.setBoolean(8, returnedSuccessfully);
-        stmt.setString(9,returningUserID);
+        stmt.setBoolean(7, returnedSuccessfully);
+        stmt.setString(8,returningUserID);
 
         stmt.execute();
         return true;
