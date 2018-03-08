@@ -114,7 +114,7 @@ public class MainController extends WebMvcConfigurerAdapter {
 
         VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
-            String message = messages.getMessage("auth.message.invalidToken", null, locale);
+            String message = "Invalid Token!";//messages.getMessage("auth.message.invalidToken", null, locale);
             model.addAttribute("message", message);
             return "redirect:/badUser.html";
         }
@@ -122,7 +122,7 @@ public class MainController extends WebMvcConfigurerAdapter {
         AdminUser user = verificationToken.getAdminUser();
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            String messageValue = messages.getMessage("auth.message.expired", null, locale);
+            String messageValue = "Token expired!";//messages.getMessage("auth.message.expired", null, locale);
             model.addAttribute("message", messageValue);
             return "redirect:/badUser.html";
         }
