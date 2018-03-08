@@ -92,6 +92,7 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
             device.setType(rs.getString("Type"));
             device.setId(rs.getString("id"));
             device.setScanValue(rs.getString("ScanValue"));
+            device.setRuleID(rs.getString("RuleID"));
             return device;
         }
         return null;
@@ -120,7 +121,6 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
             assignmentHistory.setTimeAssigned(rs.getTime("TimeAssigned"));
             assignmentHistory.setDateReturned(rs.getDate("DateReturned"));
             assignmentHistory.setTimeReturned(rs.getTime("TimeReturned"));
-            assignmentHistory.setTimeRemovedFor(rs.getTime("TimeRemovedFor"));
             assignmentHistory.setReturnedSuccessfully(rs.getBoolean("ReturnedSuccessfully"));
             assignmentHistory.setReturnedByID(rs.getString("ReturnedBy"));
             return assignmentHistory;

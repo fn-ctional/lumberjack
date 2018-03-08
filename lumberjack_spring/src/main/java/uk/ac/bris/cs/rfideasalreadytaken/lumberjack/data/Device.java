@@ -64,7 +64,7 @@ public class Device {
         this.currentlyAssigned = currentlyAssigned;
     }
 
-    public void setRuleID(boolean ruleID) {
-        this.currentlyAssigned = ruleID;
+    public void setRuleID(String ruleID) {
+        this.ruleID = ruleID;
     }
 }

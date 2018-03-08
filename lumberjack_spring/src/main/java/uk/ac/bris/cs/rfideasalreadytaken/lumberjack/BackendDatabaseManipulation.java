@@ -6,6 +6,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.*;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Calendar;
 
 public class BackendDatabaseManipulation extends BackendDatabaseConnection{
 
@@ -94,7 +95,6 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
                     "\nTimeAssigned TIME," +
                     "\nDateReturned DATE," +
                     "\nTimeReturned TIME," +
-                    "\nTimeRemovedFor TIME," +
                     "\nReturnedSuccessfully bit," +
                     "\nReturnedBy varchar(100) NOT NULL," +
                     "\nPRIMARY KEY (id))");
@@ -128,11 +128,11 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         group = new UserGroup("groupTwo");
         insertIntoUserGroups(group);
 
-        GroupPermission permission = new GroupPermission("ruleset1", "groupOne");
+        GroupPermission permission = new GroupPermission("ruleSet1", "groupOne");
         insertIntoGroupPermissions(permission);
-        permission = new GroupPermission("ruleset1", "groupTwo");
+        permission = new GroupPermission("ruleSet1", "groupTwo");
         insertIntoGroupPermissions(permission);
-        permission = new GroupPermission("ruleset2", "groupOne");
+        permission = new GroupPermission("ruleSet2", "groupOne");
         insertIntoGroupPermissions(permission);
 
         User user = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
@@ -153,16 +153,10 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         device = new Device("camera01", "03457237295732925", "camera", true, false, "ruleSet2");
         insertIntoDevices(device);
 
-        java.sql.Date date = java.sql.Date.valueOf("2018-02-10");
-        time = java.sql.Time.valueOf("14:45:20");
-
-        Assignment assignment = new Assignment("laptop02", "Betty1248", date,time);
+        Assignment assignment = new Assignment("laptop02", "Betty1248");
         insertIntoAssignments(assignment);
 
-        date = java.sql.Date.valueOf("2018-02-09");
-        time = java.sql.Time.valueOf("09:32:13");
-
-        assignment = new Assignment("laptop01", "Callum2468", date,time);
+        assignment = new Assignment("laptop01", "Callum2468");
         insertIntoAssignmentHistory(assignment, "Aidan9876");
 
         return true;
@@ -336,18 +330,20 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
             returnedSuccessfully = true;
         }
 
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, TimeRemovedFor, ReturnedSuccessfully, ReturnedBy)" +
-                "VALUES (?,?,?,?,?,?,?,?,?)");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, ReturnedSuccessfully, ReturnedBy)" +
+                "VALUES (?,?,?,?,?,?,?,?)");
+
+        java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+        java.sql.Time time = new java.sql.Time(Calendar.getInstance().getTime().getTime());
 
         stmt.setString(1, assignment.getDeviceID());
         stmt.setString(2, assignment.getUserID());
         stmt.setDate(3, assignment.getDateAssigned());
         stmt.setTime(4, assignment.getTimeAssigned());
-        stmt.setDate(5, assignment.getDateAssigned());
-        stmt.setTime(6, assignment.getTimeAssigned());
-        stmt.setTime(7, assignment.getTimeAssigned());
-        stmt.setBoolean(8, returnedSuccessfully);
-        stmt.setString(9,returningUserID);
+        stmt.setDate(5, date);
+        stmt.setTime(6, time);
+        stmt.setBoolean(7, returnedSuccessfully);
+        stmt.setString(8,returningUserID);
 
         stmt.execute();
         return true;
