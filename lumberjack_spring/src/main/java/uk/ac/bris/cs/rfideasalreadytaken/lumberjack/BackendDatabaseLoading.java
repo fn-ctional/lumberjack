@@ -156,16 +156,11 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
         return loadTokenFromResultSet(rs);
     }
 
-    private VerificationToken loadTokenFromResultSet(ResultSet rs) {
-        try {
-            if(rs.next()) {
-                //We never bother to set data here so it might break
-                AdminUser adminUser = loadAdminUser(rs.getString("Email"));
-                String token = rs.getString("Token");
-                return new VerificationToken(token, adminUser);
-            }
-        } catch (Exception e) {
-            return null;
+    private VerificationToken loadTokenFromResultSet(ResultSet rs) throws Exception {
+        if(rs.next()) {
+            AdminUser adminUser = loadAdminUser(rs.getString("AdminEmail"));
+            String token = rs.getString("Token");
+            return new VerificationToken(token, adminUser);
         }
         return null;
     }
