@@ -111,25 +111,27 @@ public class MainController extends WebMvcConfigurerAdapter {
 
         VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
-            String message = "Invalid Token!";
-            model.addAttribute("message", message);
-            return "redirect:/badUser.html";
+            model.addAttribute("messageType", "Bad Verification Link");
+            model.addAttribute("messageString", "Try and register again.");
+            return "message";
         }
 
         AdminUser user = verificationToken.getAdminUser();
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            String messageValue = "Token expired!";//messages.getMessage("auth.message.expired", null, locale);
-            model.addAttribute("message", messageValue);
-            return "redirect:/badUser.html";
+            model.addAttribute("messageType", "Token Expired");
+            model.addAttribute("messageString", "Your verification token expired, try to register again.");
+            return "message";
         }
 
         user.setEnabled(true);
         try {
             userService.saveRegisteredUser(user);
-            return "redirect:/login.html";
+            return "login";
         } catch (Exception e) {
-            return "redirect:/databaseError.html";
+            model.addAttribute("messageType", "Server Error");
+            model.addAttribute("messageString", "Sorry! Try and register again.");
+            return "message";
         }
     }
 
@@ -157,18 +159,18 @@ public class MainController extends WebMvcConfigurerAdapter {
             AdminUser registered = createUserAccount(accountDTO, result);
             String appUrl = request.getContextPath();
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl));
+            model.addAttribute("messageType", "Registration");
+            model.addAttribute("messageString", "Check your emails for a verification link!");
         } catch (EmailNotPermittedException e) {
-            e.printStackTrace();
-            //TODO: Implement this
+            model.addAttribute("messageType", "Failed Registration");
+            model.addAttribute("messageString", "You are not permitted to create an account.");
         } catch (EmailExistsException e) {
-            e.printStackTrace();
-            //TODO: Implement this
+            model.addAttribute("messageType", "Failed Registration");
+            model.addAttribute("messageString", "A user with this email address has already registered.");
         } catch (Exception e) {
-            e.printStackTrace();
-            //TODO: Implement this
+            model.addAttribute("messageType", "Registration Error");
+            model.addAttribute("messageString", "Your registration failed!");
         }
-        model.addAttribute("messageType", "Registration");
-        model.addAttribute("messageString", "You have successfully registered!");
         return new ModelAndView("message", "user", accountDTO);
     }
 

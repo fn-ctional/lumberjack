@@ -25,7 +25,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true");
+        props.put("mail.debug", "false");
 
         return mailSender;
     }
@@ -66,7 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        final String[] unlocked = {"/", "/about", "/download", "/register", "/registration*", "/css/**", "/js/**", "/images/**"};
+        final String[] unlocked = {"/", "/about", "/download", "/register", "/registration", "/css/**", "/js/**",
+                "/images/**", "/registrationConfirm*"};
 
         http
                     .authorizeRequests()
@@ -102,9 +103,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authProvider())
-                //TODO: remove this testing user when user authentication works
-                .inMemoryAuthentication().withUser("test@lumberjack").password("password1").roles("ADMINISTRATOR");
+        auth.authenticationProvider(authProvider());
     }
 
 }

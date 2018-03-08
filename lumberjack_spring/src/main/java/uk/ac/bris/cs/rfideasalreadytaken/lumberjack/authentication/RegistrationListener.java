@@ -27,9 +27,6 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private IUserService service;
 
     @Autowired
-    private MessageSource messages;
-
-    @Autowired
     private JavaMailSender mailSender;
 
     @Autowired
@@ -48,14 +45,12 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         String recipientAddress = adminUser.getEmail();
         String subject = "Registration Confirmation";
         String confirmationUrl
-                = event.getAppUrl() + "/registrationConfirm.html?token=" + token;
-        String message = "Registration Successful";
-                //messages.getMessage("message.regSucc", null, event.getLocale());
-
+                = event.getAppUrl() + "/registrationConfirm?token=" + token;
+        String message = "Registration Successful ";
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);
         email.setSubject(subject);
-        email.setText(message + "http://localhost:8080" + confirmationUrl);
+        email.setText(message + "<a href=\"" + "http://localhost:8080" + confirmationUrl + "\"\\a>");
         email.setFrom(env.getProperty("support.email"));
 
         final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
