@@ -1,8 +1,11 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,13 +16,43 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.context.request.RequestContextListener;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.MyUserDetailsService;
 
+import java.util.Locale;
 import java.util.Properties;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    /*
+     @Bean
+     public MessageSource messageSource() {
+         final ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+         messageSource.setBasename("messages");
+         // messageSource.setBasename("classpath:messages");
+         messageSource.setUseCodeAsDefaultMessage(true);
+         messageSource.setDefaultEncoding("UTF-8");
+         messageSource.setCacheSeconds(0);
+         return messageSource;
+     }
+*/
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        final CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
+        cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
+        return cookieLocaleResolver;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(RequestContextListener.class)
+    public RequestContextListener requestContextListener() {
+        return new RequestContextListener();
+    }
 
     @Bean
     public JavaMailSender getJavaMailSender() {
@@ -28,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         mailSender.setPort(587);
 
         mailSender.setUsername("fnctional.master@gmail.com");
-        mailSender.setPassword("5vEu3F3K#KbZOsG&DUD");
+        mailSender.setPassword("5vEu3F3K#KbBZOsG&DUD");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

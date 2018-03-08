@@ -1,8 +1,13 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -180,10 +185,13 @@ public class MainController extends WebMvcConfigurerAdapter {
             String appUrl = request.getContextPath();
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl));
         } catch (EmailNotPermittedException e) {
+            e.printStackTrace();
             //TODO: Implement this
         } catch (EmailExistsException e) {
+            e.printStackTrace();
             //TODO: Implement this
         } catch (Exception e) {
+            e.printStackTrace();
             //TODO: Implement this
         }
         model.addAttribute("messageString", "You have successfully registered!");
@@ -264,4 +272,5 @@ public class MainController extends WebMvcConfigurerAdapter {
         model.addAttribute("type", type);
         return "search";
     }
+
 }
