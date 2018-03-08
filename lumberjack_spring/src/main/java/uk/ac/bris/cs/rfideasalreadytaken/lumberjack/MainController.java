@@ -42,6 +42,9 @@ public class MainController extends WebMvcConfigurerAdapter {
     @Autowired
     private BackendFrontEndManager backendFrontEndManager;
 
+    @Autowired
+    private AuthenticationDatabaseManager authenticationDatabaseManager;
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("home");
@@ -98,13 +101,7 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
     private IUserService userService;
-
-    @Autowired
-    private MessageSource messages;
 
     @GetMapping(value = "/registrationConfirm")
     public String confirmRegistration
@@ -114,7 +111,7 @@ public class MainController extends WebMvcConfigurerAdapter {
 
         VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
-            String message = "Invalid Token!";//messages.getMessage("auth.message.invalidToken", null, locale);
+            String message = "Invalid Token!";
             model.addAttribute("message", message);
             return "redirect:/badUser.html";
         }
@@ -135,31 +132,7 @@ public class MainController extends WebMvcConfigurerAdapter {
             return "redirect:/databaseError.html";
         }
     }
-    /*
-    @PostMapping("/register")
-    public ModelAndView registerUserAccount(
-            @ModelAttribute("user") @Valid AdminUserDTO accountDTO,
-            BindingResult result, WebRequest request, Errors errors) {
 
-        AdminUser registered = new AdminUser();
-        if (!result.hasErrors()) {
-            try {
-                userService.registerNewUserAccount(accountDTO);
-            } catch (EmailExistsException e) {
-                result.rejectValue("email", "message.regError");
-            } catch (EmailNotPermittedException e) {
-                //TODO: This should say something different but I can't work out where it is
-                result.rejectValue("email", "message.regError");
-            }
-        }
-        if (result.hasErrors()) {
-            return new ModelAndView("registration", "user", accountDTO);
-        }
-        else {
-            return new ModelAndView("successRegister", "user", accountDTO);
-        }
-    }
-    */
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
@@ -210,8 +183,9 @@ public class MainController extends WebMvcConfigurerAdapter {
     @GetMapping("/dashboard")
     public String dashboard(Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        //TODO: Make this user name instead of email
-        String name = auth.getName();
+        String email = auth.getName();
+        AdminUser user = authenticationDatabaseManager.findByEmail(email);
+        String name = user.getName();
         model.addAttribute("name", name);
         return "dashboard";
     }

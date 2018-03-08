@@ -25,21 +25,8 @@ import java.util.Locale;
 import java.util.Properties;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-    /*
-     @Bean
-     public MessageSource messageSource() {
-         final ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-         messageSource.setBasename("messages");
-         // messageSource.setBasename("classpath:messages");
-         messageSource.setUseCodeAsDefaultMessage(true);
-         messageSource.setDefaultEncoding("UTF-8");
-         messageSource.setCacheSeconds(0);
-         return messageSource;
-     }
-*/
 
     @Bean
     public LocaleResolver localeResolver() {
