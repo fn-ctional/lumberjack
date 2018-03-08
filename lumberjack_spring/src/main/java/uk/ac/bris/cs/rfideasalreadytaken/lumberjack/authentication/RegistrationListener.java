@@ -55,7 +55,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         SimpleMailMessage email = new SimpleMailMessage();
         email.setTo(recipientAddress);
         email.setSubject(subject);
-        email.setText(message + " rn" + "http://localhost:8080" + confirmationUrl);
+        email.setText(message + "http://localhost:8080" + confirmationUrl);
         email.setFrom(env.getProperty("support.email"));
 
         final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
