@@ -152,9 +152,7 @@ public class BackendCardReaderManager extends BackendDatabaseLoading implements 
             stmt3.setString(2, user.getId());
             stmt3.execute();
 
-            Date date = Date.valueOf("2018-02-10");
-            Time time = Time.valueOf("14:45:20");
-            Assignment assignment = new Assignment(device.getId(), user.getId(), date, time);
+            Assignment assignment = new Assignment(device.getId(), user.getId());
             insertIntoAssignments(assignment);
             return ScanReturn.SUCCESSREMOVAL;
         }
