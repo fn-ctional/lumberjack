@@ -194,8 +194,8 @@ public class MainController extends WebMvcConfigurerAdapter {
             e.printStackTrace();
             //TODO: Implement this
         }
-        model.addAttribute("messageString", "You have successfully registered!");
         model.addAttribute("messageType", "Registration");
+        model.addAttribute("messageString", "You have successfully registered!");
         return new ModelAndView("message", "user", accountDTO);
     }
 
