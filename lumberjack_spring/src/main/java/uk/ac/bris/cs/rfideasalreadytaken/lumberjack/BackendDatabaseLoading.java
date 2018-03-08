@@ -92,6 +92,7 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
             device.setType(rs.getString("Type"));
             device.setId(rs.getString("id"));
             device.setScanValue(rs.getString("ScanValue"));
+            device.setRuleID(rs.getString("RuleID"));
             return device;
         }
         return null;

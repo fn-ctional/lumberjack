@@ -174,6 +174,9 @@ public class BackendCardReaderManager extends BackendDatabaseLoading implements 
         else if(!canDeviceBeRemoved(device)){
             return ScanReturn.FAILDEVICEUNAVIALABLE;
         }
+        else if(!canUserGroupRemoveDevice(device, user)){
+            return ScanReturn.FAILUSERGROUPRULESETNOTCOMPATABLE;
+        }
 
         return ScanReturn.SUCCESSSCANREMOVE;
     }

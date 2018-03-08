@@ -128,11 +128,11 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         group = new UserGroup("groupTwo");
         insertIntoUserGroups(group);
 
-        GroupPermission permission = new GroupPermission("ruleset1", "groupOne");
+        GroupPermission permission = new GroupPermission("ruleSet1", "groupOne");
         insertIntoGroupPermissions(permission);
-        permission = new GroupPermission("ruleset1", "groupTwo");
+        permission = new GroupPermission("ruleSet1", "groupTwo");
         insertIntoGroupPermissions(permission);
-        permission = new GroupPermission("ruleset2", "groupOne");
+        permission = new GroupPermission("ruleSet2", "groupOne");
         insertIntoGroupPermissions(permission);
 
         User user = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");

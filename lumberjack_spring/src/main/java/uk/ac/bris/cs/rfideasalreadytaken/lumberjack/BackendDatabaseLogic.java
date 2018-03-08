@@ -70,6 +70,17 @@ public class BackendDatabaseLogic extends BackendDatabaseManipulation{
         catch (Exception e){return false;}
     }
 
+    protected boolean canUserGroupRemoveDevice(Device device, User user) throws Exception{
+        try{
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM GroupPermissions WHERE UserGroupID = ? AND RuleID = ?;");
+            stmt.setString(1, user.getGroupId());
+            stmt.setString(2, device.getRuleID());
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        }
+        catch (Exception e){return false;}
+    }
+
     protected boolean adminUserExists(String email) {
         try {
             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Admins WHERE Email = ?");
