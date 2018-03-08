@@ -10,7 +10,7 @@ dbg_msg := ""
 default: $(source) $(headers)
 	@ mkdir -p bin
 	@ echo -e "\e[00;36m[compiling - $(opt_msg)$(dbg_msg)]\e[0m"
-	@ g++ -std=c++14 $(warnings) $(inc_dir) $(link) $(source) -o bin/scan $(debug) $(optimise)
+	@ g++ -std=c++17 $(warnings) $(inc_dir) $(link) $(source) -o bin/scan $(debug) $(optimise)
 
 debug: | debug_set default
 

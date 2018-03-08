@@ -1,8 +1,22 @@
 #include "Event.hpp"
 #include <chrono>
+#include <type_traits>
 
 void source_f(const char*, Channel::Write<Event::Code>);
 char toChar(Event::Code);
+
+
+// This is just a map function similar to those found in functional languages
+//  (e.g. map :: Functor f => (a -> b) -> f a -> f b)
+// The implementation of std::optional does not include a map method
+template<class F, class T>
+std::optional<typename std::invoke_result<F,T>::type> map(F fn, std::optional<T> opt) {
+  if ( opt.has_value() ) {
+    return std::optional(fn(opt.value()));
+  } else {
+    return std::nullopt;
+  }
+}
 
 auto now() {
   return std::chrono::steady_clock::now();
@@ -18,33 +32,33 @@ Event::Source::Source(const char *path)
 : reader(channel.get_read())
 , source(source_f, path, channel.get_write()) {}
 
-bool Event::Source::read(char &c, bool block) {
-  Code code;
-  if ( !read_raw(code, block) ) return false;
-  c = toChar( code );
-  return true;
+std::optional<char> Event::Source::read(bool block) {
+  return map( toChar, read_raw(block) );
 }
 
-bool Event::Source::readline(std::string &str, int timeout) {
+std::optional<std::string> Event::Source::readline(int timeout) {
   auto end = future(timeout);
   bool block = timeout < 0;
-  str.clear();
-  char c;
+  std::string str;
+
   while ( block || now() < end ) {
-    if ( read( c, block ) ) {
-      if ( c == '\n' ) return true;
+    auto c_opt = read( block );
+
+    if ( c_opt ) {
+      auto c = c_opt.value();
+      if ( c == '\n' ) return std::optional(str);
       str += c;
     }
   }
-  return false;
+
+  return std::nullopt;
 }
 
-bool Event::Source::read_raw(Code &code, bool block) {
+std::optional<Event::Code> Event::Source::read_raw(bool block) {
   if ( block ) {
-    reader.read(code);
-    return true;
+    return reader.read();
   } else {
-    return reader.try_read(code);
+    return reader.try_read();
   }
 }
 

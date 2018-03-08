@@ -11,9 +11,10 @@
 // > auto read = channel.get_read();
 // > auto write = channel.get_write();
 // > write.write(42);
-// > int x;
-// > read.read(x);
+// > int x = read.read(x).value();
 // > assert( 42 == x);
+
+#include <optional>
 
 namespace Channel {
 
@@ -90,26 +91,27 @@ namespace Channel {
   // try_read:
   //  This method attempts to read the data from the channel.
   //  If the state flag is Read, the data is read into t and the flag set to Write, if not, no changes are made.
-  //  return: bool - true if data was read, false if not
-  //  inputs: T &t - A reference to the object into which the data is read
+  //  return: std::optional<T> - This contains a T if one was read, otherwise it is empty
   //
   // read:
-  //  This method waits until data can be read to read from it, it repeatedly calls try_read.
-  //  inputs: T &t - A reference to the object into which the data is read
+  //  This method waits until data can be read to read from it, it repeatedly calls try_read and unwraps the result.
+  //  return: T - The T object that was read
   template<class T>
   class Read {
   public:
     Read(Read<T> &&r): data(r.data) {};
 
-    bool try_read(T &t) {
-      if ( data->state != State::Read ) return false;
-      t = data->data;
+    std::optional<T> try_read() {
+      if ( data->state != State::Read ) return std::nullopt;
+      std::optional<T> t = data->data;
       data->state = State::Write;
-      return true;
+      return t;
     };
 
-    void read(T &t) {
-      while ( !try_read(t) ) {}
+    T read() {
+      std::optional<T> t;
+      while ( ! ( t = try_read() ) ) {}
+      return t.value();
     };
 
   private:

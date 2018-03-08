@@ -6,20 +6,21 @@
 //
 // Examples of usage:
 // > auto keyboard = Source("/dev/input/event0");
-// > std::string line;
-// > keyboard.readline(line, -1);
+// > std::string line = keyboard.readline(-1).value();
 // > std::cout << line << std::endl;
 //
 // > auto keyboard = Source("/dev/input/event0");
-// > char c;
 // > while ( true ) {
-// >   keyboard.read(c, true);
-// >   std::cout << c << std::flush;
+// >   auto c_opt = keyboard.read(true);
+// >   if ( c_opt.has_value() ) {
+// >     std::cout << c_opt.value() << std::flush;
+// >   }
 // > }
 
 #include <thread>
 #include <string>
 #include <fstream>
+#include <optional>
 #include "Channel.hpp"
 #include <linux/input.h>
 
@@ -36,30 +37,27 @@ namespace Event {
   //
   // read:
   //  This method tries to read a single character from the source, optionally blocking
-  //  return: bool - This is true if a character was read, false otherwise
-  //  inputs: char &c - The char into which the character is read
-  //          bool block - If true, this method will not return until a char is read, if false, it returns immediately
+  //  return: std::optional<char> - This contains a char if one was read, otherwise it is empty
+  //  inputs: bool block - If true, this method will not return until a char is read, if false, it returns immediately
   //
   // readline:
   //  This method reads characters up until a newline '\n' or the specified timeout is reached.
-  //  return: bool - If a complete line is read before the timeout, this is true. False otherwise.
-  //  inputs: std::string &str - A reference to a string into which the output is written, excludng the newline
-  //          int timeout - The timeout in milliseconds. If less than 0, this function will block
+  //  return: std::optional<std::string> - This contains a string if a complete line was read, otherwise it is empty
+  //  inputs: int timeout - The timeout in milliseconds. If less than 0, this function will block
   //
   //  read_raw (private):
   //   This method reads a character code from the input source. These are different from, but convertable to, chars
-  //   return: bool - This is true if a character code is read
-  //   input: Code &code - A reference to the object into which the character code is written
-  //          bool block - If true, this method blocks, if false, this function returns immediately
+  //   return: std::optional<Code> - This contains a Code if one was read, otherwise it is empty
+  //   input: bool block - If true, this method blocks, if false, this function returns immediately
   class Source {
   public:
     Source(const char*);
 
-    bool read(char&, bool);
-    bool readline(std::string&, int);
+    std::optional<char> read(bool);
+    std::optional<std::string> readline(int);
 
   private:
-    bool read_raw(Code&, bool);
+    std::optional<Code> read_raw(bool);
 
     Channel::Channel<Code> channel;
     Channel::Read<Code> reader;

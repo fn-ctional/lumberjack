@@ -9,18 +9,18 @@ int main() {
   auto response = Connection::Response();
 
   auto source = Event::Source("/dev/input/event0");
-  std::string user, device;
 
   while ( true ) {
 
-    source.readline( user , -1 );
+    auto user = source.readline(-1).value();
 
-    if ( !source.readline( device, 3000 ) ) {
+    auto device_opt = source.readline(3000);
+    if ( !device_opt.has_value() ) {
       std::cerr << "[timeout]" << std::endl;
       continue;
     }
 
-    auto data = "{\"user\":\"" + user + "\",\"device\":\"" + device + "\"}";
+    auto data = "{\"user\":\"" + user + "\",\"device\":\"" + device_opt.value() + "\"}";
     if ( !connection.send(data, response) ) {
       std::cerr << "[data send failed]" << std::endl;
     } else {
