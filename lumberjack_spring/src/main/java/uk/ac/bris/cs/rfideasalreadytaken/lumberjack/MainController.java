@@ -175,7 +175,8 @@ public class MainController extends WebMvcConfigurerAdapter {
             @ModelAttribute("user") @Valid AdminUserDTO accountDTO,
             BindingResult result,
             WebRequest request,
-            Errors errors) {
+            Errors errors,
+            Model model) {
         if (result.hasErrors()) {
             return new ModelAndView("registration", "user", accountDTO);
         }
@@ -193,8 +194,9 @@ public class MainController extends WebMvcConfigurerAdapter {
             e.printStackTrace();
             //TODO: Implement this
         }
-
-        return new ModelAndView("successRegister", "user", accountDTO);
+        model.addAttribute("messageType", "Registration");
+        model.addAttribute("messageString", "You have successfully registered!");
+        return new ModelAndView("message", "user", accountDTO);
     }
 
     private AdminUser createUserAccount(AdminUserDTO accountDTO, BindingResult result) throws EmailNotPermittedException, Exception {

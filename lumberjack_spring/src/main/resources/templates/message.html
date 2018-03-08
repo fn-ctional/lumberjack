@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include ="fragments/header :: head (title='lumberjack - ' + ${messageType})">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container">
+
+    <h1 th:text="${messageType}">
+        Message Type
+    </h1>
+
+    <p class="lead" th:text="${messageString}">
+        Message
+    </p>
+
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
