@@ -26,6 +26,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUse
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 
 import javax.validation.Valid;
 import java.util.Calendar;
@@ -58,7 +59,7 @@ public class MainController extends WebMvcConfigurerAdapter {
      * @param scanDTO A JSON containing device and user strings.
          * @return An HTTP status code and body description of error or action performed.
      */
-    @PatchMapping(value = "/devices", consumes = "application/json", produces = "text/plain")
+    @PatchMapping(value = "/rpi", consumes = "application/json", produces = "text/plain")
     @ResponseBody
     public ResponseEntity changeDeviceState(@RequestBody ScanDTO scanDTO) {
         try {
@@ -233,6 +234,56 @@ public class MainController extends WebMvcConfigurerAdapter {
         model.addAttribute("found", found);
         model.addAttribute(userList);
         return "users";
+    }
+
+    @GetMapping("/device")
+    public String device(Model model){
+        model.addAttribute("blank", true);
+        return "devices";
+    }
+
+    @GetMapping("/devices")
+    public String allDevices(Model model){
+        model.addAttribute("multi", true);
+        Boolean found = false;
+        List<Device> deviceList = new ArrayList<>();
+        try {
+            // TODO
+            // deviceList = backendFrontEndManager.getDevices();
+            Device device = new Device();
+            deviceList.add(device);
+            if (!deviceList.isEmpty()){
+                found = true;
+            }
+        }
+        catch (Exception e){
+            System.out.println("SQL Error");
+        }
+        model.addAttribute("found", found);
+        model.addAttribute(deviceList);
+        return "devices";
+    }
+
+    @GetMapping("/device/{id}")
+    public String deviceSpecified(@PathVariable String id, Model model){
+        List<Device> deviceList = new ArrayList<>();
+        Boolean found = false;
+        model.addAttribute("searchTerm", id);
+        try {
+            // TODO
+            //Device device = backendFrontEndManager.getDevice(id);
+            Device device = new Device();
+            if (device.getId().equals(id)){
+                deviceList.add(device);
+                found = true;
+            }
+        }
+        catch (Exception e){
+            System.out.println("SQL Error");
+        }
+        model.addAttribute("found", found);
+        model.addAttribute(deviceList);
+        return "devices";
     }
 
     @RequestMapping("/search")

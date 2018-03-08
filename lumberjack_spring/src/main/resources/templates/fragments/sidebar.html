@@ -33,6 +33,21 @@
         </li>
     </ul>
     <ul class="nav nav-pills flex-column">
+        <li class="nav-link">
+            <strong>Devices</strong>
+        </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/devices' ? 'active':''}" href="/devices">
+                All Devices
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/search/device' ? 'active':''}" href="/search/device">
+                Search Devices
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
         <li class="nav-item">
             <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/help' ? 'active':''}" href="/help">
                 Help
