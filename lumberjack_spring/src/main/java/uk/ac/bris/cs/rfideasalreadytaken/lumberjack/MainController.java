@@ -107,8 +107,6 @@ public class MainController extends WebMvcConfigurerAdapter {
     public String confirmRegistration
             (WebRequest request, Model model, @RequestParam("token") String token) {
 
-        Locale locale = request.getLocale();
-
         VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
             model.addAttribute("messageType", "Bad Verification Link");

@@ -25,7 +25,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean

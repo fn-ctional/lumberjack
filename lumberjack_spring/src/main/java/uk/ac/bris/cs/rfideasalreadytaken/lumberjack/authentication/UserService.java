@@ -41,8 +41,7 @@ public class UserService implements IUserService {
 
     @Override
     public AdminUser getUser(String verificationToken) {
-        AdminUser user = authenticationDatabaseManager.findByToken(verificationToken).getAdminUser();
-        return user;
+        return authenticationDatabaseManager.findByToken(verificationToken).getAdminUser();
     }
 
     @Override
