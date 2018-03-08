@@ -123,8 +123,7 @@ namespace Channel {
 
   // This class manages the Data object used by a Read and Write.
   // The Channel object must outlive the both of the Read and Write objects that it creates.
-  // If more than one of either the Read or Write objects are created, the program will exit.
-  //   (This should be changed to something more reasonable)
+  // A Read or Write object will only be constructed once, subsequent requests will not return an object
   //
   // The read_exists and write_exists members keep track of whether or not these objects have been created.
   //  Having multiple Write objects could result in them writing over each other.
@@ -143,12 +142,16 @@ namespace Channel {
   //  Frees the data
   //
   // get_read:
-  //  This method quits the program if it is called multiple times
-  //  return: Read<T> - A Read object with the data constructed by this object
+  //  This constructs a Read object on the first call and returns an empty optional on subsequent calls.
+  //  It can be assumed that it is safe to naively unwrap the result if only called once.
+  //  return: std::optional<Read<T>> - If this is this first time calling this method, this contains a Read object,
+  //                                   otherwise this is empty
   //
   // get_write:
-  //  This method quits the program if it is called multiple times
-  //  return: Write<T> - A Write object with the data constructed by this object
+  //  This constructs a Write object on the first call and returns an empty optional on subsequent calls.
+  //  It can be assumed that it is safe to naively unwrap the result if only called once.
+  //  return: std::optional<Write<T>> - If this is this first time calling this method, this contains a Write object,
+  //                                    otherwise this is empty
   template<class T>
   class Channel {
   public:
@@ -171,14 +174,18 @@ namespace Channel {
       delete data;
     };
 
-    Read<T> get_read() {
-      if ( read_exists ) exit(-1);
-      return Read<T>(data);
+    std::optional<Read<T>> get_read() {
+      if ( read_exists ) {
+        return std::nullopt;
+      }
+      return std::optional( Read<T>(data) );
     };
 
-    Write<T> get_write() {
-      if ( write_exists ) exit(-1);
-      return Write<T>(data);
+    std::optional<Write<T>> get_write() {
+      if ( write_exists ) {
+        return std::nullopt;
+      }
+      return std::optional( Write<T>(data) );
     };
 
   private:

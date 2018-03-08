@@ -29,8 +29,8 @@ auto future(int milliseconds) {
 // A Source object stores a Channel and its reader.
 // The Writer is passed, along with the event source path, to a thread that runs the source_f function.
 Event::Source::Source(const char *path)
-: reader(channel.get_read())
-, source(source_f, path, channel.get_write()) {}
+: reader(channel.get_read().value())
+, source(source_f, path, channel.get_write().value()) {}
 
 std::optional<char> Event::Source::read(bool block) {
   return map( toChar, read_raw(block) );
