@@ -108,7 +108,9 @@ public class BackendCardReaderManager extends BackendDatabaseLoading implements 
 
             deleteFromAssignments(assignment.getId());
 
-            insertIntoAssignmentHistory(assignment,returningUser.getId());
+            boolean returnedOnTime = checkIfReturnedOnTime(assignment);
+
+            insertIntoAssignmentHistory(assignment,returningUser.getId(), returnedOnTime);
 
             int removed = returningUser.getDevicesRemoved()-1;
             PreparedStatement stmt3 = conn.prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");

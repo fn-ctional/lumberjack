@@ -3,11 +3,11 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data;
 public class Rule {
 
     private String id;
-    private java.sql.Time maximumRemovalTime;
+    private int maximumRemovalTime;
 
     public Rule(){};
 
-    public Rule(String id, java.sql.Time maximumRemovalTime){
+    public Rule(String id, int maximumRemovalTime){
         this.id = id;
         this.maximumRemovalTime = maximumRemovalTime;
     }
@@ -16,7 +16,7 @@ public class Rule {
         return id;
     }
 
-    public java.sql.Time getMaximumRemovalTime() {
+    public int getMaximumRemovalTime() {
         return maximumRemovalTime;
     }
 
@@ -24,5 +24,5 @@ public class Rule {
         this.id = id;
     }
 
-    public void setMaximumRemovalTime(java.sql.Time maximumRemovalTime) { this.maximumRemovalTime = maximumRemovalTime; }
+    public void setMaximumRemovalTime(int maximumRemovalTime) { this.maximumRemovalTime = maximumRemovalTime; }
 }

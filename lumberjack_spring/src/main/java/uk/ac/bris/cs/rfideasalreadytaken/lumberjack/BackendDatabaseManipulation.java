@@ -46,7 +46,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
 
             stmt.execute("CREATE TABLE IF NOT EXISTS Rules (" +
                     "\nid varchar(100)," +
-                    "\nMaximumRemovalTime TIME," +
+                    "\nMaximumRemovalTime int," +
                     "\nPRIMARY KEY (id));");
 
             stmt.execute("CREATE TABLE IF NOT EXISTS GroupPermissions (" +
@@ -95,7 +95,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
                     "\nTimeAssigned TIME," +
                     "\nDateReturned DATE," +
                     "\nTimeReturned TIME," +
-                    "\nReturnedSuccessfully bit," +
+                    "\nReturnedOnTime bit," +
                     "\nReturnedBy varchar(100) NOT NULL," +
                     "\nPRIMARY KEY (id))");
 
@@ -116,11 +116,9 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
 
         resetDatabase();
 
-        java.sql.Time time = java.sql.Time.valueOf("70:20:30");
-
-        Rule rule = new Rule("ruleSet1", time);
+        Rule rule = new Rule("ruleSet1", 20);
         insertIntoRules(rule);
-        rule = new Rule("ruleSet2",time);
+        rule = new Rule("ruleSet2",22);
         insertIntoRules(rule);
 
         UserGroup group = new UserGroup("groupOne");
@@ -157,7 +155,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         insertIntoAssignments(assignment);
 
         assignment = new Assignment("laptop01", "Callum2468");
-        insertIntoAssignmentHistory(assignment, "Aidan9876");
+        insertIntoAssignmentHistory(assignment, "Aidan9876", true);
 
         return true;
     }
@@ -212,7 +210,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Rules (id, MaximumRemovalTime)" +
                 "VALUES (?,?)");
         stmt.setString(1, rule.getId());
-        stmt.setTime(2, rule.getMaximumRemovalTime());
+        stmt.setInt(2, rule.getMaximumRemovalTime());
         stmt.execute();
         return true;
     }
@@ -321,16 +319,10 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         catch (Exception e){return false;}
     }
 
-    //TODO get current date and time and calculate time removed for
-    protected boolean insertIntoAssignmentHistory(Assignment assignment, String returningUserID) throws Exception{
+    protected boolean insertIntoAssignmentHistory(Assignment assignment, String returningUserID, boolean returnedOnTime) throws Exception{
         try {
 
-        boolean returnedSuccessfully = false;
-        if(assignment.getUserID().equals(returningUserID)){
-            returnedSuccessfully = true;
-        }
-
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, ReturnedSuccessfully, ReturnedBy)" +
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, ReturnedOnTime, ReturnedBy)" +
                 "VALUES (?,?,?,?,?,?,?,?)");
 
         java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
@@ -342,7 +334,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
         stmt.setTime(4, assignment.getTimeAssigned());
         stmt.setDate(5, date);
         stmt.setTime(6, time);
-        stmt.setBoolean(7, returnedSuccessfully);
+        stmt.setBoolean(7, returnedOnTime);
         stmt.setString(8,returningUserID);
 
         stmt.execute();

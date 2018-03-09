@@ -1,9 +1,13 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -77,6 +81,51 @@ public class BackendDatabaseLogic extends BackendDatabaseManipulation{
             stmt.setString(2, device.getRuleID());
             ResultSet rs = stmt.executeQuery();
             return rs.next();
+        }
+        catch (Exception e){return false;}
+    }
+
+    protected boolean checkIfReturnedOnTime(Assignment assignment) throws Exception{
+        try{
+            PreparedStatement stmt = conn.prepareStatement("SELECT MaximumRemovalTime FROM Rules INNER JOIN Devices ON Rules.id = Devices.RuleID WHERE Devices.id = ?;");
+            stmt.setString(1, assignment.getDeviceID());
+            ResultSet rs = stmt.executeQuery();
+            if(rs.next()){
+
+                int removalTime = rs.getInt("MaximumRemovalTime");
+
+                java.sql.Date currentDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+                java.sql.Time currentTime = new java.sql.Time(Calendar.getInstance().getTime().getTime());
+
+                try {
+                    Date date1 = assignment.getDateAssigned();
+                    Date date2 = currentDate;
+                    long diff = date2.getTime() - date1.getTime();
+                    long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(currentTime);
+                    int hour = cal.get(Calendar.HOUR_OF_DAY);
+                    int minute = cal.get(Calendar.MINUTE);
+                    int second = cal.get(Calendar.SECOND);
+
+                    Date date3 = assignment.getTimeAssigned();
+
+                    diff = (((((hour * 60) + minute) * 60) + second) * 1000) - date3.getTime();
+                    long hours = (((diff/1000)/60)/60) - 1;
+
+                    final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
+
+                    if((days*24)+hours < removalTime){
+                        return true;
+                    }
+                    else{
+                        return false;
+                    }
+
+                } catch (Exception e) { return false;}
+            }
+            return false;
         }
         catch (Exception e){return false;}
     }
