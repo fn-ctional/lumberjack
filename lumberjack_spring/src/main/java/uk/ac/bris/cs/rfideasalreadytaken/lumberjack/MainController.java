@@ -126,7 +126,9 @@ public class MainController extends WebMvcConfigurerAdapter {
         user.setEnabled(true);
         try {
             userService.saveRegisteredUser(user);
-            return "login";
+            model.addAttribute("messageType", "Registration Successful");
+            model.addAttribute("messageString", "You can now login.");
+            return "message";
         } catch (Exception e) {
             model.addAttribute("messageType", "Server Error");
             model.addAttribute("messageString", "Sorry! Try and register again.");
@@ -296,6 +298,18 @@ public class MainController extends WebMvcConfigurerAdapter {
     public String searchType(@PathVariable String type, Model model){
         model.addAttribute("type", type);
         return "search";
+    }
+
+    @RequestMapping("/add")
+    public String add(Model model){
+        model.addAttribute("blank", true);
+        return "add";
+    }
+
+    @GetMapping("/add/{type}")
+    public String addType(@PathVariable String type, Model model){
+        model.addAttribute("type", type);
+        return "add";
     }
 
 }
