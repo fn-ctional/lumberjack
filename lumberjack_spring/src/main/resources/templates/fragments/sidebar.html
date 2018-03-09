@@ -31,6 +31,11 @@
                 Search Users
             </a>
         </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/user' ? 'active':''}" href="/add/user">
+                Add Users
+            </a>
+        </li>
     </ul>
     <ul class="nav nav-pills flex-column">
         <li class="nav-link">
@@ -44,6 +49,11 @@
         <li>
             <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/search/device' ? 'active':''}" href="/search/device">
                 Search Devices
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/device' ? 'active':''}" href="/add/device">
+                Add Devices
             </a>
         </li>
     </ul>
