@@ -1,8 +1,11 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -13,13 +16,30 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.context.request.RequestContextListener;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.MyUserDetailsService;
 
+import java.util.Locale;
 import java.util.Properties;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Bean
+    public LocaleResolver localeResolver() {
+        final CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
+        cookieLocaleResolver.setDefaultLocale(Locale.ENGLISH);
+        return cookieLocaleResolver;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(RequestContextListener.class)
+    public RequestContextListener requestContextListener() {
+        return new RequestContextListener();
+    }
 
     @Bean
     public JavaMailSender getJavaMailSender() {
@@ -28,13 +48,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         mailSender.setPort(587);
 
         mailSender.setUsername("fnctional.master@gmail.com");
-        mailSender.setPassword("5vEu3F3K#KbZOsG&DUD");
+        mailSender.setPassword("5vEu3F3K#KbBZOsG&DUD");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.debug", "true");
+        props.put("mail.debug", "false");
 
         return mailSender;
     }
@@ -46,7 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        final String[] unlocked = {"/", "/about", "/download", "/register", "/registration", "/css/**", "/js/**", "/images/**"};
+        final String[] unlocked = {"/", "/about", "/download", "/register", "/registration", "/css/**", "/js/**",
+                "/images/**", "/registrationConfirm*", "/devices"};
 
         http
                     .authorizeRequests()
@@ -82,9 +103,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authProvider())
-                //TODO: remove this testing user when user authentication works
-                .inMemoryAuthentication().withUser("test@lumberjack").password("password1").roles("ADMINISTRATOR");
+        auth.authenticationProvider(authProvider());
     }
 
 }

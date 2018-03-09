@@ -1,8 +1,13 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
@@ -21,6 +26,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUse
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
 
 import javax.validation.Valid;
 import java.util.Calendar;
@@ -37,6 +43,9 @@ public class MainController extends WebMvcConfigurerAdapter {
     @Autowired
     private BackendFrontEndManager backendFrontEndManager;
 
+    @Autowired
+    private AuthenticationDatabaseManager authenticationDatabaseManager;
+
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("home");
@@ -50,7 +59,7 @@ public class MainController extends WebMvcConfigurerAdapter {
      * @param scanDTO A JSON containing device and user strings.
          * @return An HTTP status code and body description of error or action performed.
      */
-    @PatchMapping(value = "/devices", consumes = "application/json", produces = "text/plain")
+    @PatchMapping(value = "/rpi", consumes = "application/json", produces = "text/plain")
     @ResponseBody
     public ResponseEntity changeDeviceState(@RequestBody ScanDTO scanDTO) {
         try {
@@ -93,68 +102,38 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
     private IUserService userService;
-
-    @Autowired
-    private MessageSource messages;
 
     @GetMapping(value = "/registrationConfirm")
     public String confirmRegistration
             (WebRequest request, Model model, @RequestParam("token") String token) {
 
-        Locale locale = request.getLocale();
-
         VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
-            String message = messages.getMessage("auth.message.invalidToken", null, locale);
-            model.addAttribute("message", message);
-            return "redirect:/badUser.html";
+            model.addAttribute("messageType", "Bad Verification Link");
+            model.addAttribute("messageString", "Try and register again.");
+            return "message";
         }
 
         AdminUser user = verificationToken.getAdminUser();
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            String messageValue = messages.getMessage("auth.message.expired", null, locale);
-            model.addAttribute("message", messageValue);
-            return "redirect:/badUser.html";
+            model.addAttribute("messageType", "Token Expired");
+            model.addAttribute("messageString", "Your verification token expired, try to register again.");
+            return "message";
         }
 
         user.setEnabled(true);
         try {
             userService.saveRegisteredUser(user);
-            return "redirect:/login.html";
+            return "login";
         } catch (Exception e) {
-            return "redirect:/databaseError.html";
+            model.addAttribute("messageType", "Server Error");
+            model.addAttribute("messageString", "Sorry! Try and register again.");
+            return "message";
         }
     }
-    /*
-    @PostMapping("/register")
-    public ModelAndView registerUserAccount(
-            @ModelAttribute("user") @Valid AdminUserDTO accountDTO,
-            BindingResult result, WebRequest request, Errors errors) {
 
-        AdminUser registered = new AdminUser();
-        if (!result.hasErrors()) {
-            try {
-                userService.registerNewUserAccount(accountDTO);
-            } catch (EmailExistsException e) {
-                result.rejectValue("email", "message.regError");
-            } catch (EmailNotPermittedException e) {
-                //TODO: This should say something different but I can't work out where it is
-                result.rejectValue("email", "message.regError");
-            }
-        }
-        if (result.hasErrors()) {
-            return new ModelAndView("registration", "user", accountDTO);
-        }
-        else {
-            return new ModelAndView("successRegister", "user", accountDTO);
-        }
-    }
-    */
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
@@ -170,7 +149,8 @@ public class MainController extends WebMvcConfigurerAdapter {
             @ModelAttribute("user") @Valid AdminUserDTO accountDTO,
             BindingResult result,
             WebRequest request,
-            Errors errors) {
+            Errors errors,
+            Model model) {
         if (result.hasErrors()) {
             return new ModelAndView("registration", "user", accountDTO);
         }
@@ -178,15 +158,19 @@ public class MainController extends WebMvcConfigurerAdapter {
             AdminUser registered = createUserAccount(accountDTO, result);
             String appUrl = request.getContextPath();
             eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registered, request.getLocale(), appUrl));
+            model.addAttribute("messageType", "Registration");
+            model.addAttribute("messageString", "Check your emails for a verification link!");
         } catch (EmailNotPermittedException e) {
-            //TODO: Implement this
+            model.addAttribute("messageType", "Failed Registration");
+            model.addAttribute("messageString", "You are not permitted to create an account.");
         } catch (EmailExistsException e) {
-            //TODO: Implement this
+            model.addAttribute("messageType", "Failed Registration");
+            model.addAttribute("messageString", "A user with this email address has already registered.");
         } catch (Exception e) {
-            //TODO: Implement this
+            model.addAttribute("messageType", "Registration Error");
+            model.addAttribute("messageString", "Your registration failed!");
         }
-
-        return new ModelAndView("successRegister", "user", accountDTO);
+        return new ModelAndView("message", "user", accountDTO);
     }
 
     private AdminUser createUserAccount(AdminUserDTO accountDTO, BindingResult result) throws EmailNotPermittedException, Exception {
@@ -200,8 +184,9 @@ public class MainController extends WebMvcConfigurerAdapter {
     @GetMapping("/dashboard")
     public String dashboard(Model model){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        //TODO: Make this user name instead of email
-        String name = auth.getName();
+        String email = auth.getName();
+        AdminUser user = authenticationDatabaseManager.findByEmail(email);
+        String name = user.getName();
         model.addAttribute("name", name);
         return "dashboard";
     }
@@ -251,6 +236,56 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "users";
     }
 
+    @GetMapping("/device")
+    public String device(Model model){
+        model.addAttribute("blank", true);
+        return "devices";
+    }
+
+    @GetMapping("/devices")
+    public String allDevices(Model model){
+        model.addAttribute("multi", true);
+        Boolean found = false;
+        List<Device> deviceList = new ArrayList<>();
+        try {
+            // TODO
+            // deviceList = backendFrontEndManager.getDevices();
+            Device device = new Device();
+            deviceList.add(device);
+            if (!deviceList.isEmpty()){
+                found = true;
+            }
+        }
+        catch (Exception e){
+            System.out.println("SQL Error");
+        }
+        model.addAttribute("found", found);
+        model.addAttribute(deviceList);
+        return "devices";
+    }
+
+    @GetMapping("/device/{id}")
+    public String deviceSpecified(@PathVariable String id, Model model){
+        List<Device> deviceList = new ArrayList<>();
+        Boolean found = false;
+        model.addAttribute("searchTerm", id);
+        try {
+            // TODO
+            //Device device = backendFrontEndManager.getDevice(id);
+            Device device = new Device();
+            if (device.getId().equals(id)){
+                deviceList.add(device);
+                found = true;
+            }
+        }
+        catch (Exception e){
+            System.out.println("SQL Error");
+        }
+        model.addAttribute("found", found);
+        model.addAttribute(deviceList);
+        return "devices";
+    }
+
     @RequestMapping("/search")
     public String search(Model model){
         model.addAttribute("blank", true);
@@ -262,4 +297,5 @@ public class MainController extends WebMvcConfigurerAdapter {
         model.addAttribute("type", type);
         return "search";
     }
+
 }

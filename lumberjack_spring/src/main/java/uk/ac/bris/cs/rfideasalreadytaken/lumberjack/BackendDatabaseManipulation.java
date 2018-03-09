@@ -383,7 +383,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
     }
 
     protected void insertIntoTokens(VerificationToken verificationToken) throws SQLException {
-         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Tokens (Token, Email, ExpiryDate)" +
+         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Tokens (Token, AdminEmail, ExpiryDate)" +
             "VALUES (?,?,?)");
         stmt.setString(1, verificationToken.getToken());
         stmt.setString(2, verificationToken.getAdminUser().getEmail());

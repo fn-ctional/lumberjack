@@ -1,5 +1,7 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.LumberjackApplication;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
 import java.util.ArrayList;
@@ -24,7 +27,17 @@ public class MyUserDetailsService implements UserDetailsService {
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
+        final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
+
         AdminUser user = authenticationDatabaseManager.findByEmail(email);
+        log.info(email);
+        log.info(user.getEmail());
+        if (user.isEnabled()){
+            log.info("enabled");
+        }
+        else {
+            log.info("disabled");
+        }
 
         boolean enabled = user.isEnabled();
 
@@ -34,7 +47,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         return  new org.springframework.security.core.userdetails.User
                 (user.getEmail(),
-                        user.getPassword().toLowerCase(), enabled, accountNonExpired,
+                        user.getPassword(), enabled, accountNonExpired,
                         credentialsNonExpired, accountNonLocked,
                         getAuthorities(Collections.singletonList("ADMINISTRATOR")));
     }
