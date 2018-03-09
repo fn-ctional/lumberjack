@@ -116,7 +116,7 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
 
         resetDatabase();
 
-        java.sql.Time time = java.sql.Time.valueOf("10:20:30");
+        java.sql.Time time = java.sql.Time.valueOf("70:20:30");
 
         Rule rule = new Rule("ruleSet1", time);
         insertIntoRules(rule);
