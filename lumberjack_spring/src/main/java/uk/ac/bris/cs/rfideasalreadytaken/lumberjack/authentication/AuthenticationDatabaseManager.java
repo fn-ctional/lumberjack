@@ -11,12 +11,13 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUse
 @Service
 public class AuthenticationDatabaseManager extends BackendDatabaseLoading {
 
+    AuthenticationDatabaseManager() throws Exception{};
+
     /**
      * Adds a new AdminUser to the database. Passwords are already encoded before reaching function.
      * @param adminUser
      */
     public void addAdminUser(AdminUser adminUser) throws Exception {
-        connectToDatabase();
 
         insertIntoAdminUsers(adminUser);
     }
@@ -24,7 +25,7 @@ public class AuthenticationDatabaseManager extends BackendDatabaseLoading {
     //Throws UsernameNotFoundException in the case of a database error.
     public AdminUser findByEmail(String email) throws UsernameNotFoundException {
         try {
-            connectToDatabase();
+            
 
             return loadAdminUser(email);
 
@@ -35,7 +36,7 @@ public class AuthenticationDatabaseManager extends BackendDatabaseLoading {
 
     public boolean userExists(String email) {
         try {
-            connectToDatabase();
+            
 
             return adminUserExists(email);
 
@@ -46,7 +47,7 @@ public class AuthenticationDatabaseManager extends BackendDatabaseLoading {
 
     public VerificationToken findByToken(String verificationToken) {
         try {
-            connectToDatabase();
+            
 
             return loadToken(verificationToken);
 
@@ -58,7 +59,7 @@ public class AuthenticationDatabaseManager extends BackendDatabaseLoading {
 
     public void addToken(VerificationToken verificationToken) {
         try {
-            connectToDatabase();
+            
 
             insertIntoTokens(verificationToken);
 
@@ -68,7 +69,7 @@ public class AuthenticationDatabaseManager extends BackendDatabaseLoading {
     }
 
     public void save(AdminUser adminUser) throws Exception {
-        connectToDatabase();
+        
         updateAdminUser(adminUser.getEmail(), adminUser);
     }
 
@@ -81,7 +82,7 @@ public class AuthenticationDatabaseManager extends BackendDatabaseLoading {
      */
     public boolean emailPermitted(String email) {
         try {
-            connectToDatabase();
+            
 
             return isEmailPermitted(email);
 

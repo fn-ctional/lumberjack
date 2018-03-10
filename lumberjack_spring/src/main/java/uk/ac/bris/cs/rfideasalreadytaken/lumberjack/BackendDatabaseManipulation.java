@@ -10,10 +10,12 @@ import java.util.Calendar;
 
 public class BackendDatabaseManipulation extends BackendDatabaseConnection{
 
+    BackendDatabaseManipulation() throws Exception{};
+
     public boolean resetDatabase() throws Exception{
         try {
 
-            connectToDatabase();
+            //connectToDatabase();
 
             stmt.execute("DROP TABLE IF EXISTS AssignmentHistory");
             stmt.execute("DROP TABLE IF EXISTS Assignments");

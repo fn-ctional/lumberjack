@@ -17,9 +17,11 @@ import java.util.ArrayList;
 @Service
 public class BackendFrontEndManager extends BackendDatabaseLoading implements FromFrontEnd {
 
+    BackendFrontEndManager() throws Exception{};
+
     public boolean insertUser(User user) throws Exception{
 
-        connectToDatabase();
+        
 
         try {
             insertIntoUsers(user);
@@ -32,7 +34,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
 
     public boolean insertUsers(ArrayList<User> users) throws Exception{
 
-        connectToDatabase();
+        
 
         try {
             for(int i = 0; i < users.size(); i++) {
@@ -47,7 +49,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
 
     public boolean insertDevice(Device device) throws Exception{
 
-        connectToDatabase();
+        
 
         try {
             insertIntoDevices(device);
@@ -60,7 +62,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
 
     public boolean insertDevices(ArrayList<Device> devices) throws Exception{
 
-        connectToDatabase();
+        
 
         try {
             for(int i = 0; i < devices.size(); i++) {
@@ -107,7 +109,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
 
     public boolean removeUser(User user) throws Exception{
 
-        connectToDatabase();
+        
 
         try {
             deleteFromUsers(user.getId());
@@ -120,7 +122,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
 
     public boolean resetUsers() throws Exception{
 
-        connectToDatabase();
+        
 
         try {
             ArrayList<User> users = getUsers();
@@ -136,7 +138,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
 
     public User getUser(String userID) throws Exception{
 
-        connectToDatabase();
+        
 
         try {
             User user = loadUser(userID);
@@ -149,7 +151,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
 
     public ArrayList<User> getUsers() throws Exception{
 
-        connectToDatabase();
+        
 
         try {
             ArrayList<User> users = new ArrayList<User>();
@@ -173,7 +175,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
 
     public boolean editUser(String userID, User newValue) throws Exception {
 
-        connectToDatabase();
+        
 
         try {
             updateUser(userID, newValue);

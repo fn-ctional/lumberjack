@@ -14,6 +14,8 @@ import java.sql.ResultSet;
 
 public class BackendDatabaseLogic extends BackendDatabaseManipulation{
 
+    BackendDatabaseLogic() throws Exception{};
+
     protected boolean canUserRemoveDevices(User user) throws Exception{
         try{
         if(user.canRemove()){

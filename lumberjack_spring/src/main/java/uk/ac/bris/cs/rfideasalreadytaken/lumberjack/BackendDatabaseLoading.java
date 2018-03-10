@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 public class BackendDatabaseLoading extends BackendDatabaseLogic {
 
+    public BackendDatabaseLoading() throws Exception{};
+
     protected User loadUser(ScanDTO scanDTO) throws Exception{
         try{
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE ScanValue = ?");

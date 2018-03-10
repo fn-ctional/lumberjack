@@ -17,6 +17,27 @@ public class BackendDatabaseConnection {
     private String username = "lumberjack";
     private String password = "Lumberjack1#";
 
+    BackendDatabaseConnection() throws Exception{
+        try {
+            MysqlDataSource dataSource = new MysqlDataSource();
+
+            dataSource.setServerName(serverName);
+            dataSource.setPortNumber(portNumber);
+            dataSource.setDatabaseName(databaseName);
+            dataSource.setUser(username);
+            dataSource.setPassword(password);
+            dataSource.setConnectTimeout(5000);
+
+            conn = dataSource.getConnection();
+
+            stmt = conn.createStatement();
+
+            connected = true;
+        }
+        catch(com.mysql.jdbc.exceptions.jdbc4.CommunicationsException e) {
+        }
+    }
+
     protected boolean connectToDatabase() throws Exception{
 
         if(connected == false){
