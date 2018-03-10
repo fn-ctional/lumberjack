@@ -18,8 +18,6 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection {
     public boolean resetDatabase() throws Exception {
         try {
 
-            //connectToDatabase();
-
             stmt.execute("DROP TABLE IF EXISTS AssignmentHistory");
             stmt.execute("DROP TABLE IF EXISTS Assignments");
             stmt.execute("DROP TABLE IF EXISTS Users");

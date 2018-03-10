@@ -19,61 +19,67 @@ import java.util.ArrayList;
 
 public class BackendDatabaseLoading extends BackendDatabaseLogic {
 
-    public BackendDatabaseLoading() throws Exception{};
-
-    protected User loadUser(ScanDTO scanDTO) throws Exception{
-        try{
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE ScanValue = ?");
-        stmt.setString(1, scanDTO.getUser());
-        ResultSet rs = stmt.executeQuery();
-        User user = loadUserFromResultSet(rs);
-        return user;
-        }
-        catch (Exception e){return new User();}
+    public BackendDatabaseLoading() throws Exception {
     }
 
-    protected User loadUser(String userID) throws Exception{
-        try{
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE id = ?");
-        stmt.setString(1, userID);
-        ResultSet rs = stmt.executeQuery();
-        User user = loadUserFromResultSet(rs);
-        return user;
+    ;
+
+    protected User loadUser(ScanDTO scanDTO) throws Exception {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE ScanValue = ?");
+            stmt.setString(1, scanDTO.getUser());
+            ResultSet rs = stmt.executeQuery();
+            User user = loadUserFromResultSet(rs);
+            return user;
+        } catch (Exception e) {
+            return new User();
         }
-        catch (Exception e){return new User();}
     }
 
-    protected ArrayList<AssignmentHistory> loadUserAssignmentHistory(User user) throws Exception{
+    protected User loadUser(String userID) throws Exception {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Users WHERE id = ?");
+            stmt.setString(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            User user = loadUserFromResultSet(rs);
+            return user;
+        } catch (Exception e) {
+            return new User();
+        }
+    }
+
+    protected ArrayList<AssignmentHistory> loadUserAssignmentHistory(User user) throws Exception {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM AssignmentHistory WHERE UserId = ?");
         stmt.setString(1, user.getId());
         ResultSet rs = stmt.executeQuery();
         ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
-        while(rs.next()) assignmentHistorys.add(loadAssignmentHistoryFromResultSet(rs));
+        while (rs.next()) assignmentHistorys.add(loadAssignmentHistoryFromResultSet(rs));
         return assignmentHistorys;
     }
 
-    protected Device loadDevice(ScanDTO scanDTO) throws Exception{
-        try{
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Devices WHERE ScanValue = ?");
-        stmt.setString(1, scanDTO.getDevice());
-        ResultSet rs = stmt.executeQuery();
-        Device device = loadDeviceFromResultSet(rs);
-        return device;
+    protected Device loadDevice(ScanDTO scanDTO) throws Exception {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Devices WHERE ScanValue = ?");
+            stmt.setString(1, scanDTO.getDevice());
+            ResultSet rs = stmt.executeQuery();
+            Device device = loadDeviceFromResultSet(rs);
+            return device;
+        } catch (Exception e) {
+            return new Device();
         }
-        catch (Exception e){return new Device();}
     }
 
-    protected ArrayList<AssignmentHistory> loadDeviceAssignmentHistory(Device device) throws Exception{
+    protected ArrayList<AssignmentHistory> loadDeviceAssignmentHistory(Device device) throws Exception {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM AssignmentHistory WHERE DeviceId = ?");
         stmt.setString(1, device.getId());
         ResultSet rs = stmt.executeQuery();
         ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
-        while(rs.next()) assignmentHistorys.add(loadAssignmentHistoryFromResultSet(rs));
+        while (rs.next()) assignmentHistorys.add(loadAssignmentHistoryFromResultSet(rs));
         return assignmentHistorys;
     }
 
-    protected User loadUserFromResultSet(ResultSet rs) throws Exception{
-        if(rs.next()){
+    protected User loadUserFromResultSet(ResultSet rs) throws Exception {
+        if (rs.next()) {
             User user = new User();
             user.setCanRemove(rs.getBoolean("CanRemove"));
             user.setDeviceLimit(rs.getInt("DeviceLimit"));
@@ -86,8 +92,8 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
         return null;
     }
 
-    protected Device loadDeviceFromResultSet(ResultSet rs) throws Exception{
-        if(rs.next()){
+    protected Device loadDeviceFromResultSet(ResultSet rs) throws Exception {
+        if (rs.next()) {
             Device device = new Device();
             device.setAvailable(rs.getBoolean("Available"));
             device.setCurrentlyAssigned(rs.getBoolean("CurrentlyAssigned"));
@@ -100,8 +106,16 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
         return null;
     }
 
-    protected Assignment loadAssignmentFromResultSet(ResultSet rs) throws Exception{
-        if(rs.next()){
+    protected Assignment loadAssignment(Device device) throws Exception {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ?");
+        stmt.setString(1, device.getId());
+        ResultSet rs = stmt.executeQuery();
+        Assignment assignment = loadAssignmentFromResultSet(rs);
+        return assignment;
+    }
+
+    protected Assignment loadAssignmentFromResultSet(ResultSet rs) throws Exception {
+        if (rs.next()) {
             Assignment assignment = new Assignment();
             assignment.setDeviceID(rs.getString("DeviceID"));
             assignment.setUserID(rs.getString("UserID"));
@@ -113,8 +127,16 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
         return null;
     }
 
-    protected AssignmentHistory loadAssignmentHistoryFromResultSet(ResultSet rs) throws Exception{
-        if(rs.next()){
+    protected AssignmentHistory loadAssignmentHistory(Device device) throws Exception {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM AssignmentHistory WHERE DeviceID = ?");
+        stmt.setString(1, device.getId());
+        ResultSet rs = stmt.executeQuery();
+        AssignmentHistory history = loadAssignmentHistoryFromResultSet(rs);
+        return history;
+    }
+
+    protected AssignmentHistory loadAssignmentHistoryFromResultSet(ResultSet rs) throws Exception {
+        if (rs.next()) {
             AssignmentHistory assignmentHistory = new AssignmentHistory();
             assignmentHistory.setAssignmentHistoryID(rs.getString("id"));
             assignmentHistory.setDeviceID(rs.getString("DeviceID"));
@@ -130,7 +152,7 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
         return null;
     }
 
-    protected AdminUser loadAdminUser(String email) throws UsernameNotFoundException, Exception{
+    protected AdminUser loadAdminUser(String email) throws UsernameNotFoundException, Exception {
         PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Admins WHERE Email = ?");
         stmt.setString(1, email);
         ResultSet rs = stmt.executeQuery();
@@ -140,7 +162,7 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
     }
 
     private AdminUser loadAdminUserFromResultSet(ResultSet rs) throws UsernameNotFoundException, SQLException {
-        if(rs.next()){
+        if (rs.next()) {
             AdminUser adminUser = new AdminUser();
             adminUser.setEmail(rs.getString("Email"));
             adminUser.setPassword(rs.getString("Password"));
@@ -159,7 +181,7 @@ public class BackendDatabaseLoading extends BackendDatabaseLogic {
     }
 
     private VerificationToken loadTokenFromResultSet(ResultSet rs) throws Exception {
-        if(rs.next()) {
+        if (rs.next()) {
             AdminUser adminUser = loadAdminUser(rs.getString("AdminEmail"));
             String token = rs.getString("Token");
             return new VerificationToken(token, adminUser);
