@@ -94,29 +94,11 @@ public class BackendDatabaseLogic extends BackendDatabaseManipulation{
 
                 int removalTime = rs.getInt("MaximumRemovalTime");
 
-                java.sql.Date currentDate = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-                java.sql.Time currentTime = new java.sql.Time(Calendar.getInstance().getTime().getTime());
-
                 try {
-                    Date date1 = assignment.getDateAssigned();
-                    Date date2 = currentDate;
-                    long diff = date2.getTime() - date1.getTime();
-                    long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 
-                    Calendar cal = Calendar.getInstance();
-                    cal.setTime(currentTime);
-                    int hour = cal.get(Calendar.HOUR_OF_DAY);
-                    int minute = cal.get(Calendar.MINUTE);
-                    int second = cal.get(Calendar.SECOND);
+                    long timeOut = Calendar.getInstance().getTime().getTime() - assignment.getDateAssigned().getTime() - assignment.getTimeAssigned().getTime() - 3600000;
 
-                    Date date3 = assignment.getTimeAssigned();
-
-                    diff = (((((hour * 60) + minute) * 60) + second) * 1000) - date3.getTime();
-                    long hours = (((diff/1000)/60)/60) - 1;
-
-                    final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
-
-                    if((days*24)+hours < removalTime){
+                    if(timeOut < removalTime*3600000){
                         return true;
                     }
                     else{
