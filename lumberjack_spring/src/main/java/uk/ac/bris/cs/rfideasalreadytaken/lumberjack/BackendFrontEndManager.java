@@ -17,141 +17,125 @@ import java.util.ArrayList;
 @Service
 public class BackendFrontEndManager extends BackendDatabaseLoading implements FromFrontEnd {
 
-    BackendFrontEndManager() throws Exception{};
+    BackendFrontEndManager() throws Exception {
+    }
 
-    public boolean insertUser(User user) throws Exception{
+    ;
 
-        
+    public boolean insertUser(User user) throws Exception {
+
 
         try {
             insertIntoUsers(user);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public boolean insertUsers(ArrayList<User> users) throws Exception{
+    public boolean insertUsers(ArrayList<User> users) throws Exception {
 
-        
 
         try {
-            for(int i = 0; i < users.size(); i++) {
+            for (int i = 0; i < users.size(); i++) {
                 insertUser(users.get(i));
             }
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public boolean insertDevice(Device device) throws Exception{
+    public boolean insertDevice(Device device) throws Exception {
 
-        
 
         try {
             insertIntoDevices(device);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public boolean insertDevices(ArrayList<Device> devices) throws Exception{
+    public boolean insertDevices(ArrayList<Device> devices) throws Exception {
 
-        
 
         try {
-            for(int i = 0; i < devices.size(); i++) {
+            for (int i = 0; i < devices.size(); i++) {
                 insertDevice(devices.get(i));
             }
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public boolean insertUserGroup(UserGroup group){
+    public boolean insertUserGroup(UserGroup group) {
         try {
             insertIntoUserGroups(group);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public boolean insertRule(Rule rule){
+    public boolean insertRule(Rule rule) {
         try {
             insertIntoRules(rule);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public boolean insertGroupPermission(GroupPermission groupPermission){
+    public boolean insertGroupPermission(GroupPermission groupPermission) {
         try {
             insertIntoGroupPermissions(groupPermission);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
 
+    public boolean removeUser(User user) throws Exception {
 
-    public boolean removeUser(User user) throws Exception{
-
-        
 
         try {
             deleteFromUsers(user.getId());
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public boolean resetUsers() throws Exception{
+    public boolean resetUsers() throws Exception {
 
-        
 
         try {
             ArrayList<User> users = getUsers();
-            for(int i = 0; i < users.size(); i++) {
+            for (int i = 0; i < users.size(); i++) {
                 deleteFromUsers(users.get(i).getId());
             }
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public User getUser(String userID) throws Exception{
+    public User getUser(String userID) throws Exception {
 
-        
 
         try {
             User user = loadUser(userID);
             return user;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return new User();
         }
     }
 
-    public ArrayList<User> getUsers() throws Exception{
+    public ArrayList<User> getUsers() throws Exception {
 
-        
 
         try {
             ArrayList<User> users = new ArrayList<User>();
@@ -162,100 +146,90 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
             int total = rs.getRow();
             rs.beforeFirst();
 
-            for(int i = 0; i < total; i++) {
+            for (int i = 0; i < total; i++) {
                 users.add(loadUserFromResultSet(rs));
             }
 
             return users;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return new ArrayList<>();
         }
     }
 
     public boolean editUser(String userID, User newValue) throws Exception {
 
-        
 
         try {
             updateUser(userID, newValue);
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public ArrayList<AssignmentHistory> getUserAH(User user){
+    public ArrayList<AssignmentHistory> getUserAH(User user) {
         try {
             ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
-        assignmentHistorys = loadUserAssignmentHistory(user);
-        return assignmentHistorys;
-        }
-        catch (Exception e){
+            assignmentHistorys = loadUserAssignmentHistory(user);
+            return assignmentHistorys;
+        } catch (Exception e) {
             return new ArrayList<>();
         }
     }
 
-    public ArrayList<AssignmentHistory> getUsersAH(ArrayList<User> users){
+    public ArrayList<AssignmentHistory> getUsersAH(ArrayList<User> users) {
         try {
             ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
-            for(int i = 0; i < users.size(); i++) {
+            for (int i = 0; i < users.size(); i++) {
                 assignmentHistorys.addAll(loadUserAssignmentHistory(users.get(i)));
             }
             return assignmentHistorys;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return new ArrayList<>();
         }
     }
 
 
-    public ArrayList<AssignmentHistory> getDeviceAH(Device device){
+    public ArrayList<AssignmentHistory> getDeviceAH(Device device) {
         try {
             ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
             assignmentHistorys = loadDeviceAssignmentHistory(device);
             return assignmentHistorys;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return new ArrayList<>();
         }
     }
 
-   public ArrayList<AssignmentHistory> getDevicesAH(ArrayList<Device> devices){
+    public ArrayList<AssignmentHistory> getDevicesAH(ArrayList<Device> devices) {
         try {
             ArrayList<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
-            for(int i = 0; i < devices.size(); i++) {
+            for (int i = 0; i < devices.size(); i++) {
                 assignmentHistorys.addAll(loadDeviceAssignmentHistory(devices.get(i)));
             }
             return assignmentHistorys;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return new ArrayList<>();
         }
     }
 
 
+    public boolean deleteDevice(Device device) {
 
 
-
-    public boolean deleteDevice(Device device){
-
-
-        try{
-        deleteFromDevices(device.getId());
-        return true;
-    } catch (Exception e) {
-        return false;
-    }
+        try {
+            deleteFromDevices(device.getId());
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 
-    public void setDeviceType(Device device, String type){
+    public void setDeviceType(Device device, String type) {
         device.setType(type);
     }
 
-    public void setUserMaxDevices(User user, int max){
+    public void setUserMaxDevices(User user, int max) {
         user.setDeviceLimit(max);
     }
 

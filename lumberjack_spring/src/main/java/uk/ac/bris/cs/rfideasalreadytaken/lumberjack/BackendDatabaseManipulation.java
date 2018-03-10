@@ -8,11 +8,14 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Calendar;
 
-public class BackendDatabaseManipulation extends BackendDatabaseConnection{
+public class BackendDatabaseManipulation extends BackendDatabaseConnection {
 
-    BackendDatabaseManipulation() throws Exception{};
+    BackendDatabaseManipulation() throws Exception {
+    }
 
-    public boolean resetDatabase() throws Exception{
+    ;
+
+    public boolean resetDatabase() throws Exception {
         try {
 
             //connectToDatabase();
@@ -106,155 +109,163 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
                     "\nPRIMARY KEY (Email))");
 
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    public boolean insertTestCases() throws Exception{
+    public boolean insertTestCases() throws Exception {
         try {
 
-        resetDatabase();
+            resetDatabase();
 
-        Rule rule = new Rule("ruleSet1", 20);
-        insertIntoRules(rule);
-        rule = new Rule("ruleSet2",22);
-        insertIntoRules(rule);
+            Rule rule = new Rule("ruleSet1", 20);
+            insertIntoRules(rule);
+            rule = new Rule("ruleSet2", 22);
+            insertIntoRules(rule);
 
-        UserGroup group = new UserGroup("groupOne");
-        insertIntoUserGroups(group);
-        group = new UserGroup("groupTwo");
-        insertIntoUserGroups(group);
+            UserGroup group = new UserGroup("groupOne");
+            insertIntoUserGroups(group);
+            group = new UserGroup("groupTwo");
+            insertIntoUserGroups(group);
 
-        GroupPermission permission = new GroupPermission("ruleSet1", "groupOne");
-        insertIntoGroupPermissions(permission);
-        permission = new GroupPermission("ruleSet1", "groupTwo");
-        insertIntoGroupPermissions(permission);
-        permission = new GroupPermission("ruleSet2", "groupOne");
-        insertIntoGroupPermissions(permission);
+            GroupPermission permission = new GroupPermission("ruleSet1", "groupOne");
+            insertIntoGroupPermissions(permission);
+            permission = new GroupPermission("ruleSet1", "groupTwo");
+            insertIntoGroupPermissions(permission);
+            permission = new GroupPermission("ruleSet2", "groupOne");
+            insertIntoGroupPermissions(permission);
 
-        User user = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
-        insertIntoUsers(user);
-        user = new User("Betty1248", "457436545", 1, 1, true, "groupTwo");
-        insertIntoUsers(user);
-        user = new User("Callum2468", "845584644", 3, 0, false, "groupTwo");
-        insertIntoUsers(user);
-        user = new User("Dorathy0369", "94648329837", 1, 0, true,"groupOne");
-        insertIntoUsers(user);
+            User user = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
+            insertIntoUsers(user);
+            user = new User("Betty1248", "457436545", 1, 1, true, "groupTwo");
+            insertIntoUsers(user);
+            user = new User("Callum2468", "845584644", 3, 0, false, "groupTwo");
+            insertIntoUsers(user);
+            user = new User("Dorathy0369", "94648329837", 1, 0, true, "groupOne");
+            insertIntoUsers(user);
 
-        Device device = new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1");
-        insertIntoDevices(device);
-        device = new Device("laptop02", "23482364326842334", "laptop", true, true, "ruleSet2");
-        insertIntoDevices(device);
-        device = new Device("laptop03", "93482364723648725", "laptop", false, false, "ruleSet1");
-        insertIntoDevices(device);
-        device = new Device("camera01", "03457237295732925", "camera", true, false, "ruleSet2");
-        insertIntoDevices(device);
+            Device device = new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1");
+            insertIntoDevices(device);
+            device = new Device("laptop02", "23482364326842334", "laptop", true, true, "ruleSet2");
+            insertIntoDevices(device);
+            device = new Device("laptop03", "93482364723648725", "laptop", false, false, "ruleSet1");
+            insertIntoDevices(device);
+            device = new Device("camera01", "03457237295732925", "camera", true, false, "ruleSet2");
+            insertIntoDevices(device);
 
-        Assignment assignment = new Assignment("laptop02", "Betty1248");
-        insertIntoAssignments(assignment);
+            Assignment assignment = new Assignment("laptop02", "Betty1248");
+            insertIntoAssignments(assignment);
 
-        assignment = new Assignment("laptop01", "Callum2468");
-        insertIntoAssignmentHistory(assignment, "Aidan9876", true);
+            assignment = new Assignment("laptop01", "Callum2468");
+            insertIntoAssignmentHistory(assignment, "Aidan9876", true);
 
-        return true;
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
-        catch (Exception e){return false;}
-    }
 
-    protected boolean insertIntoUserGroups(UserGroup group) throws Exception{
+    protected boolean insertIntoUserGroups(UserGroup group) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO UserGroups (id)" +
-                "VALUES (?)");
-        stmt.setString(1, group.getId());
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO UserGroups (id)" +
+                    "VALUES (?)");
+            stmt.setString(1, group.getId());
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean deleteFromUserGroups(String groupID) throws Exception{
+    protected boolean deleteFromUserGroups(String groupID) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM UserGroups WHERE id = ?");
-        stmt.setString(1, groupID);
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM UserGroups WHERE id = ?");
+            stmt.setString(1, groupID);
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean insertIntoGroupPermissions(GroupPermission groupPermission) throws Exception{
+    protected boolean insertIntoGroupPermissions(GroupPermission groupPermission) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO GroupPermissions (RuleID, UserGroupID)\n" +
-                "VALUES (?,?)");
-        stmt.setString(1, groupPermission.getRuleID());
-        stmt.setString(2, groupPermission.getUserGroupID());
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO GroupPermissions (RuleID, UserGroupID)\n" +
+                    "VALUES (?,?)");
+            stmt.setString(1, groupPermission.getRuleID());
+            stmt.setString(2, groupPermission.getUserGroupID());
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean deleteFromGroupPermissions(String groupPermissionID) throws Exception{
+    protected boolean deleteFromGroupPermissions(String groupPermissionID) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM GroupPermissions WHERE id = ?");
-        stmt.setString(1, groupPermissionID);
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM GroupPermissions WHERE id = ?");
+            stmt.setString(1, groupPermissionID);
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean insertIntoRules(Rule rule) throws Exception{
+    protected boolean insertIntoRules(Rule rule) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Rules (id, MaximumRemovalTime)" +
-                "VALUES (?,?)");
-        stmt.setString(1, rule.getId());
-        stmt.setInt(2, rule.getMaximumRemovalTime());
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Rules (id, MaximumRemovalTime)" +
+                    "VALUES (?,?)");
+            stmt.setString(1, rule.getId());
+            stmt.setInt(2, rule.getMaximumRemovalTime());
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean deleteFromRules(String ruleID) throws Exception{
+    protected boolean deleteFromRules(String ruleID) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Rules WHERE id = ?");
-        stmt.setString(1, ruleID);
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM Rules WHERE id = ?");
+            stmt.setString(1, ruleID);
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean insertIntoDevices(Device device) throws Exception{
+    protected boolean insertIntoDevices(Device device) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Devices (id, ScanValue, Type, Available, CurrentlyAssigned, RuleID) VALUES (?,?,?,?,?,?)");
-        stmt.setString(1, device.getId());
-        stmt.setString(2, device.getScanValue());
-        stmt.setString(3, device.getType());
-        stmt.setBoolean(4, device.isAvailable());
-        stmt.setBoolean(5, device.isCurrentlyAssigned());
-        stmt.setString(6, device.getRuleID());
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Devices (id, ScanValue, Type, Available, CurrentlyAssigned, RuleID) VALUES (?,?,?,?,?,?)");
+            stmt.setString(1, device.getId());
+            stmt.setString(2, device.getScanValue());
+            stmt.setString(3, device.getType());
+            stmt.setBoolean(4, device.isAvailable());
+            stmt.setBoolean(5, device.isCurrentlyAssigned());
+            stmt.setString(6, device.getRuleID());
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean deleteFromDevices(String deviceID) throws Exception{
+    protected boolean deleteFromDevices(String deviceID) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Devices WHERE id = ?");
-        stmt.setString(1, deviceID);
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM Devices WHERE id = ?");
+            stmt.setString(1, deviceID);
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean insertIntoUsers(User user) throws Exception{
+    protected boolean insertIntoUsers(User user) throws Exception {
         try {
             PreparedStatement stmt = conn.prepareStatement("INSERT INTO Users (id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove, GroupID)" +
                     "VALUES (?,?,?,?,?,?)");
@@ -266,98 +277,105 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
             stmt.setString(6, user.getGroupId());
             stmt.execute();
             return true;
+        } catch (Exception e) {
+            return false;
         }
-        catch (Exception e){return false;}
     }
 
-    protected boolean updateUser(String userID, User user) throws Exception{
+    protected boolean updateUser(String userID, User user) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("UPDATE Users SET id = ?, ScanValue = ?, DeviceLimit = ?, DevicesRemoved = ?, CanRemove = ?, GroupID = ? " +
-                "WHERE id = ?");
-        stmt.setString(1, user.getId());
-        stmt.setString(2, user.getScanValue());
-        stmt.setInt(3, user.getDeviceLimit());
-        stmt.setInt(4, user.getDevicesRemoved());
-        stmt.setBoolean(5, user.canRemove());
-        stmt.setString(6, user.getGroupId());
-        stmt.setString(7, userID);
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("UPDATE Users SET id = ?, ScanValue = ?, DeviceLimit = ?, DevicesRemoved = ?, CanRemove = ?, GroupID = ? " +
+                    "WHERE id = ?");
+            stmt.setString(1, user.getId());
+            stmt.setString(2, user.getScanValue());
+            stmt.setInt(3, user.getDeviceLimit());
+            stmt.setInt(4, user.getDevicesRemoved());
+            stmt.setBoolean(5, user.canRemove());
+            stmt.setString(6, user.getGroupId());
+            stmt.setString(7, userID);
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean deleteFromUsers(String userID) throws Exception{
+    protected boolean deleteFromUsers(String userID) throws Exception {
         try {
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM Users WHERE id = ?");
             stmt.setString(1, userID);
             stmt.execute();
             return true;
+        } catch (Exception e) {
+            return false;
         }
-        catch (Exception e){return false;}
     }
 
-    protected boolean insertIntoAssignments(Assignment assignment) throws Exception{
+    protected boolean insertIntoAssignments(Assignment assignment) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
-                "VALUES (?,?,?,?)");
-        stmt.setString(1, assignment.getDeviceID());
-        stmt.setString(2, assignment.getUserID());
-        stmt.setDate(3, assignment.getDateAssigned());
-        stmt.setTime(4, assignment.getTimeAssigned());
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO Assignments (DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
+                    "VALUES (?,?,?,?)");
+            stmt.setString(1, assignment.getDeviceID());
+            stmt.setString(2, assignment.getUserID());
+            stmt.setDate(3, assignment.getDateAssigned());
+            stmt.setTime(4, assignment.getTimeAssigned());
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean deleteFromAssignments(int assignmentID) throws Exception{
+    protected boolean deleteFromAssignments(int assignmentID) throws Exception {
         try {
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM Assignments WHERE id = ?");
-        stmt.setInt(1, assignmentID);
-        stmt.execute();
-        return true;
-    }
-        catch (Exception e){return false;}
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM Assignments WHERE id = ?");
+            stmt.setInt(1, assignmentID);
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
-    protected boolean insertIntoAssignmentHistory(Assignment assignment, String returningUserID, boolean returnedOnTime) throws Exception{
+    protected boolean insertIntoAssignmentHistory(Assignment assignment, String returningUserID, boolean returnedOnTime) throws Exception {
         try {
 
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, ReturnedOnTime, ReturnedBy)" +
-                "VALUES (?,?,?,?,?,?,?,?)");
+            PreparedStatement stmt = conn.prepareStatement("INSERT INTO AssignmentHistory (DeviceID, UserID, DateAssigned, TimeAssigned, DateReturned, TimeReturned, ReturnedOnTime, ReturnedBy)" +
+                    "VALUES (?,?,?,?,?,?,?,?)");
 
-        java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
-        java.sql.Time time = new java.sql.Time(Calendar.getInstance().getTime().getTime());
+            java.sql.Date date = new java.sql.Date(Calendar.getInstance().getTime().getTime());
+            java.sql.Time time = new java.sql.Time(Calendar.getInstance().getTime().getTime());
 
-        stmt.setString(1, assignment.getDeviceID());
-        stmt.setString(2, assignment.getUserID());
-        stmt.setDate(3, assignment.getDateAssigned());
-        stmt.setTime(4, assignment.getTimeAssigned());
-        stmt.setDate(5, date);
-        stmt.setTime(6, time);
-        stmt.setBoolean(7, returnedOnTime);
-        stmt.setString(8,returningUserID);
+            stmt.setString(1, assignment.getDeviceID());
+            stmt.setString(2, assignment.getUserID());
+            stmt.setDate(3, assignment.getDateAssigned());
+            stmt.setTime(4, assignment.getTimeAssigned());
+            stmt.setDate(5, date);
+            stmt.setTime(6, time);
+            stmt.setBoolean(7, returnedOnTime);
+            stmt.setString(8, returningUserID);
 
-        stmt.execute();
-        return true;
+            stmt.execute();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
-        catch (Exception e){return false;}
-    }
 
-    protected boolean deleteFromAssignmentHistory(String assignmentHistoryID) throws Exception{
+    protected boolean deleteFromAssignmentHistory(String assignmentHistoryID) throws Exception {
         try {
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM AssignmentHistory WHERE id = ?");
             stmt.setString(1, assignmentHistoryID);
             stmt.execute();
             return true;
+        } catch (Exception e) {
+            return false;
         }
-        catch (Exception e){return false;}
     }
 
     protected void insertIntoAdminUsers(AdminUser adminUser) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Admins (Email, Username, Password, Enabled)" +
-            "VALUES (?,?,?,?)");
+                "VALUES (?,?,?,?)");
         stmt.setString(1, adminUser.getEmail());
         stmt.setString(2, adminUser.getName());
         stmt.setString(3, adminUser.getPassword());
@@ -377,8 +395,8 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection{
     }
 
     protected void insertIntoTokens(VerificationToken verificationToken) throws SQLException {
-         PreparedStatement stmt = conn.prepareStatement("INSERT INTO Tokens (Token, AdminEmail, ExpiryDate)" +
-            "VALUES (?,?,?)");
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Tokens (Token, AdminEmail, ExpiryDate)" +
+                "VALUES (?,?,?)");
         stmt.setString(1, verificationToken.getToken());
         stmt.setString(2, verificationToken.getAdminUser().getEmail());
         stmt.setDate(3, verificationToken.getExpiryDate());

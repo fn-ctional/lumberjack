@@ -56,8 +56,9 @@ public class MainController extends WebMvcConfigurerAdapter {
 
     /**
      * Handler for taking out and returning device scans.
+     *
      * @param scanDTO A JSON containing device and user strings.
-         * @return An HTTP status code and body description of error or action performed.
+     * @return An HTTP status code and body description of error or action performed.
      */
     @PatchMapping(value = "/rpi", consumes = "application/json", produces = "text/plain")
     @ResponseBody
@@ -184,7 +185,7 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model){
+    public String dashboard(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         AdminUser user = authenticationDatabaseManager.findByEmail(email);
@@ -194,23 +195,22 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/user")
-    public String user(Model model){
+    public String user(Model model) {
         model.addAttribute("blank", true);
         return "users";
     }
 
     @GetMapping("/users")
-    public String allUsers(Model model){
+    public String allUsers(Model model) {
         model.addAttribute("multi", true);
         Boolean found = false;
         List<User> userList = new ArrayList<>();
         try {
             userList = backendFrontEndManager.getUsers();
-            if (!userList.isEmpty()){
+            if (!userList.isEmpty()) {
                 found = true;
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("SQL Error");
         }
         model.addAttribute("found", found);
@@ -219,18 +219,17 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/user/{id}")
-    public String userSpecified(@PathVariable String id, Model model){
+    public String userSpecified(@PathVariable String id, Model model) {
         List<User> userList = new ArrayList<>();
         Boolean found = false;
         model.addAttribute("searchTerm", id);
         try {
             User user = backendFrontEndManager.getUser(id);
-            if (user.getId().equals(id)){
+            if (user.getId().equals(id)) {
                 userList.add(user);
                 found = true;
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("SQL Error");
         }
         model.addAttribute("found", found);
@@ -239,13 +238,13 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/device")
-    public String device(Model model){
+    public String device(Model model) {
         model.addAttribute("blank", true);
         return "devices";
     }
 
     @GetMapping("/devices")
-    public String allDevices(Model model){
+    public String allDevices(Model model) {
         model.addAttribute("multi", true);
         Boolean found = false;
         List<Device> deviceList = new ArrayList<>();
@@ -254,11 +253,10 @@ public class MainController extends WebMvcConfigurerAdapter {
             // deviceList = backendFrontEndManager.getDevices();
             Device device = new Device();
             deviceList.add(device);
-            if (!deviceList.isEmpty()){
+            if (!deviceList.isEmpty()) {
                 found = true;
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("SQL Error");
         }
         model.addAttribute("found", found);
@@ -267,7 +265,7 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/device/{id}")
-    public String deviceSpecified(@PathVariable String id, Model model){
+    public String deviceSpecified(@PathVariable String id, Model model) {
         List<Device> deviceList = new ArrayList<>();
         Boolean found = false;
         model.addAttribute("searchTerm", id);
@@ -275,12 +273,11 @@ public class MainController extends WebMvcConfigurerAdapter {
             // TODO
             //Device device = backendFrontEndManager.getDevice(id);
             Device device = new Device();
-            if (device.getId().equals(id)){
+            if (device.getId().equals(id)) {
                 deviceList.add(device);
                 found = true;
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println("SQL Error");
         }
         model.addAttribute("found", found);
@@ -289,25 +286,25 @@ public class MainController extends WebMvcConfigurerAdapter {
     }
 
     @RequestMapping("/search")
-    public String search(Model model){
+    public String search(Model model) {
         model.addAttribute("blank", true);
         return "search";
     }
 
     @GetMapping("/search/{type}")
-    public String searchType(@PathVariable String type, Model model){
+    public String searchType(@PathVariable String type, Model model) {
         model.addAttribute("type", type);
         return "search";
     }
 
     @RequestMapping("/add")
-    public String add(Model model){
+    public String add(Model model) {
         model.addAttribute("blank", true);
         return "add";
     }
 
     @GetMapping("/add/{type}")
-    public String addType(@PathVariable String type, Model model){
+    public String addType(@PathVariable String type, Model model) {
         model.addAttribute("type", type);
         return "add";
     }

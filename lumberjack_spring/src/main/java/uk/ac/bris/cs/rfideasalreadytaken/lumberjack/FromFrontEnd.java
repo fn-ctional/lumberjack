@@ -8,6 +8,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.UserGroup;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.GroupPermission;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Assignment;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AssignmentHistory;
+
 import java.util.ArrayList;
 
 public interface FromFrontEnd {
