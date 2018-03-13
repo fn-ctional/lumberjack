@@ -8,7 +8,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @SpringBootApplication
-@PropertySource({ "classpath:${envTarget:database}.properties" })
 public class LumberjackApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
