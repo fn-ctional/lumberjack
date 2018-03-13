@@ -308,6 +308,20 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "add";
     }
 
+    /**
+     * POST request handler for adding users through CSV upload.
+     * It accepts JSON form of the CSV containing one list for each column.
+     * The size of each list must be the same and any columns that do not exist in the JSON should be initialised with
+     * default values.
+      @param usersCSVDTO A JSON object containing:
+        - List of Scan Values : scanValue
+        - List of Device Limits : deviceLimit
+        - List of Number of Devices Removed : devicesRemoved
+        - List of Booleans, canRemove : canRemove
+        - List of GroupIDs : groupID
+     * @param model
+     * @return
+     */
     @PostMapping(value = "/add/user/CSV", consumes = "text/json", produces = "text/plain")
     public String addUsersCSV(@RequestBody UsersCSVDTO usersCSVDTO, Model model) {
         List<User> newUsers = new ArrayList<>();
@@ -335,6 +349,20 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "CSVUploaded";
     }
 
+    /**
+     * POST request handler for adding devices through CSV upload.
+     * It accepts JSON form of the CSV containing one list for each column.
+     * The size of each list must be the same and any columns that do not exist in the JSON should be initialised with
+     * default values.
+      @param devicesCSVDTO A JSON object containing:
+        - List of Device Types : deviceType
+        - List of Booleans, Is Available : available
+        - List of Booleans, Currently Assigned : currentlyAssigned
+        - List of Rule IDs : ruleID
+        - List of Scan Values : scanValue
+     * @param model
+     * @return
+     */
     @PostMapping(value = "/add/device/CSV", consumes = "text/json", produces = "text/plain")
     public String addDevicesCSV(@RequestBody DevicesCSVDTO devicesCSVDTO, Model model) {
         List<Device> newDevices = new ArrayList<>();
@@ -344,7 +372,7 @@ public class MainController extends WebMvcConfigurerAdapter {
 
             newDevice.setType(devicesCSVDTO.getType().get(i));
             newDevice.setAvailable(devicesCSVDTO.getAvailable().get(i));
-            newDevice.setCurrentlyAssigned(devicesCSVDTO.getAvailable().get(i));
+            newDevice.setCurrentlyAssigned(devicesCSVDTO.getCurrentlyAssigned().get(i));
             newDevice.setRuleID(devicesCSVDTO.getRuleID().get(i));
             newDevice.setScanValue(devicesCSVDTO.getScanValue().get(i));
             //TODO: how to set device ID?
