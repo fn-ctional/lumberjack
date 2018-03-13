@@ -8,15 +8,10 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @SpringBootApplication
-public class LumberjackApplication implements CommandLineRunner {
+public class LumberjackApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(LumberjackApplication.class, args);
-    }
-
-    @Override
-    public void run(String... strings) throws Exception {
-        return;
     }
 
 }

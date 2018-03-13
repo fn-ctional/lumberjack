@@ -1,5 +1,6 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.ScanDTO;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Device;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.*;
 
 import javax.validation.Valid;
 import java.util.Calendar;
@@ -309,4 +308,58 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "add";
     }
 
+    @PostMapping(value = "/add/user/CSV", consumes = "text/json", produces = "text/plain")
+    public String addUsersCSV(@RequestBody UsersCSVDTO usersCSVDTO, Model model) {
+        List<User> newUsers = new ArrayList<>();
+
+        for (int i = 0; i < usersCSVDTO.getScanValue().size(); i++) {
+            User newUser = new User();
+            newUser.setScanValue(usersCSVDTO.getScanValue().get(i));
+            newUser.setDeviceLimit(usersCSVDTO.getDeviceLimit().get(i));
+            newUser.setDevicesRemoved(usersCSVDTO.getDevicesRemoved().get(i));
+            newUser.setCanRemove(usersCSVDTO.getCanRemove().get(i));
+            newUser.setGroupId(usersCSVDTO.getGroupID().get(i));
+            //TODO: how to assign the userID?
+
+            newUsers.add(newUser);
+        }
+        try {
+            backendFrontEndManager.insertUsers(newUsers);
+            model.addAttribute("messageType", "Successful Upload");
+            model.addAttribute("messageString", "New users successfully added!");
+        } catch (Exception e) {
+            model.addAttribute("messageType", "Failed Upload");
+            model.addAttribute("messageString","Unknown CSV upload error, please try again!");
+        }
+
+        return "CSVUploaded";
+    }
+
+    @PostMapping(value = "/add/device/CSV", consumes = "text/json", produces = "text/plain")
+    public String addDevicesCSV(@RequestBody DevicesCSVDTO devicesCSVDTO, Model model) {
+        List<Device> newDevices = new ArrayList<>();
+
+        for (int i = 0; i < devicesCSVDTO.getScanValue().size(); i++) {
+            Device newDevice = new Device();
+
+            newDevice.setType(devicesCSVDTO.getType().get(i));
+            newDevice.setAvailable(devicesCSVDTO.getAvailable().get(i));
+            newDevice.setCurrentlyAssigned(devicesCSVDTO.getAvailable().get(i));
+            newDevice.setRuleID(devicesCSVDTO.getRuleID().get(i));
+            newDevice.setScanValue(devicesCSVDTO.getScanValue().get(i));
+            //TODO: how to set device ID?
+
+            newDevices.add(newDevice);
+        }
+        try {
+            backendFrontEndManager.insertDevices(newDevices);
+            model.addAttribute("messageType", "Successful Upload");
+            model.addAttribute("messageString", "New devices successfully added!");
+        } catch (Exception e) {
+            model.addAttribute("messageType", "Failed Upload");
+            model.addAttribute("messageString","Unknown CSV upload error, please try again!");
+        }
+
+        return "message";
+    }
 }

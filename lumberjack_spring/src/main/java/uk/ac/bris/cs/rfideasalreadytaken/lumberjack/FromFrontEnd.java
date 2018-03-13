@@ -10,6 +10,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.Assignment;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.AssignmentHistory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface FromFrontEnd {
 
@@ -60,7 +61,7 @@ public interface FromFrontEnd {
 
     boolean insertUser(User user) throws Exception;
 
-    boolean insertUsers(ArrayList<User> users) throws Exception;
+    boolean insertUsers(List<User> users) throws Exception;
 
     ArrayList<AssignmentHistory> getUserAH(User user);
 
@@ -68,7 +69,7 @@ public interface FromFrontEnd {
 
     boolean insertDevice(Device device) throws Exception;
 
-    boolean insertDevices(ArrayList<Device> devices) throws Exception;
+    boolean insertDevices(List<Device> devices) throws Exception;
 
     ArrayList<AssignmentHistory> getDeviceAH(Device device);
 
