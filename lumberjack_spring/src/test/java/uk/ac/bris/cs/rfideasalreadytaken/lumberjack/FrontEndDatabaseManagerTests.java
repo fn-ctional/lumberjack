@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 @SpringBootTest
-@TestPropertySource({ "classpath:${envTarget:testdatabase}.properties" })
+@TestPropertySource({ "classpath:${envTarget:config/testdatabase}.properties" })
 @RunWith(SpringRunner.class)
 public class FrontEndDatabaseManagerTests {
 
