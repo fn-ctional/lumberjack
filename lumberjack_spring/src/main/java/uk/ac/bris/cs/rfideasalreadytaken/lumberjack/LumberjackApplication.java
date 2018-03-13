@@ -11,12 +11,6 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @PropertySource({ "classpath:${envTarget:database}.properties" })
 public class LumberjackApplication implements CommandLineRunner {
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer
-        propertySourcesPlaceholderConfigurer() {
-            return new PropertySourcesPlaceholderConfigurer();
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(LumberjackApplication.class, args);
     }

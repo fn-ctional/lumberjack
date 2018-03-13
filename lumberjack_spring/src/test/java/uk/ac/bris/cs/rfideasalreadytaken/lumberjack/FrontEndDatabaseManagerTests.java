@@ -1,11 +1,14 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
@@ -14,11 +17,18 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 @SpringBootTest
+@TestPropertySource({ "classpath:${envTarget:testdatabase}.properties" })
 @RunWith(SpringRunner.class)
 public class FrontEndDatabaseManagerTests {
 
     @Autowired
     private BackendFrontEndManager frontEndDatabaseManager;
+
+    @Before
+    public void setupDatabase() throws Exception {
+        frontEndDatabaseManager.resetDatabase();
+    }
+
 
     @Test
     public void testAddUser() throws Exception {
