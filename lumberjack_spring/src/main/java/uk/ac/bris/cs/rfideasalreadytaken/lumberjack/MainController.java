@@ -45,6 +45,10 @@ public class MainController extends WebMvcConfigurerAdapter {
     @Autowired
     private AuthenticationDatabaseManager authenticationDatabaseManager;
 
+    /**
+     * Adding view controllers to serve the basic pages that don't require complex mappings.
+     * @param registry
+     */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/").setViewName("home");
@@ -183,6 +187,11 @@ public class MainController extends WebMvcConfigurerAdapter {
         return registered;
     }
 
+    /**
+     * GET request handler for serving the admin dashboard with the active user's name as a model attribute.
+     * @param model
+     * @return
+     */
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -193,12 +202,22 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "dashboard";
     }
 
-    @GetMapping("/user")
+    /**
+     * Basic request handler for serving the users page when no specific user is specified.
+     * @param model
+     * @return
+     */
+    @RequestMapping("/user")
     public String user(Model model) {
         model.addAttribute("blank", true);
         return "users";
     }
 
+    /**
+     * GET request handler for returning the page populated with all the users in the database.
+     * @param model
+     * @return
+     */
     @GetMapping("/users")
     public String allUsers(Model model) {
         model.addAttribute("multi", true);
@@ -217,6 +236,12 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "users";
     }
 
+    /**
+     * GET request handler for serving the users page populated with a specified (id) user from the database.
+     * @param id
+     * @param model
+     * @return
+     */
     @GetMapping("/user/{id}")
     public String userSpecified(@PathVariable String id, Model model) {
         List<User> userList = new ArrayList<>();
@@ -236,12 +261,22 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "users";
     }
 
+    /**
+     * Basic request handler for serving the devices page when no specific device is specified.
+     * @param model
+     * @return
+     */
     @GetMapping("/device")
     public String device(Model model) {
         model.addAttribute("blank", true);
         return "devices";
     }
 
+    /**
+     * GET request handler for returning the page populated with all the devices in the database.
+     * @param model
+     * @return
+     */
     @GetMapping("/devices")
     public String allDevices(Model model) {
         model.addAttribute("multi", true);
@@ -263,6 +298,12 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "devices";
     }
 
+    /**
+     * GET request handler for serving the device page populated with a specified (id) device from the database.
+     * @param id
+     * @param model
+     * @return
+     */
     @GetMapping("/device/{id}")
     public String deviceSpecified(@PathVariable String id, Model model) {
         List<Device> deviceList = new ArrayList<>();
@@ -284,24 +325,46 @@ public class MainController extends WebMvcConfigurerAdapter {
         return "devices";
     }
 
+    /**
+     * Basic request handler for serving the search page when no search type is specified.
+     * @param model
+     * @return
+     */
     @RequestMapping("/search")
     public String search(Model model) {
         model.addAttribute("blank", true);
         return "search";
     }
 
+    /**
+     * GET request handler for searching a type of entity e.g. user or device.
+     * @param type
+     * @param model
+     * @return
+     */
     @GetMapping("/search/{type}")
     public String searchType(@PathVariable String type, Model model) {
         model.addAttribute("type", type);
         return "search";
     }
 
+    /**
+     * Basic request handler for serving the add page when no add type is specified.
+     * @param model
+     * @return
+     */
     @RequestMapping("/add")
     public String add(Model model) {
         model.addAttribute("blank", true);
         return "add";
     }
 
+    /**
+     * GET request handler for adding a type of entity e.g. user or device.
+     * @param type
+     * @param model
+     * @return
+     */
     @GetMapping("/add/{type}")
     public String addType(@PathVariable String type, Model model) {
         model.addAttribute("type", type);
