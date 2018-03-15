@@ -1,14 +1,15 @@
 #include <iostream>
 #include "Event.hpp"
 #include "Connection.hpp"
-
-const static char *URL = "localhost:8080/devices";
+#include "Config.hpp"
 
 int main() {
-  auto connection = Connection::Connection(URL);
+  auto config = Config::load("/home/fred/.lumberjack").value();
+
+  auto connection = Connection::Connection(config.path);
   auto response = Connection::Response();
 
-  auto source = Event::Source("/dev/input/event0");
+  auto source = Event::Source(config.source);
 
   while ( true ) {
 
