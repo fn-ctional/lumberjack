@@ -1,6 +1,7 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.sql.Connection;
 import java.sql.Statement;
@@ -11,13 +12,18 @@ public class BackendDatabaseConnection {
     protected Connection conn = null;
     protected Statement stmt = null;
 
-    private String serverName = "129.150.119.251";
-    private int portNumber = 3306;
-    private String databaseName = "LumberjackDatabase";
-    private String username = "lumberjack";
-    private String password = "Lumberjack1#";
+    @Value("${ip}")
+    private String serverName;
+    @Value("${port}")
+    private int portNumber;
+    @Value("${database}")
+    private String databaseName;
+    @Value("${username}")
+    private String username;
+    @Value("${password}")
+    private String password;
 
-    BackendDatabaseConnection() throws Exception{
+    BackendDatabaseConnection() throws Exception {
         try {
             MysqlDataSource dataSource = new MysqlDataSource();
 

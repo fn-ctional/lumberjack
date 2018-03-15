@@ -13,6 +13,7 @@ import javax.validation.constraints.Null;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class BackendFrontEndManager extends BackendDatabaseLoading implements FromFrontEnd {
@@ -33,7 +34,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
         }
     }
 
-    public boolean insertUsers(ArrayList<User> users) throws Exception {
+    public boolean insertUsers(List<User> users) throws Exception {
 
 
         try {
@@ -57,7 +58,7 @@ public class BackendFrontEndManager extends BackendDatabaseLoading implements Fr
         }
     }
 
-    public boolean insertDevices(ArrayList<Device> devices) throws Exception {
+    public boolean insertDevices(List<Device> devices) throws Exception {
 
 
         try {

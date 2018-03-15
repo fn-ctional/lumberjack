@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include ="fragments/header :: head (title='lumberjack - Help')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+            <h1>Dashboard</h1>
+
+            <h2>Help</h2>
+
+            <p class="lead">
+                Some helpful advice
+            </p>
+
+            <p>
+                This is the helpful advice.
+            </p>
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
