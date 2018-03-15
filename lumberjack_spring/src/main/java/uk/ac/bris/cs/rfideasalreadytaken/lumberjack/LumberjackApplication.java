@@ -8,22 +8,10 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @SpringBootApplication
-@PropertySource({ "classpath:${envTarget:database}.properties" })
-public class LumberjackApplication implements CommandLineRunner {
-
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer
-        propertySourcesPlaceholderConfigurer() {
-            return new PropertySourcesPlaceholderConfigurer();
-    }
+public class LumberjackApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(LumberjackApplication.class, args);
-    }
-
-    @Override
-    public void run(String... strings) throws Exception {
-        return;
     }
 
 }

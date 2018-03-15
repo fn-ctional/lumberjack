@@ -1,4 +1,5 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
+import org.springframework.test.context.TestPropertySource;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.*;
 
 import org.junit.Test;
@@ -17,6 +18,7 @@ import static org.junit.Assert.assertNull;
 
 
 @RunWith(SpringRunner.class)
+@TestPropertySource({ "classpath:${envTarget:config/testdatabase}.properties" })
 @SpringBootTest
 public class BackendFromCardReaderTests {
 

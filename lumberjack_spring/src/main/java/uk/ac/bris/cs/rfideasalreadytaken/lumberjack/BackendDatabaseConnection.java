@@ -23,7 +23,7 @@ public class BackendDatabaseConnection {
     @Value("${password}")
     private String password;
 
-    BackendDatabaseConnection() throws Exception{
+    BackendDatabaseConnection() throws Exception {
         try {
             MysqlDataSource dataSource = new MysqlDataSource();
 
