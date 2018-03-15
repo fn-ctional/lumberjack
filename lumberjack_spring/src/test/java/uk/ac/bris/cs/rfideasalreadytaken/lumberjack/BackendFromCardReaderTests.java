@@ -23,6 +23,8 @@ public class BackendFromCardReaderTests {
     @Autowired
     private BackendCardReaderManager backend;
 
+    /*
+
 	@Test
     public void testRemoveDevice() throws Exception {
 
@@ -103,5 +105,95 @@ public class BackendFromCardReaderTests {
 		assertEquals(history.getDeviceID(),device.getId());
 	}
 
+	@Test
+	public void testInvalidUser() throws Exception {
 
+		backend.resetDatabase();
+		backend.insertTestCases();
+
+		ScanDTO scan = new ScanDTO();
+		scan.setUser("123456789");
+		scan.setDevice("23482364326842334");
+
+		ScanReturn result = backend.scanReceived(scan);
+
+		assertEquals(result, ScanReturn.FAILUSERNOTRECOGNISED);
+	}
+
+	@Test
+	public void testUserGroupAndDeviceRulesetNotCompatable() throws Exception {
+
+		backend.resetDatabase();
+		backend.insertTestCases();
+
+		ScanDTO scan = new ScanDTO();
+		scan.setUser("457436545");
+		scan.setDevice("03457237295732925");
+
+		ScanReturn result = backend.scanReceived(scan);
+
+		assertEquals(result, ScanReturn.FAILUSERGROUPRULESETNOTCOMPATABLE);
+	}
+
+	@Test
+	public void testInvalidDevice() throws Exception {
+
+		backend.resetDatabase();
+		backend.insertTestCases();
+
+		ScanDTO scan = new ScanDTO();
+		scan.setUser("457436545");
+		scan.setDevice("012345678910");
+
+		ScanReturn result = backend.scanReceived(scan);
+
+		assertEquals(result, ScanReturn.FAILDEVICENOTRECOGNISED);
+	}
+
+	@Test
+	public void testUserAtDeviceLimit() throws Exception {
+
+		backend.resetDatabase();
+		backend.insertTestCases();
+
+		ScanDTO scan = new ScanDTO();
+		scan.setUser("94648329837");
+		scan.setDevice("03457237295732925");
+
+		ScanReturn result = backend.scanReceived(scan);
+
+		assertEquals(result, ScanReturn.FAILUSERATDEVICELIMIT);
+	}
+
+	@Test
+	public void testUserNotPermittedToRemove() throws Exception {
+
+		backend.resetDatabase();
+		backend.insertTestCases();
+
+		ScanDTO scan = new ScanDTO();
+		scan.setUser("845584644");
+		scan.setDevice("03457237295732925");
+
+		ScanReturn result = backend.scanReceived(scan);
+
+		assertEquals(result, ScanReturn.FAILUSERNORPERMITTEDTOREMOVE);
+	}
+
+	@Test
+	public void testDeviceNotAvailable() throws Exception {
+
+		backend.resetDatabase();
+		backend.insertTestCases();
+
+		ScanDTO scan = new ScanDTO();
+		scan.setUser("457436545");
+		scan.setDevice("93482364723648725");
+
+		ScanReturn result = backend.scanReceived(scan);
+
+		assertEquals(result, ScanReturn.FAILDEVICEUNAVIALABLE);
+	}
+
+	*/
 }

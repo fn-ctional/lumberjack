@@ -137,11 +137,11 @@ public class BackendDatabaseManipulation extends BackendDatabaseConnection {
 
             User user = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
             insertIntoUsers(user);
-            user = new User("Betty1248", "457436545", 1, 1, true, "groupTwo");
+            user = new User("Betty1248", "457436545", 3, 1, true, "groupTwo");
             insertIntoUsers(user);
             user = new User("Callum2468", "845584644", 3, 0, false, "groupTwo");
             insertIntoUsers(user);
-            user = new User("Dorathy0369", "94648329837", 1, 0, true, "groupOne");
+            user = new User("Dorathy0369", "94648329837", 0, 0, true, "groupOne");
             insertIntoUsers(user);
 
             Device device = new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1");
