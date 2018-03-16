@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailExistsException;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailNotPermittedException;
 
-import java.util.Collections;
+import java.sql.SQLException;
 
 @Service
 public class UserService implements IUserService {
@@ -16,17 +18,17 @@ public class UserService implements IUserService {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private AuthenticationDatabaseManager authenticationDatabaseManager;
+    private AuthenticationBackend authenticationBackend;
 
     @Transactional
     @Override
-    public AdminUser registerNewUserAccount(AdminUserDTO accountDTO) throws EmailNotPermittedException, Exception {
+    public AdminUser registerNewUserAccount(AdminUserDTO accountDTO) throws EmailNotPermittedException, EmailExistsException, SQLException {
 
-        if (authenticationDatabaseManager.userExists(accountDTO.getEmail())) {
+        if (authenticationBackend.userExists(accountDTO.getEmail())) {
             throw new EmailExistsException("There is already an account with that email address: "  + accountDTO.getEmail());
         }
 
-        if (!authenticationDatabaseManager.emailPermitted(accountDTO.getEmail())) {
+        if (!authenticationBackend.emailPermitted(accountDTO.getEmail())) {
             throw new EmailNotPermittedException("The following email is not on the list of permitted emails: "  + accountDTO.getEmail());
         }
 
@@ -35,28 +37,28 @@ public class UserService implements IUserService {
         user.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
         user.setEmail(accountDTO.getEmail());
         user.setEnabled(false);
-        authenticationDatabaseManager.addAdminUser(user);
+        authenticationBackend.addAdminUser(user);
         return user;
     }
 
     @Override
     public AdminUser getUser(String verificationToken) {
-        return authenticationDatabaseManager.findByToken(verificationToken).getAdminUser();
+        return authenticationBackend.findByToken(verificationToken).getAdminUser();
     }
 
     @Override
     public VerificationToken getVerificationToken(String VerificationToken) {
-        return authenticationDatabaseManager.findByToken(VerificationToken);
+        return authenticationBackend.findByToken(VerificationToken);
     }
 
     @Override
     public void saveRegisteredUser(AdminUser user) throws Exception {
-        authenticationDatabaseManager.save(user);
+        authenticationBackend.save(user);
     }
 
     @Override
     public void createVerificationToken(AdminUser user, String token) {
         VerificationToken myToken = new VerificationToken(token, user);
-        authenticationDatabaseManager.addToken(myToken);
+        authenticationBackend.addToken(myToken);
     }
 }

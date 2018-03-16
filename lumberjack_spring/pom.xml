@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>lumberjack</name>
-	<description>Demo project for Spring Boot</description>
+	<description>A device library and logging system using RFID technology</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

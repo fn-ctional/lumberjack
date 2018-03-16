@@ -36,13 +36,13 @@ public class SpringConfiguration {
         return new RequestContextListener();
     }
 
-    @Value( "${host}")
+    @Value( "${email-host}")
     private String host;
-    @Value( "${port}")
+    @Value( "${email-port}")
     private int port;
-    @Value( "${username}")
+    @Value( "${email-username}")
     private String username;
-    @Value( "${password}")
+    @Value( "${email-password}")
     private String password;
 
     @Bean

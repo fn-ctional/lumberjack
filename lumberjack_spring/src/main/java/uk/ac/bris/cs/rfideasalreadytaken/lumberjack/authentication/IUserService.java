@@ -2,6 +2,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailNotPermittedException;
 
 public interface IUserService {
 

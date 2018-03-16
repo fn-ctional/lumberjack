@@ -3,15 +3,14 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.data.User;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.DatabaseUtility;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.NotFoundException;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.WebBackend;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -22,11 +21,14 @@ import static org.junit.Assert.assertNotEquals;
 public class FrontEndDatabaseManagerTests {
 
     @Autowired
-    private BackendFrontEndManager frontEndDatabaseManager;
+    private DatabaseUtility databaseUtility;
+
+    @Autowired
+    private WebBackend frontEndDatabaseManager;
 
     @Before
     public void setupDatabase() throws Exception {
-        frontEndDatabaseManager.resetDatabase();
+        databaseUtility.resetDatabase();
     }
 
 

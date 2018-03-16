@@ -1,0 +1,58 @@
+package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.GroupPermission;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.UserGroup;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+@Service
+public class DatabaseUserGroups {
+
+    @Autowired
+    private DatabaseConnection databaseConnection;
+
+    public void insertIntoUserGroups(UserGroup group) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("INSERT INTO UserGroups (id)" +
+                "VALUES (?)");
+        stmt.setString(1, group.getId());
+        stmt.execute();
+    }
+
+    public void deleteFromUserGroups(String groupID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM UserGroups WHERE id = ?");
+        stmt.setString(1, groupID);
+        stmt.execute();
+    }
+
+    public void insertIntoGroupPermissions(GroupPermission groupPermission) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("INSERT INTO GroupPermissions (RuleID, UserGroupID)\n" +
+                "VALUES (?,?)");
+        stmt.setString(1, groupPermission.getRuleID());
+        stmt.setString(2, groupPermission.getUserGroupID());
+        stmt.execute();
+    }
+
+    public void deleteFromGroupPermissions(String groupPermissionID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM GroupPermissions WHERE id = ?");
+        stmt.setString(1, groupPermissionID);
+        stmt.execute();
+    }
+
+    public boolean canUserGroupRemoveDevice(Device device, User user) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM GroupPermissions WHERE UserGroupID = ? AND RuleID = ?;");
+        stmt.setString(1, user.getGroupId());
+        stmt.setString(2, device.getRuleID());
+        ResultSet rs = stmt.executeQuery();
+        return rs.next();
+    }
+
+
+
+
+}

@@ -23,13 +23,13 @@ import java.util.List;
 public class MyUserDetailsService implements UserDetailsService {
 
     @Autowired
-    private AuthenticationDatabaseManager authenticationDatabaseManager;
+    private AuthenticationBackend authenticationBackend;
 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
         final Logger log = LoggerFactory.getLogger(LumberjackApplication.class);
 
-        AdminUser user = authenticationDatabaseManager.findByEmail(email);
+        AdminUser user = authenticationBackend.findByEmail(email);
         log.info(email);
         log.info(user.getEmail());
         if (user.isEnabled()){
