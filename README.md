@@ -12,17 +12,17 @@ web front-end.
 
 It is neccessary to provide configuration files in resources/config/ detailing the following:
 
-database.properties:
+<code>database.properties:
 -ip
 -port
 -database
 -username
--password
+-password</code>
 
-email.properties:
+<code>email.properties:
 -host
 -port
 -username
--password
+-password</code>
 
 Additionally, testdatabase.properties is required to run unit tests, with the same fields as database.properties. 
