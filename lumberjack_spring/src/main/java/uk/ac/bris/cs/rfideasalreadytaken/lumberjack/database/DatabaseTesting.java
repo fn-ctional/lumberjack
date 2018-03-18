@@ -4,28 +4,31 @@ import org.h2.engine.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.*;
 
 @Service
 public class DatabaseTesting {
 
     @Autowired
-    private DatabaseUtility databaseUtility;
+    public DatabaseUtility databaseUtility;
 
     @Autowired
-    private DatabaseRules databaseRules;
+    public DatabaseRules databaseRules;
 
     @Autowired
-    private DatabaseUserGroups databaseUserGroups;
+    public DatabaseUserGroups databaseUserGroups;
 
     @Autowired
-    private DatabaseUsers databaseUsers;
+    public DatabaseUsers databaseUsers;
 
     @Autowired
-    private DatabaseDevices databaseDevices;
+    public DatabaseDevices databaseDevices;
 
     @Autowired
-    private DatabaseAssignments databaseAssignments;
+    public DatabaseAssignments databaseAssignments;
 
+    @Autowired
+    public CardReaderBackend databaseCardReader;
 
     public void insertTestCases() throws Exception {
         databaseUtility.resetDatabase();

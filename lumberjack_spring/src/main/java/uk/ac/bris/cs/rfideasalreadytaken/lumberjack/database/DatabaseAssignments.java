@@ -21,7 +21,7 @@ public class DatabaseAssignments {
     private DatabaseConnection databaseConnection;
 
 
-    protected Assignment loadAssignment(Device device) throws SQLException {
+    public Assignment loadAssignment(Device device) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ?");
         stmt.setString(1, device.getId());
         ResultSet rs = stmt.executeQuery();
@@ -42,7 +42,7 @@ public class DatabaseAssignments {
     }
 
 
-    protected AssignmentHistory loadAssignmentHistory(Device device) throws SQLException {
+    public AssignmentHistory loadAssignmentHistory(Device device) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM AssignmentHistory WHERE DeviceID = ?");
         stmt.setString(1, device.getId());
         ResultSet rs = stmt.executeQuery();
@@ -118,7 +118,7 @@ public class DatabaseAssignments {
             stmt.execute();
     }
 
-    protected void deleteFromAssignmentHistory(String assignmentHistoryID) throws SQLException {
+    public void deleteFromAssignmentHistory(String assignmentHistoryID) throws SQLException {
             PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM AssignmentHistory WHERE id = ?");
             stmt.setString(1, assignmentHistoryID);
             stmt.execute();

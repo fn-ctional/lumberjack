@@ -1,11 +1,19 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
+
 import org.springframework.test.context.TestPropertySource;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.CardReaderBackend;
 
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
+
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.*;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.data.*;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -17,26 +25,25 @@ import static org.junit.Assert.assertNull;
 public class BackendFromCardReaderTests {
 
     @Autowired
-    private CardReaderBackend backend;
+    private DatabaseTesting database;
 
-    /*
+	/*
 
 	@Test
     public void testRemoveDevice() throws Exception {
 
-		database.resetDatabase();
 		database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("1314831486");
 		scan.setDevice("36109839730967812");
-		int removed = database.loadUser(scan).getDevicesRemoved();
+		int removed = database.databaseUsers.loadUser(scan).getDevicesRemoved();
 
-		ScanReturn result = database.scanReceived(scan);
+		ScanReturn result = database.databaseCardReader.scanReceived(scan);
 
-		User user = database.loadUser(scan);
-		Device device = database.loadDevice(scan);
-		Assignment assignment = database.loadAssignment(device);
+		User user = database.databaseUsers.loadUser(scan);
+		Device device = database.databaseDevices.loadDevice(scan);
+		Assignment assignment = database.databaseAssignments.loadAssignment(device);
 
 		assertEquals(result,ScanReturn.SUCCESSREMOVAL);
 		assertEquals(device.isCurrentlyAssigned(),true);
@@ -48,20 +55,19 @@ public class BackendFromCardReaderTests {
 	@Test
 	public void testReturnDeviceByCorrectUser() throws Exception {
 
-		database.resetDatabase();
-		database.insertTestCases();
+        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("457436545");
 		scan.setDevice("23482364326842334");
-		int removed = database.loadUser(scan).getDevicesRemoved();
+		int removed = database.databaseUsers.loadUser(scan).getDevicesRemoved();
 
-		ScanReturn result = database.scanReceived(scan);
+		ScanReturn result = database.databaseCardReader.scanReceived(scan);
 
-		User user = database.loadUser(scan);
-		Device device = database.loadDevice(scan);
-		Assignment assignment = database.loadAssignment(device);
-		AssignmentHistory history = database.loadAssignmentHistory(device);
+		User user = database.databaseUsers.loadUser(scan);
+		Device device = database.databaseDevices.loadDevice(scan);
+		Assignment assignment = database.databaseAssignments.loadAssignment(device);
+		AssignmentHistory history = database.databaseAssignments.loadAssignmentHistory(device);
 
 		assertEquals(result,ScanReturn.SUCCESSRETURN);
 		assertEquals(device.isCurrentlyAssigned(),false);
@@ -74,22 +80,21 @@ public class BackendFromCardReaderTests {
 	@Test
 	public void testReturnAndRemoveDeviceByNewUser() throws Exception {
 
-		database.resetDatabase();
-		database.insertTestCases();
+        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("1314831486");
 		scan.setDevice("23482364326842334");
-		int removedNew = database.loadUser(scan).getDevicesRemoved();
-		int removedOld = database.loadUser("Betty1248").getDevicesRemoved();
+		int removedNew = database.databaseUsers.loadUser(scan).getDevicesRemoved();
+		int removedOld = database.databaseUsers.loadUser("Betty1248").getDevicesRemoved();
 
-		ScanReturn result = database.scanReceived(scan);
+		ScanReturn result = database.databaseCardReader.scanReceived(scan);
 
-		User newUser = database.loadUser(scan);
-		Device device = database.loadDevice(scan);
-		Assignment assignment = database.loadAssignment(device);
-		AssignmentHistory history = database.loadAssignmentHistory(device);
-		User oldUser = database.loadUser(history.getUserID());
+		User newUser = database.databaseUsers.loadUser(scan);
+		Device device = database.databaseDevices.loadDevice(scan);
+		Assignment assignment = database.databaseAssignments.loadAssignment(device);
+		AssignmentHistory history = database.databaseAssignments.loadAssignmentHistory(device);
+		User oldUser = database.databaseUsers.loadUser(history.getUserID());
 
 		assertEquals(result,ScanReturn.SUCCESSRETURNANDREMOVAL);
 		assertEquals(device.isCurrentlyAssigned(),true);
@@ -104,14 +109,13 @@ public class BackendFromCardReaderTests {
 	@Test
 	public void testInvalidUser() throws Exception {
 
-		database.resetDatabase();
-		database.insertTestCases();
+        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("123456789");
 		scan.setDevice("23482364326842334");
 
-		ScanReturn result = database.scanReceived(scan);
+		ScanReturn result = database.databaseCardReader.scanReceived(scan);
 
 		assertEquals(result, ScanReturn.FAILUSERNOTRECOGNISED);
 	}
@@ -119,14 +123,13 @@ public class BackendFromCardReaderTests {
 	@Test
 	public void testUserGroupAndDeviceRulesetNotCompatable() throws Exception {
 
-		database.resetDatabase();
-		database.insertTestCases();
+        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("457436545");
 		scan.setDevice("03457237295732925");
 
-		ScanReturn result = database.scanReceived(scan);
+		ScanReturn result = database.databaseCardReader.scanReceived(scan);
 
 		assertEquals(result, ScanReturn.FAILUSERGROUPRULESETNOTCOMPATABLE);
 	}
@@ -134,14 +137,13 @@ public class BackendFromCardReaderTests {
 	@Test
 	public void testInvalidDevice() throws Exception {
 
-		database.resetDatabase();
-		database.insertTestCases();
+        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("457436545");
 		scan.setDevice("012345678910");
 
-		ScanReturn result = database.scanReceived(scan);
+		ScanReturn result = database.databaseCardReader.scanReceived(scan);
 
 		assertEquals(result, ScanReturn.FAILDEVICENOTRECOGNISED);
 	}
@@ -149,14 +151,13 @@ public class BackendFromCardReaderTests {
 	@Test
 	public void testUserAtDeviceLimit() throws Exception {
 
-		database.resetDatabase();
-		database.insertTestCases();
+        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("94648329837");
 		scan.setDevice("03457237295732925");
 
-		ScanReturn result = database.scanReceived(scan);
+		ScanReturn result = database.databaseCardReader.scanReceived(scan);
 
 		assertEquals(result, ScanReturn.FAILUSERATDEVICELIMIT);
 	}
@@ -164,14 +165,13 @@ public class BackendFromCardReaderTests {
 	@Test
 	public void testUserNotPermittedToRemove() throws Exception {
 
-		database.resetDatabase();
-		database.insertTestCases();
+        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("845584644");
 		scan.setDevice("03457237295732925");
 
-		ScanReturn result = database.scanReceived(scan);
+		ScanReturn result = database.databaseCardReader.scanReceived(scan);
 
 		assertEquals(result, ScanReturn.FAILUSERNORPERMITTEDTOREMOVE);
 	}
@@ -179,17 +179,18 @@ public class BackendFromCardReaderTests {
 	@Test
 	public void testDeviceNotAvailable() throws Exception {
 
-		database.resetDatabase();
-		database.insertTestCases();
+        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("457436545");
 		scan.setDevice("93482364723648725");
 
-		ScanReturn result = database.scanReceived(scan);
+		ScanReturn result = database.databaseCardReader.scanReceived(scan);
 
 		assertEquals(result, ScanReturn.FAILDEVICEUNAVIALABLE);
 	}
 
+
 	*/
+
 }
