@@ -5,8 +5,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.DatabaseUtility;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.NotFoundException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.WebBackend;
@@ -15,6 +18,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+@WebAppConfiguration
 @SpringBootTest
 @TestPropertySource({ "classpath:${envTarget:config/testdatabase}.properties" })
 @RunWith(SpringRunner.class)
@@ -30,7 +34,6 @@ public class FrontEndDatabaseManagerTests {
     public void setupDatabase() throws Exception {
         databaseUtility.resetDatabase();
     }
-
 
     @Test
     public void testAddUser() throws Exception {

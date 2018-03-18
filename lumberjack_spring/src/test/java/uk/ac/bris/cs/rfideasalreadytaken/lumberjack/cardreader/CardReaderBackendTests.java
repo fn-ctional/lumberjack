@@ -1,4 +1,4 @@
-package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
+package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader;
 
 import org.springframework.test.context.TestPropertySource;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.CardReaderBackend;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNull;
 @RunWith(SpringRunner.class)
 @TestPropertySource({ "classpath:${envTarget:config/testdatabase}.properties" })
 @SpringBootTest
-public class BackendFromCardReaderTests {
+public class CardReaderBackendTests {
 
     @Autowired
     private DatabaseTesting database;

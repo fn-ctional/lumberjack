@@ -60,7 +60,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @param model
      * @return
      */
-    @RequestMapping("/user")
+    @GetMapping("/user")
     public String user(Model model) {
         model.addAttribute("blank", true);
         return "users";
