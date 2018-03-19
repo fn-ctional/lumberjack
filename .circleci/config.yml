@@ -25,11 +25,11 @@ jobs:
 
       # Download and cache dependencies
       - restore_cache:
+          path: lumberjack_spring/
           keys:
           - v1-dependencies-{{ checksum "pom.xml" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-          path: lumberjack_spring/
 
       - run: mvn dependency:go-offline
 
