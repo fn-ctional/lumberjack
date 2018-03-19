@@ -21,8 +21,8 @@ jobs:
       MAVEN_OPTS: -Xmx3200m
     
     steps:
-      - run: cd lumberjack_spring/
       - checkout
+      - run: cd lumberjack_spring/
 
       # Download and cache dependencies
       - restore_cache:
