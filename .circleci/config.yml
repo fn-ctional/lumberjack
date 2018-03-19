@@ -36,5 +36,5 @@ jobs:
           key: v1-dependencies-{{ checksum "lumberjack_spring/pom.xml" }}
 
       # run tests!
-      - run: cd lumberjack_spring/ && mvn test --database-ip=localhost --database-port=3306 --database-name=circle_test --database-username=ubuntu --database-password=
+      - run: cd lumberjack_spring/ && mvn test -Ddatabase-ip=localhost -Ddatabase-port=3306 -Ddatabase-name=circle_test -Ddatabase-username=ubuntu -Ddatabase-password=
 
