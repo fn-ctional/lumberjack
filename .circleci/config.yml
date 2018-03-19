@@ -11,12 +11,12 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
-      - environment:
-       - database-ip: localhost 
-       - database-port: 3306
-       - database-name: circle_test
-       - database-username: ubuntu
-       - database-password: 
+    environment:
+      - database-ip: localhost 
+      - database-port: 3306
+      - database-name: circle_test
+      - database-username: ubuntu
+      - database-password: 
 
 
      
