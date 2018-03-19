@@ -2,11 +2,10 @@
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
-
+version: 2
 machine: 
   services:
     - mysql
-version: 2
 jobs:
   build:
     docker:
@@ -26,6 +25,12 @@ jobs:
     
     steps:
       - checkout
+      - environment:
+        - database-ip: localhost 
+        - database-port: 3306
+        - database-name: circle_test
+        - database-username: ubuntu
+        - database-password: 
       # Download and cache dependencies
       - restore_cache:
           keys:
