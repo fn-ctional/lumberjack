@@ -36,5 +36,5 @@ jobs:
           key: v1-dependencies-{{ checksum "lumberjack_spring/pom.xml" }}
 
       # run tests!
-      - run: mv circleci.properties lumberjack_spring/src/main/resources/config/testdatabase.properties && cd lumberjack_spring/ && mvn test
+      - run: ls && mv circleci.properties lumberjack_spring/src/main/resources/config/testdatabase.properties && cd lumberjack_spring/ && mvn test
 
