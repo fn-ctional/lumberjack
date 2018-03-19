@@ -11,14 +11,6 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
-    environment:
-      - database-ip: localhost 
-      - database-port: 3306
-      - database-name: circle_test
-      - database-username: ubuntu
-      - database-password: 
-
-
      
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -33,6 +25,7 @@ jobs:
     
     steps:
       - checkout
+      - run: mysql
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -46,5 +39,5 @@ jobs:
           key: v1-dependencies-{{ checksum "lumberjack_spring/pom.xml" }}
 
       # run tests!
-      - run: cd lumberjack_spring/ && mvn test
+      - run: cd lumberjack_spring/ && mvn test --database-ip=localhost --database-port=3306 --database-name=circle_test --database-username=ubuntu --database-password=
 
