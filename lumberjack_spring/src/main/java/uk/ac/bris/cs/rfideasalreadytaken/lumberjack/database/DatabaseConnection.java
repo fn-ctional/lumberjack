@@ -28,10 +28,26 @@ public class DatabaseConnection {
         dataSource.setPassword(password);
         dataSource.setConnectTimeout(5000);
 
+        final boolean debug = false;
+        if (debug) debugConnection(serverName,portNumber,databaseName,username,password);
+
         conn = dataSource.getConnection();
     }
 
     public Connection getConnection() {
         return conn;
     }
+
+    private void debugConnection(final String serverName,
+                                 final int portNumber,
+                                 final String databaseName,
+                                 final String username,
+                                 final String password) {
+        System.out.println(serverName);
+        System.out.println(portNumber);
+        System.out.println(databaseName);
+        System.out.println(username);
+        System.out.println(password);
+    }
+
 }
