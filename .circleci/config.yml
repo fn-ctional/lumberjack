@@ -3,14 +3,12 @@
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2
-machine: 
-  services:
-    - mysql
 jobs:
   build:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
+      - image: circleci/mysql:latest-ram
      
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
