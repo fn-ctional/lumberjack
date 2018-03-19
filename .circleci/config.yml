@@ -25,12 +25,6 @@ jobs:
     
     steps:
       - checkout
-      - environment:
-        - database-ip: localhost 
-        - database-port: 3306
-        - database-name: circle_test
-        - database-username: ubuntu
-        - database-password: 
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -45,5 +39,12 @@ jobs:
 
       # run tests!
       - run: cd lumberjack_spring/ && mvn test
+        - environment:
+          - database-ip: localhost 
+          - database-port: 3306
+          - database-name: circle_test
+          - database-username: ubuntu
+          - database-password: 
+
 
 
