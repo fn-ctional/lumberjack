@@ -22,7 +22,8 @@ jobs:
     
     steps:
       - checkout
-      - run: cd lumberjack_spring/
+      - run: cd lumberjack_spring/ && ls
+      - run: ls
 
       # Download and cache dependencies
       - restore_cache:
