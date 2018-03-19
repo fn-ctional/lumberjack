@@ -21,11 +21,11 @@ jobs:
       MAVEN_OPTS: -Xmx3200m
     
     steps:
+      - run: cd lumberjack_spring/
       - checkout
 
       # Download and cache dependencies
       - restore_cache:
-          path: lumberjack_spring/
           keys:
           - v1-dependencies-{{ checksum "pom.xml" }}
           # fallback to using the latest cache if no exact match is found
