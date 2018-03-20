@@ -1,8 +1,8 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data;
 
 import org.hibernate.validator.constraints.NotEmpty;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.PasswordMatches;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.ValidEmail;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.validators.PasswordMatches;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.validators.ValidEmail;
 
 import javax.validation.constraints.NotNull;
 

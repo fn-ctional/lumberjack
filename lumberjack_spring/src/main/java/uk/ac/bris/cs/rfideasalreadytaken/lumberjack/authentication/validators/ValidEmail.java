@@ -1,4 +1,4 @@
-package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
+package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.validators;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

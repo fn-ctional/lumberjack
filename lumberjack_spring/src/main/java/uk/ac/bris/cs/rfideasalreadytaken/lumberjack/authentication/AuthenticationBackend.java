@@ -1,13 +1,12 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.VerificationToken;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 @Service
@@ -69,8 +68,13 @@ public class AuthenticationBackend {
         }
     }
 
-    public void save(AdminUser adminUser) throws Exception {
+    public void save(AdminUser adminUser) throws SQLException {
         databaseAdminUsers.updateAdminUser(adminUser.getEmail(), adminUser);
+    }
+
+    public VerificationToken save(VerificationToken verificationToken) throws SQLException {
+        databaseTokens.updateToken(verificationToken.getToken(), verificationToken);
+        return verificationToken;
     }
 
     /**

@@ -6,10 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.VerificationToken;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailExistsException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailNotPermittedException;
 
 import java.sql.SQLException;
+import java.util.UUID;
 
 @Service
 public class UserService implements IUserService {
@@ -42,6 +44,14 @@ public class UserService implements IUserService {
     }
 
     @Override
+    public VerificationToken generateNewVerificationToken(final String existingVerificationToken) throws SQLException {
+        VerificationToken vToken = authenticationBackend.findByToken(existingVerificationToken);
+        vToken.setToken(UUID.randomUUID().toString());
+        vToken = authenticationBackend.save(vToken);
+        return vToken;
+    }
+
+    @Override
     public AdminUser getUser(String verificationToken) {
         return authenticationBackend.findByToken(verificationToken).getAdminUser();
     }
@@ -52,7 +62,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void saveRegisteredUser(AdminUser user) throws Exception {
+    public void saveRegisteredUser(AdminUser user) throws SQLException {
         authenticationBackend.save(user);
     }
 
