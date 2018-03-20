@@ -51,10 +51,54 @@ public class WebBackend implements FromFrontEnd {
     }
 
     //Tested
+    public User getUser(String userID) throws SQLException {
+        return databaseUsers.loadUser(userID);
+    }
+
+    //Tested
+    public List<User> getUsers() throws SQLException {
+        List<User> users = new ArrayList<User>();
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Users");
+        ResultSet rs = stmt.executeQuery();
+
+        rs.last();
+        int total = rs.getRow();
+        rs.beforeFirst();
+
+        for (int i = 0; i < total; i++) {
+            users.add(databaseUsers.loadUserFromResultSet(rs));
+        }
+
+        return users;
+    }
+
+    //Tested
+    public void deleteUser(String userID) throws Exception {
+        try {
+            databaseUsers.deleteFromUsers(userID);
+        }
+            catch (SQLException e)
+        {}
+    }
+
+    //Tested
+    public void resetUsers() throws SQLException {
+        List<User> users = getUsers();
+        for (User user : users) {
+            try {
+                databaseUsers.deleteFromUsers(user.getId());
+            }
+            catch (SQLException e)
+            {}
+        }
+    }
+
+    //Tested
     public void insertDevice(Device device) throws SQLException {
         databaseDevices.insertIntoDevices(device);
     }
 
+    //Tested
     public void insertDevices(List<Device> devices) throws SQLException {
         for (Device device : devices) {
             insertDevice(device);
@@ -73,41 +117,8 @@ public class WebBackend implements FromFrontEnd {
         databaseUserGroups.insertIntoGroupPermissions(groupPermission);
     }
 
-    public void removeUser(User user) throws Exception {
-        databaseUsers.deleteFromUsers(user.getId());
-    }
-
-    public void resetUsers() throws SQLException {
-        List<User> users = getUsers();
-        for (User user : users) {
-            databaseUsers.deleteFromUsers(user.getId());
-        }
-    }
-
-    //Tested
-    public User getUser(String userID) throws SQLException {
-        return databaseUsers.loadUser(userID);
-    }
-
-
     public Device getDevice(String deviceID) throws SQLException {
         return databaseDevices.loadDevice(deviceID);
-    }
-
-    public List<User> getUsers() throws SQLException {
-        List<User> users = new ArrayList<User>();
-        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Users");
-        ResultSet rs = stmt.executeQuery();
-
-        rs.last();
-        int total = rs.getRow();
-        rs.beforeFirst();
-
-        for (int i = 0; i < total; i++) {
-            users.add(databaseUsers.loadUserFromResultSet(rs));
-        }
-
-        return users;
     }
 
     public void editUser(String userID, User newValue) throws SQLException {

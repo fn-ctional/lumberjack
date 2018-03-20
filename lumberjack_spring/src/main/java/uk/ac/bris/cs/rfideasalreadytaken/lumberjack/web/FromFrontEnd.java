@@ -79,7 +79,7 @@ public interface FromFrontEnd {
 
     void insertRule(Rule rule) throws Exception;
 
-    void removeUser(User user) throws Exception;
+    void deleteUser(String userID) throws Exception;
 
     void resetUsers() throws Exception;
 
