@@ -39,7 +39,7 @@ public class DatabaseDevices {
         return assignmentHistorys;
     }
 
-    private Device loadDeviceFromResultSet(ResultSet rs) throws SQLException {
+    public Device loadDeviceFromResultSet(ResultSet rs) throws SQLException {
         if (rs.next()) {
             Device device = new Device();
             device.setAvailable(rs.getBoolean("Available"));
@@ -75,6 +75,19 @@ public class DatabaseDevices {
         stmt.setBoolean(4, device.isAvailable());
         stmt.setBoolean(5, device.isCurrentlyAssigned());
         stmt.setString(6, device.getRuleID());
+        stmt.execute();
+    }
+
+    public void updateDevice(String deviceID, Device device) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Devices SET id = ?, ScanValue = ?, Type = ?, Available = ?, CurrentlyAssigned = ?, RuleID = ? " +
+                "WHERE id = ?");
+        stmt.setString(1, device.getId());
+        stmt.setString(2, device.getScanValue());
+        stmt.setString(3, device.getType());
+        stmt.setBoolean(4, device.isAvailable());
+        stmt.setBoolean(5, device.isCurrentlyAssigned());
+        stmt.setString(6, device.getRuleID());
+        stmt.setString(7, deviceID);
         stmt.execute();
     }
 

@@ -91,7 +91,7 @@ public interface FromFrontEnd {
 
     void deleteUserGroup(User user) throws Exception;
 
-    void deleteDevice(Device device) throws Exception;
+    void deleteDevice(String deviceID) throws Exception;
 
     void deleteRule(Rule rule) throws Exception;
 

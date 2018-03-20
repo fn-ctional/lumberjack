@@ -15,9 +15,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.DatabaseTesting;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.WebBackend;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @WebAppConfiguration
 @SpringBootTest
@@ -96,12 +94,33 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetUsers() throws Exception {
-        List<User> users = new ArrayList<>();
-        users.add(new User("Aidan9876", "1314831486", 2, 0, true, "groupOne"));
-        users.add(new User("Betty1248", "457436545", 3, 1, true, "groupTwo"));
-        users.add(new User("Callum2468", "845584644", 3, 0, false, "groupTwo"));
-        users.add(new User("Dorathy0369", "94648329837", 0, 0, true, "groupOne"));
-        assertEquals(frontEndDatabaseManager.getUsers(),users);
+        List<User> users = frontEndDatabaseManager.getUsers();
+        assertTrue(users.contains(new User("Aidan9876", "1314831486", 2, 0, true, "groupOne")));
+        assertTrue(users.contains(new User("Betty1248", "457436545", 3, 1, true, "groupTwo")));
+        assertTrue(users.contains(new User("Callum2468", "845584644", 3, 0, false, "groupTwo")));
+        assertTrue(users.contains(new User("Dorathy0369", "94648329837", 0, 0, true, "groupOne")));
+    }
+
+    @Test
+    public void testEditUser() throws Exception {
+        User testUser = new User();
+        testUser.setCanRemove(true);
+        testUser.setDeviceLimit(1);
+        testUser.setDevicesRemoved(0);
+        testUser.setId("test_user");
+        testUser.setGroupId("groupOne");
+        testUser.setScanValue("12345");
+
+        frontEndDatabaseManager.editUser("Aidan9876",testUser);
+
+        assertEquals(frontEndDatabaseManager.getUser(testUser.getId()), testUser);
+    }
+
+    @Test
+    public void testDeleteUser() throws Exception {
+        User testUser = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
+        frontEndDatabaseManager.deleteUser(testUser.getId());
+        assertNull(frontEndDatabaseManager.getUser(testUser.getId()));
     }
 
     @Test
@@ -110,13 +129,6 @@ public class FrontEndDatabaseManagerTests {
         users.add(new User("Betty1248", "457436545", 3, 1, true, "groupTwo"));
         frontEndDatabaseManager.resetUsers();
         assertEquals(frontEndDatabaseManager.getUsers(),users);
-    }
-
-    @Test
-    public void testDeleteUser() throws Exception {
-        User testUser = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
-        frontEndDatabaseManager.deleteUser(testUser.getId());
-        assertNull(frontEndDatabaseManager.getUser(testUser.getId()));
     }
 
     @Test
@@ -175,5 +187,61 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(frontEndDatabaseManager.getDevice(testDevice.getId()),testDevice);
     }
 
+    @Test
+    public void testGetDevices() throws Exception {
+        List<Device> obtainedDevices = frontEndDatabaseManager.getDevices();
+        assertTrue(obtainedDevices.contains(new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1")));
+        assertTrue(obtainedDevices.contains(new Device("laptop02", "23482364326842334", "laptop", true, true, "ruleSet2")));
+        assertTrue(obtainedDevices.contains(new Device("laptop03", "93482364723648725", "laptop", false, false, "ruleSet1")));
+        assertTrue(obtainedDevices.contains(new Device("camera01", "03457237295732925", "camera", true, false, "ruleSet2")));
+    }
+
+    @Test
+    public void testDeleteDevice() throws Exception {
+        Device testDevice = new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1");
+        frontEndDatabaseManager.deleteDevice(testDevice.getId());
+        assertNull(frontEndDatabaseManager.getDevice(testDevice.getId()));
+    }
+
+    @Test
+    public void testResetDevices() throws Exception {
+        List<Device> devices = new ArrayList<>();
+        devices.add(new Device("laptop02", "23482364326842334", "laptop", true, true, "ruleSet2"));
+        frontEndDatabaseManager.resetDevices();
+        assertEquals(frontEndDatabaseManager.getDevices(),devices);
+    }
+
     */
+
+    @Test
+    public void testEditDevice() throws Exception {
+        Device testDevice = new Device();
+        testDevice.setType("laptop");
+        testDevice.setAvailable(true);
+        testDevice.setCurrentlyAssigned(false);
+        testDevice.setRuleID("ruleSet1");
+        testDevice.setScanValue("12345");
+        testDevice.setId("test_device_1");
+
+        frontEndDatabaseManager.editDevice("laptop01",testDevice);
+
+        assertEquals(frontEndDatabaseManager.getDevice(testDevice.getId()), testDevice);
+    }
+
+    @Test
+    public void testSetDeviceType() throws Exception {
+        Device testDevice = new Device();
+        testDevice.setType("laptop");
+        testDevice.setAvailable(true);
+        testDevice.setCurrentlyAssigned(false);
+        testDevice.setRuleID("ruleSet1");
+        testDevice.setScanValue("12345");
+        testDevice.setId("test_device_1");
+
+        frontEndDatabaseManager.insertDevice(testDevice);
+        frontEndDatabaseManager.setDeviceType(testDevice,"tablet");
+
+        assertEquals(frontEndDatabaseManager.getDevice(testDevice.getId()).getType(), "tablet");
+    }
+
 }
