@@ -74,6 +74,7 @@ public class User {
                 Objects.equals(scanValue, u.scanValue) &&
                 deviceLimit == u.deviceLimit &&
                 devicesRemoved == u.devicesRemoved &&
+                Objects.equals(groupID, u.groupID) &&
                 canRemove == u.canRemove;
     }
 }

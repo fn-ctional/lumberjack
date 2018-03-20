@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.data.ScanDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.AssignmentHistory;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -50,6 +51,13 @@ public class DatabaseDevices {
             return device;
         }
         return null;
+    }
+
+    public Device loadDevice(String deviceID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Devices WHERE id = ?");
+        stmt.setString(1, deviceID);
+        ResultSet rs = stmt.executeQuery();
+        return loadDeviceFromResultSet(rs);
     }
 
     public boolean isValidDevice(ScanDTO scanDTO) throws SQLException {

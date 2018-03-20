@@ -1,5 +1,7 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data;
 
+import java.util.Objects;
+
 public class Device {
 
     private String id;
@@ -66,5 +68,17 @@ public class Device {
 
     public void setRuleID(String ruleID) {
         this.ruleID = ruleID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (getClass() != o.getClass()) return false;
+        Device d = (Device) o;
+        return Objects.equals(id, d.id) &&
+                Objects.equals(scanValue, d.scanValue) &&
+                Objects.equals(type , d.type) &&
+                available == d.available &&
+                Objects.equals(ruleID , d.ruleID) &&
+                currentlyAssigned == d.currentlyAssigned;
     }
 }

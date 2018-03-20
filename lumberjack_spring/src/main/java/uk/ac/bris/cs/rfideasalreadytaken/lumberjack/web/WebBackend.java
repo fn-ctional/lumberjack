@@ -38,16 +38,19 @@ public class WebBackend implements FromFrontEnd {
     @Autowired
     private DatabaseAssignments databaseAssignments;
 
+    //Tested
     public void insertUser(User user) throws SQLException {
         databaseUsers.insertIntoUsers(user);
     }
 
+    //Tested
     public void insertUsers(List<User> users) throws SQLException {
         for (User user : users) {
             insertUser(user);
         }
     }
 
+    //Tested
     public void insertDevice(Device device) throws SQLException {
         databaseDevices.insertIntoDevices(device);
     }
@@ -81,8 +84,14 @@ public class WebBackend implements FromFrontEnd {
         }
     }
 
+    //Tested
     public User getUser(String userID) throws SQLException {
         return databaseUsers.loadUser(userID);
+    }
+
+
+    public Device getDevice(String deviceID) throws SQLException {
+        return databaseDevices.loadDevice(deviceID);
     }
 
     public List<User> getUsers() throws SQLException {
