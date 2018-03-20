@@ -1,5 +1,6 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader;
 
+import org.junit.Before;
 import org.springframework.test.context.TestPropertySource;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.CardReaderBackend;
 
@@ -27,12 +28,15 @@ public class CardReaderBackendTests {
     @Autowired
     private DatabaseTesting database;
 
+    @Before
+    public void setupDatabase() throws Exception {
+        database.insertTestCases();
+    }
+
 	/*
 
 	@Test
     public void testRemoveDevice() throws Exception {
-
-		database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("1314831486");
@@ -54,8 +58,6 @@ public class CardReaderBackendTests {
 
 	@Test
 	public void testReturnDeviceByCorrectUser() throws Exception {
-
-        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("457436545");
@@ -79,8 +81,6 @@ public class CardReaderBackendTests {
 
 	@Test
 	public void testReturnAndRemoveDeviceByNewUser() throws Exception {
-
-        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("1314831486");
@@ -109,8 +109,6 @@ public class CardReaderBackendTests {
 	@Test
 	public void testInvalidUser() throws Exception {
 
-        database.insertTestCases();
-
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("123456789");
 		scan.setDevice("23482364326842334");
@@ -122,8 +120,6 @@ public class CardReaderBackendTests {
 
 	@Test
 	public void testUserGroupAndDeviceRulesetNotCompatable() throws Exception {
-
-        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("457436545");
@@ -137,8 +133,6 @@ public class CardReaderBackendTests {
 	@Test
 	public void testInvalidDevice() throws Exception {
 
-        database.insertTestCases();
-
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("457436545");
 		scan.setDevice("012345678910");
@@ -150,8 +144,6 @@ public class CardReaderBackendTests {
 
 	@Test
 	public void testUserAtDeviceLimit() throws Exception {
-
-        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("94648329837");
@@ -165,8 +157,6 @@ public class CardReaderBackendTests {
 	@Test
 	public void testUserNotPermittedToRemove() throws Exception {
 
-        database.insertTestCases();
-
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("845584644");
 		scan.setDevice("03457237295732925");
@@ -178,8 +168,6 @@ public class CardReaderBackendTests {
 
 	@Test
 	public void testDeviceNotAvailable() throws Exception {
-
-        database.insertTestCases();
 
 		ScanDTO scan = new ScanDTO();
 		scan.setUser("457436545");

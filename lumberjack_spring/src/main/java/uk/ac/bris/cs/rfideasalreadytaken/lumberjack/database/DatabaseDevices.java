@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.data.ScanDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.AssignmentHistory;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,7 +39,7 @@ public class DatabaseDevices {
         return assignmentHistorys;
     }
 
-    private Device loadDeviceFromResultSet(ResultSet rs) throws SQLException {
+    public Device loadDeviceFromResultSet(ResultSet rs) throws SQLException {
         if (rs.next()) {
             Device device = new Device();
             device.setAvailable(rs.getBoolean("Available"));
@@ -50,6 +51,13 @@ public class DatabaseDevices {
             return device;
         }
         return null;
+    }
+
+    public Device loadDevice(String deviceID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Devices WHERE id = ?");
+        stmt.setString(1, deviceID);
+        ResultSet rs = stmt.executeQuery();
+        return loadDeviceFromResultSet(rs);
     }
 
     public boolean isValidDevice(ScanDTO scanDTO) throws SQLException {
@@ -67,6 +75,19 @@ public class DatabaseDevices {
         stmt.setBoolean(4, device.isAvailable());
         stmt.setBoolean(5, device.isCurrentlyAssigned());
         stmt.setString(6, device.getRuleID());
+        stmt.execute();
+    }
+
+    public void updateDevice(String deviceID, Device device) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Devices SET id = ?, ScanValue = ?, Type = ?, Available = ?, CurrentlyAssigned = ?, RuleID = ? " +
+                "WHERE id = ?");
+        stmt.setString(1, device.getId());
+        stmt.setString(2, device.getScanValue());
+        stmt.setString(3, device.getType());
+        stmt.setBoolean(4, device.isAvailable());
+        stmt.setBoolean(5, device.isCurrentlyAssigned());
+        stmt.setString(6, device.getRuleID());
+        stmt.setString(7, deviceID);
         stmt.execute();
     }
 

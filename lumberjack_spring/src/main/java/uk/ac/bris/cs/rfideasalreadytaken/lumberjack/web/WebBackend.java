@@ -38,53 +38,24 @@ public class WebBackend implements FromFrontEnd {
     @Autowired
     private DatabaseAssignments databaseAssignments;
 
+    //Tested
     public void insertUser(User user) throws SQLException {
         databaseUsers.insertIntoUsers(user);
     }
 
+    //Tested
     public void insertUsers(List<User> users) throws SQLException {
         for (User user : users) {
             insertUser(user);
         }
     }
 
-    public void insertDevice(Device device) throws SQLException {
-        databaseDevices.insertIntoDevices(device);
-    }
-
-    public void insertDevices(List<Device> devices) throws SQLException {
-        for (Device device : devices) {
-            insertDevice(device);
-        }
-    }
-
-    public void insertUserGroup(UserGroup group) throws SQLException {
-        databaseUserGroups.insertIntoUserGroups(group);
-    }
-
-    public void insertRule(Rule rule) throws Exception {
-        databaseRules.insertIntoRules(rule);
-    }
-
-    public void insertGroupPermission(GroupPermission groupPermission) throws Exception {
-        databaseUserGroups.insertIntoGroupPermissions(groupPermission);
-    }
-
-    public void removeUser(User user) throws Exception {
-        databaseUsers.deleteFromUsers(user.getId());
-    }
-
-    public void resetUsers() throws SQLException {
-        List<User> users = getUsers();
-        for (User user : users) {
-            databaseUsers.deleteFromUsers(user.getId());
-        }
-    }
-
+    //Tested
     public User getUser(String userID) throws SQLException {
         return databaseUsers.loadUser(userID);
     }
 
+    //Tested
     public List<User> getUsers() throws SQLException {
         List<User> users = new ArrayList<User>();
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Users");
@@ -101,8 +72,123 @@ public class WebBackend implements FromFrontEnd {
         return users;
     }
 
+    //Tested
     public void editUser(String userID, User newValue) throws SQLException {
         databaseUsers.updateUser(userID, newValue);
+    }
+
+    //Tested
+    public void changeUserGroup(User user, UserGroup group) throws Exception{
+        user.setGroupId(group.getId());
+        databaseUsers.updateUser(user.getId(), user);
+    }
+
+    //Tested
+    public void changeUsersGroup(List<User> users, UserGroup group) throws Exception{
+        for (User user : users) {
+            changeUserGroup(user, group);
+        }
+    }
+
+    //Tested
+    public void setUserMaxDevices(User user, int max) throws Exception {
+        user.setDeviceLimit(max);
+        databaseUsers.updateUser(user.getId(), user);
+    }
+
+    //Tested
+    public void deleteUser(String userID) throws Exception {
+        try {
+            databaseUsers.deleteFromUsers(userID);
+        }
+            catch (SQLException e)
+        {}
+    }
+
+    //Tested
+    public void resetUsers() throws SQLException {
+        List<User> users = getUsers();
+        for (User user : users) {
+            try {
+                databaseUsers.deleteFromUsers(user.getId());
+            }
+            catch (SQLException e)
+            {}
+        }
+    }
+
+    //Tested
+    public void insertDevice(Device device) throws SQLException {
+        databaseDevices.insertIntoDevices(device);
+    }
+
+    //Tested
+    public void insertDevices(List<Device> devices) throws SQLException {
+        for (Device device : devices) {
+            insertDevice(device);
+        }
+    }
+
+    //Tested
+    public Device getDevice(String deviceID) throws SQLException {
+        return databaseDevices.loadDevice(deviceID);
+    }
+
+    //Tested
+    public List<Device> getDevices() throws SQLException {
+        List<Device> devices = new ArrayList<>();
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Devices");
+        ResultSet rs = stmt.executeQuery();
+
+        rs.last();
+        int total = rs.getRow();
+        rs.beforeFirst();
+
+        for (int i = 0; i < total; i++) {
+            devices.add(databaseDevices.loadDeviceFromResultSet(rs));
+        }
+
+        return devices;
+    }
+
+    //Tested
+    public void editDevice(String deviceID, Device newValue) throws SQLException {
+        databaseDevices.updateDevice(deviceID, newValue);
+    }
+
+    //Tested
+    public void setDeviceType(Device device, String type) throws Exception{
+        device.setType(type);
+        databaseDevices.updateDevice(device.getId(), device);
+    }
+
+    //Tested
+    public void deleteDevice(String deviceID) throws SQLException {
+        databaseDevices.deleteFromDevices(deviceID);
+    }
+
+    //Tested
+    public void resetDevices() throws SQLException {
+        List<Device> devices = getDevices();
+        for (Device device : devices) {
+            try {
+                databaseDevices.deleteFromDevices(device.getId());
+            }
+            catch (SQLException e)
+            {}
+        }
+    }
+
+    public void insertUserGroup(UserGroup group) throws SQLException {
+        databaseUserGroups.insertIntoUserGroups(group);
+    }
+
+    public void insertRule(Rule rule) throws Exception {
+        databaseRules.insertIntoRules(rule);
+    }
+
+    public void insertGroupPermission(GroupPermission groupPermission) throws Exception {
+        databaseUserGroups.insertIntoGroupPermissions(groupPermission);
     }
 
     public List<AssignmentHistory> getUserAH(User user) throws SQLException{
@@ -130,19 +216,6 @@ public class WebBackend implements FromFrontEnd {
         return assignmentHistories;
     }
 
-
-    public void deleteDevice(Device device) throws SQLException {
-        databaseDevices.deleteFromDevices(device.getId());
-    }
-
-    public void setDeviceType(Device device, String type) {
-        device.setType(type);
-    }
-
-    public void setUserMaxDevices(User user, int max) {
-        user.setDeviceLimit(max);
-    }
-
     public void deleteUserGroup(User user) throws SQLException {
         databaseUserGroups.deleteFromUserGroups(user.getId());
     }
@@ -157,15 +230,5 @@ public class WebBackend implements FromFrontEnd {
 
     public void deletePermission(GroupPermission groupPermission) throws Exception {
         databaseUserGroups.deleteFromGroupPermissions(groupPermission.getId());
-    }
-
-    public void addUserToGroup(User user, UserGroup group) {
-        user.setGroupId(group.getId());
-    }
-
-    public void editGroup(ArrayList<User> users, UserGroup group) {
-        for (User user : users) {
-            addUserToGroup(user, group);
-        }
     }
 }

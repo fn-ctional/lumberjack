@@ -79,7 +79,7 @@ public interface FromFrontEnd {
 
     void insertRule(Rule rule) throws Exception;
 
-    void removeUser(User user) throws Exception;
+    void deleteUser(String userID) throws Exception;
 
     void resetUsers() throws Exception;
 
@@ -91,7 +91,7 @@ public interface FromFrontEnd {
 
     void deleteUserGroup(User user) throws Exception;
 
-    void deleteDevice(Device device) throws Exception;
+    void deleteDevice(String deviceID) throws Exception;
 
     void deleteRule(Rule rule) throws Exception;
 
@@ -99,9 +99,9 @@ public interface FromFrontEnd {
 
     void deletePermission(GroupPermission groupPermission) throws Exception;
 
-    void addUserToGroup(User user, UserGroup group) throws Exception;
+    void changeUserGroup(User user, UserGroup group) throws Exception;
 
-    void editGroup(ArrayList<User> users, UserGroup group) throws Exception;
+    void changeUsersGroup(List<User> users, UserGroup group) throws Exception;
 
     void insertUserGroup(UserGroup group) throws Exception;
 

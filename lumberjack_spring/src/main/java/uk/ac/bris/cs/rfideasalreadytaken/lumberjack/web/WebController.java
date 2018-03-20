@@ -138,8 +138,8 @@ public class WebController extends WebMvcConfigurerAdapter {
         try {
             // TODO
             // deviceList = webBackend.getDevices();
-            Device device = new Device();
-            deviceList.add(device);
+            //Device device = new Device();
+            //deviceList.add(device);
             if (!deviceList.isEmpty()) {
                 found = true;
             }
@@ -305,5 +305,28 @@ public class WebController extends WebMvcConfigurerAdapter {
         }
 
         return "message";
+    }
+
+    @GetMapping("/group/{id}")
+    public String fakeGroup(@PathVariable String id, Model model) {
+        List<User> userList = new ArrayList<>();
+        Boolean found = false;
+        model.addAttribute("searchTerm", "2");
+        try {
+            User user1 = new User("2", "473810572", 2, 1, true, "2");
+            User user2 = new User("6", "234567891", 3, 2, true, "2");
+            User user3 = new User("199", "471920472", 1, 0, true, "2");
+            User user4 = new User("198", "722402823", 0, 0, false, "2");
+            userList.add(user1);
+            userList.add(user2);
+            userList.add(user3);
+            userList.add(user4);
+            found = true;
+        } catch (Exception e) {
+            System.out.println("SQL Error");
+        }
+        model.addAttribute("found", found);
+        model.addAttribute(userList);
+        return "groups";
     }
 }
