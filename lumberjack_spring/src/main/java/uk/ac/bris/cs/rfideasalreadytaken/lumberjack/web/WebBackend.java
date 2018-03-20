@@ -78,6 +78,25 @@ public class WebBackend implements FromFrontEnd {
     }
 
     //Tested
+    public void changeUserGroup(User user, UserGroup group) throws Exception{
+        user.setGroupId(group.getId());
+        databaseUsers.updateUser(user.getId(), user);
+    }
+
+    //Tested
+    public void changeUsersGroup(List<User> users, UserGroup group) throws Exception{
+        for (User user : users) {
+            changeUserGroup(user, group);
+        }
+    }
+
+    //Tested
+    public void setUserMaxDevices(User user, int max) throws Exception {
+        user.setDeviceLimit(max);
+        databaseUsers.updateUser(user.getId(), user);
+    }
+
+    //Tested
     public void deleteUser(String userID) throws Exception {
         try {
             databaseUsers.deleteFromUsers(userID);
@@ -197,10 +216,6 @@ public class WebBackend implements FromFrontEnd {
         return assignmentHistories;
     }
 
-    public void setUserMaxDevices(User user, int max) {
-        user.setDeviceLimit(max);
-    }
-
     public void deleteUserGroup(User user) throws SQLException {
         databaseUserGroups.deleteFromUserGroups(user.getId());
     }
@@ -215,15 +230,5 @@ public class WebBackend implements FromFrontEnd {
 
     public void deletePermission(GroupPermission groupPermission) throws Exception {
         databaseUserGroups.deleteFromGroupPermissions(groupPermission.getId());
-    }
-
-    public void addUserToGroup(User user, UserGroup group) {
-        user.setGroupId(group.getId());
-    }
-
-    public void editGroup(ArrayList<User> users, UserGroup group) {
-        for (User user : users) {
-            addUserToGroup(user, group);
-        }
     }
 }

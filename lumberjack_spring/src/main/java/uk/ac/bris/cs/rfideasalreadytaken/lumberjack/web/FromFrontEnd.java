@@ -99,9 +99,9 @@ public interface FromFrontEnd {
 
     void deletePermission(GroupPermission groupPermission) throws Exception;
 
-    void addUserToGroup(User user, UserGroup group) throws Exception;
+    void changeUserGroup(User user, UserGroup group) throws Exception;
 
-    void editGroup(ArrayList<User> users, UserGroup group) throws Exception;
+    void changeUsersGroup(List<User> users, UserGroup group) throws Exception;
 
     void insertUserGroup(UserGroup group) throws Exception;
 
