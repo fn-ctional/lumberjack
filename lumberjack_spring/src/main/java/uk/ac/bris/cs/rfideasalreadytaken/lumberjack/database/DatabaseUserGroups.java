@@ -68,6 +68,31 @@ public class DatabaseUserGroups {
         return rs.next();
     }
 
+    public GroupPermission loadGroupPermissionFromResultSet(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            GroupPermission groupPermission = new GroupPermission();
+            groupPermission.setId(rs.getString("id"));
+            groupPermission.setUserGroupID(rs.getString("UserGroupID"));
+            groupPermission.setRuleID(rs.getString("RuleID"));
+            return groupPermission;
+        }
+        return null;
+    }
+
+    public GroupPermission loadGroupPermission(String groupPermissionID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM GroupPermissions WHERE id = ?");
+        stmt.setString(1, groupPermissionID);
+        ResultSet rs = stmt.executeQuery();
+        return loadGroupPermissionFromResultSet(rs);
+    }
+
+    public GroupPermission loadGroupPermission(String ruleID, String userGroupID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM GroupPermissions WHERE RuleID = ? AND UserGroupID = ?");
+        stmt.setString(1, ruleID);
+        stmt.setString(2, userGroupID);
+        ResultSet rs = stmt.executeQuery();
+        return loadGroupPermissionFromResultSet(rs);
+    }
 
 
 

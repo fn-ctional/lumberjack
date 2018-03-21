@@ -331,8 +331,6 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(frontEndDatabaseManager.getUserGroup(testUserGroup.getId()), testUserGroup);
     }
 
-    */
-
     @Test
     public void testGetRule() throws Exception {
         Rule testRule = new Rule("ruleSet1",20);
@@ -361,4 +359,41 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(frontEndDatabaseManager.getRule(testRule.getId()), testRule);
     }
 
+    @Test
+    public void testGetGroupPermissionFromRuleAndGroup() throws Exception {
+        GroupPermission testGroupPermission = new GroupPermission("ruleSet1","groupOne");
+        assertEquals(frontEndDatabaseManager.getGroupPermission(testGroupPermission.getRuleID(), testGroupPermission.getUserGroupID()),testGroupPermission);
+    }
+
+    @Test
+    public void testGetGroupPermission() throws Exception {
+        GroupPermission testGroupPermission = new GroupPermission("ruleSet1","groupOne");
+        testGroupPermission = frontEndDatabaseManager.getGroupPermission(testGroupPermission.getRuleID(),testGroupPermission.getUserGroupID());
+        assertEquals(frontEndDatabaseManager.getGroupPermission(testGroupPermission.getId()),testGroupPermission);
+    }
+
+    @Test
+    public void testGetGroupPermissions() throws Exception {
+        List<GroupPermission> obtainedGroupPermissions = frontEndDatabaseManager.getGroupPermissions();
+        assertTrue(obtainedGroupPermissions.contains(new GroupPermission("ruleSet1","groupOne")));
+        assertTrue(obtainedGroupPermissions.contains(new GroupPermission("ruleSet1","groupTwo")));
+        assertTrue(obtainedGroupPermissions.contains(new GroupPermission("ruleSet2","groupOne")));
+    }
+
+    @Test
+    public void testDeleteGroupPermission() throws Exception {
+        GroupPermission testGroupPermission = new GroupPermission("ruleSet1","groupTwo");
+        testGroupPermission = frontEndDatabaseManager.getGroupPermission(testGroupPermission.getRuleID(), testGroupPermission.getUserGroupID());
+        frontEndDatabaseManager.deleteGroupPermission(testGroupPermission.getId());
+        assertNull(frontEndDatabaseManager.getGroupPermission(testGroupPermission.getRuleID(),testGroupPermission.getUserGroupID()));
+    }
+
+    @Test
+    public void testInsertGroupPermission() throws Exception {
+        GroupPermission testGroupPermission = new GroupPermission("ruleSet2","groupTwo");
+        frontEndDatabaseManager.insertGroupPermission(testGroupPermission);
+        assertEquals(frontEndDatabaseManager.getGroupPermission(testGroupPermission.getRuleID(),testGroupPermission.getUserGroupID()), testGroupPermission);
+    }
+
+    */
 }

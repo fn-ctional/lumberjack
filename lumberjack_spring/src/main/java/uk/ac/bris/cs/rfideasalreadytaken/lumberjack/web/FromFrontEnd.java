@@ -106,7 +106,13 @@ public interface FromFrontEnd {
 
     void deleteAssignment(Assignment assignment) throws Exception;
 
-    void deletePermission(GroupPermission groupPermission) throws Exception;
+    void deleteGroupPermission(String groupPermissionID) throws Exception;
+
+    GroupPermission getGroupPermission(String ruleID, String userGroupID) throws SQLException;
+
+    GroupPermission getGroupPermission(String permissionID) throws SQLException;
+
+    List<GroupPermission> getGroupPermissions() throws SQLException;
 
     void changeUserGroup(User user, UserGroup group) throws Exception;
 

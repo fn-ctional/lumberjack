@@ -1,5 +1,7 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data;
 
+import java.util.Objects;
+
 public class GroupPermission {
 
     private String id;
@@ -22,7 +24,7 @@ public class GroupPermission {
         return userGroupID;
     }
 
-    public void setAssignmentID(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -32,6 +34,14 @@ public class GroupPermission {
 
     public void setUserGroupID(String userGroupID) {
         this.userGroupID = userGroupID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (getClass() != o.getClass()) return false;
+        GroupPermission p = (GroupPermission) o;
+        return Objects.equals(ruleID, p.ruleID) &&
+                Objects.equals(userGroupID, p.userGroupID);
     }
 
 }

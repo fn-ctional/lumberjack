@@ -243,8 +243,41 @@ public class WebBackend implements FromFrontEnd {
         return rules;
     }
 
+    //Tested
     public void insertGroupPermission(GroupPermission groupPermission) throws Exception {
         databaseUserGroups.insertIntoGroupPermissions(groupPermission);
+    }
+
+    //Tested
+    public void deleteGroupPermission(String groupPermissionID) throws Exception {
+        databaseUserGroups.deleteFromGroupPermissions(groupPermissionID);
+    }
+
+    //Tested
+    public GroupPermission getGroupPermission(String ruleID, String userGroupID) throws SQLException {
+        return databaseUserGroups.loadGroupPermission(ruleID,userGroupID);
+    }
+
+    //Tested
+    public GroupPermission getGroupPermission(String permissionID) throws SQLException {
+        return databaseUserGroups.loadGroupPermission(permissionID);
+    }
+
+    //Tested
+    public List<GroupPermission> getGroupPermissions() throws SQLException {
+        List<GroupPermission> permissions = new ArrayList<>();
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM GroupPermissions");
+        ResultSet rs = stmt.executeQuery();
+
+        rs.last();
+        int total = rs.getRow();
+        rs.beforeFirst();
+
+        for (int i = 0; i < total; i++) {
+            permissions.add(databaseUserGroups.loadGroupPermissionFromResultSet(rs));
+        }
+
+        return permissions;
     }
 
     public List<AssignmentHistory> getUserAH(User user) throws SQLException{
@@ -274,9 +307,5 @@ public class WebBackend implements FromFrontEnd {
 
     public void deleteAssignment(Assignment assignment) throws Exception {
         databaseAssignments.deleteFromAssignments(assignment.getId());
-    }
-
-    public void deletePermission(GroupPermission groupPermission) throws Exception {
-        databaseUserGroups.deleteFromGroupPermissions(groupPermission.getId());
     }
 }
