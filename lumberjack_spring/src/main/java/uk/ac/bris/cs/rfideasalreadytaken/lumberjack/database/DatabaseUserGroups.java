@@ -38,6 +38,22 @@ public class DatabaseUserGroups {
         stmt.execute();
     }
 
+    public UserGroup loadUserGroupFromResultSet(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            UserGroup userGroup = new UserGroup();
+            userGroup.setId(rs.getString("id"));
+            return userGroup;
+        }
+        return null;
+    }
+
+    public UserGroup loadUserGroup(String userGroupID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM UserGroups WHERE id = ?");
+        stmt.setString(1, userGroupID);
+        ResultSet rs = stmt.executeQuery();
+        return loadUserGroupFromResultSet(rs);
+    }
+
     public void deleteFromGroupPermissions(String groupPermissionID) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM GroupPermissions WHERE id = ?");
         stmt.setString(1, groupPermissionID);

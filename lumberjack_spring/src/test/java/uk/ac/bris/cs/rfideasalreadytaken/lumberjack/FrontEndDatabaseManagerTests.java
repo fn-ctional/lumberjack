@@ -117,6 +117,67 @@ public class FrontEndDatabaseManagerTests {
     }
 
     @Test
+    public void testChangeUserGroup() throws Exception {
+        User testUser = new User();
+        testUser.setCanRemove(true);
+        testUser.setDeviceLimit(1);
+        testUser.setDevicesRemoved(0);
+        testUser.setId("test_user");
+        testUser.setGroupId("groupOne");
+        testUser.setScanValue("12345");
+
+        frontEndDatabaseManager.insertUser(testUser);
+        frontEndDatabaseManager.changeUserGroup(testUser,new UserGroup("groupTwo"));
+
+        assertEquals(frontEndDatabaseManager.getUser(testUser.getId()).getGroupId(), "groupTwo");
+    }
+
+    @Test
+    public void testSetUserMaxDevices() throws Exception {
+        User testUser = new User();
+        testUser.setCanRemove(true);
+        testUser.setDeviceLimit(1);
+        testUser.setDevicesRemoved(0);
+        testUser.setId("test_user");
+        testUser.setGroupId("groupOne");
+        testUser.setScanValue("12345");
+
+        frontEndDatabaseManager.insertUser(testUser);
+        frontEndDatabaseManager.setUserMaxDevices(testUser,2);
+
+        assertEquals(frontEndDatabaseManager.getUser(testUser.getId()).getDeviceLimit(), 2);
+    }
+
+    @Test
+    public void testChangeUsersGroup() throws Exception {
+        User testUser = new User();
+        testUser.setCanRemove(true);
+        testUser.setDeviceLimit(1);
+        testUser.setDevicesRemoved(0);
+        testUser.setId("test_user_1");
+        testUser.setGroupId("groupOne");
+        testUser.setScanValue("12345");
+
+        User testUser2 = new User();
+        testUser2.setCanRemove(true);
+        testUser2.setDeviceLimit(1);
+        testUser2.setDevicesRemoved(0);
+        testUser2.setId("test_user_2");
+        testUser2.setGroupId("groupOne");
+        testUser2.setScanValue("98765");
+
+        List<User> list = new ArrayList<>();
+        list.add(testUser);
+        list.add(testUser2);
+
+        frontEndDatabaseManager.insertUsers(list);
+        frontEndDatabaseManager.changeUsersGroup(list,new UserGroup("groupTwo"));
+
+        assertEquals(frontEndDatabaseManager.getUser(testUser.getId()).getGroupId(), "groupTwo");
+        assertEquals(frontEndDatabaseManager.getUser(testUser2.getId()).getGroupId(), "groupTwo");
+    }
+
+    @Test
     public void testDeleteUser() throws Exception {
         User testUser = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
         frontEndDatabaseManager.deleteUser(testUser.getId());
@@ -242,67 +303,33 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(frontEndDatabaseManager.getDevice(testDevice.getId()).getType(), "tablet");
     }
 
-    @Test
-    public void testChangeUserGroup() throws Exception {
-        User testUser = new User();
-        testUser.setCanRemove(true);
-        testUser.setDeviceLimit(1);
-        testUser.setDevicesRemoved(0);
-        testUser.setId("test_user");
-        testUser.setGroupId("groupOne");
-        testUser.setScanValue("12345");
-
-        frontEndDatabaseManager.insertUser(testUser);
-        frontEndDatabaseManager.changeUserGroup(testUser,new UserGroup("groupTwo"));
-
-        assertEquals(frontEndDatabaseManager.getUser(testUser.getId()).getGroupId(), "groupTwo");
-    }
-
-    @Test
-    public void testSetUserMaxDevices() throws Exception {
-        User testUser = new User();
-        testUser.setCanRemove(true);
-        testUser.setDeviceLimit(1);
-        testUser.setDevicesRemoved(0);
-        testUser.setId("test_user");
-        testUser.setGroupId("groupOne");
-        testUser.setScanValue("12345");
-
-        frontEndDatabaseManager.insertUser(testUser);
-        frontEndDatabaseManager.setUserMaxDevices(testUser,2);
-
-        assertEquals(frontEndDatabaseManager.getUser(testUser.getId()).getDeviceLimit(), 2);
-    }
-
-    @Test
-    public void testChangeUsersGroup() throws Exception {
-        User testUser = new User();
-        testUser.setCanRemove(true);
-        testUser.setDeviceLimit(1);
-        testUser.setDevicesRemoved(0);
-        testUser.setId("test_user_1");
-        testUser.setGroupId("groupOne");
-        testUser.setScanValue("12345");
-
-        User testUser2 = new User();
-        testUser2.setCanRemove(true);
-        testUser2.setDeviceLimit(1);
-        testUser2.setDevicesRemoved(0);
-        testUser2.setId("test_user_2");
-        testUser2.setGroupId("groupOne");
-        testUser2.setScanValue("98765");
-
-        List<User> list = new ArrayList<>();
-        list.add(testUser);
-        list.add(testUser2);
-
-        frontEndDatabaseManager.insertUsers(list);
-        frontEndDatabaseManager.changeUsersGroup(list,new UserGroup("groupTwo"));
-
-        assertEquals(frontEndDatabaseManager.getUser(testUser.getId()).getGroupId(), "groupTwo");
-        assertEquals(frontEndDatabaseManager.getUser(testUser2.getId()).getGroupId(), "groupTwo");
-    }
-
     */
 
+    @Test
+    public void testGetUserGroup() throws Exception {
+        UserGroup testUserGroup = new UserGroup("groupOne");
+        assertEquals(frontEndDatabaseManager.getUserGroup(testUserGroup.getId()),testUserGroup);
+    }
+
+    @Test
+    public void testGetUserGroups() throws Exception {
+        List<UserGroup> obtainedUserGroups = frontEndDatabaseManager.getUserGroups();
+        assertTrue(obtainedUserGroups.contains(new UserGroup("groupOne")));
+        assertTrue(obtainedUserGroups.contains(new UserGroup("groupTwo")));
+    }
+
+    @Test
+    public void testDeleteUserGroup() throws Exception {
+        UserGroup testUserGroup = new UserGroup("test_group_1");
+        frontEndDatabaseManager.insertUserGroup(testUserGroup);
+        frontEndDatabaseManager.deleteUserGroup(testUserGroup.getId());
+        assertNull(frontEndDatabaseManager.getUserGroup(testUserGroup.getId()));
+    }
+
+    @Test
+    public void testInsertUserGroup() throws Exception {
+        UserGroup testUserGroup = new UserGroup("test_group_1");
+        frontEndDatabaseManager.insertUserGroup(testUserGroup);
+        assertEquals(frontEndDatabaseManager.getUserGroup(testUserGroup.getId()), testUserGroup);
+    }
 }

@@ -179,8 +179,36 @@ public class WebBackend implements FromFrontEnd {
         }
     }
 
+    //Tested
+    public void deleteUserGroup(String group) throws SQLException {
+        databaseUserGroups.deleteFromUserGroups(group);
+    }
+    
+    //Tested
     public void insertUserGroup(UserGroup group) throws SQLException {
         databaseUserGroups.insertIntoUserGroups(group);
+    }
+
+    //Tested
+    public UserGroup getUserGroup(String userGroupID) throws SQLException {
+        return databaseUserGroups.loadUserGroup(userGroupID);
+    }
+
+    //Tested
+    public List<UserGroup> getUserGroups() throws SQLException {
+        List<UserGroup> userGroups = new ArrayList<>();
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM UserGroups");
+        ResultSet rs = stmt.executeQuery();
+
+        rs.last();
+        int total = rs.getRow();
+        rs.beforeFirst();
+
+        for (int i = 0; i < total; i++) {
+            userGroups.add(databaseUserGroups.loadUserGroupFromResultSet(rs));
+        }
+
+        return userGroups;
     }
 
     public void insertRule(Rule rule) throws Exception {
@@ -214,10 +242,6 @@ public class WebBackend implements FromFrontEnd {
             assignmentHistories.addAll(databaseDevices.loadDeviceAssignmentHistory(device));
         }
         return assignmentHistories;
-    }
-
-    public void deleteUserGroup(User user) throws SQLException {
-        databaseUserGroups.deleteFromUserGroups(user.getId());
     }
 
     public void deleteRule(Rule rule) throws Exception {

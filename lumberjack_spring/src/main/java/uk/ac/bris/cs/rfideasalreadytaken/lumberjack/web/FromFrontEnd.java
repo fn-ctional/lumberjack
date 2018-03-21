@@ -9,6 +9,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.GroupPermissio
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Assignment;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.AssignmentHistory;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,9 +88,13 @@ public interface FromFrontEnd {
 
     List<User> getUsers() throws Exception;
 
+    UserGroup getUserGroup(String userGroupID) throws SQLException;
+
+    List<UserGroup> getUserGroups() throws SQLException;
+
     void editUser(String userID, User newValue) throws Exception;
 
-    void deleteUserGroup(User user) throws Exception;
+    void deleteUserGroup(String group) throws Exception;
 
     void deleteDevice(String deviceID) throws Exception;
 
