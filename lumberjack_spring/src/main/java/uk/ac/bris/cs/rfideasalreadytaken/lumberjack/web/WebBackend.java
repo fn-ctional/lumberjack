@@ -211,8 +211,36 @@ public class WebBackend implements FromFrontEnd {
         return userGroups;
     }
 
+    //Tested
     public void insertRule(Rule rule) throws Exception {
         databaseRules.insertIntoRules(rule);
+    }
+
+    //Tested
+    public void deleteRule(String rule) throws Exception {
+        databaseRules.deleteFromRules(rule);
+    }
+
+    //Tested
+    public Rule getRule(String ruleID) throws SQLException {
+        return databaseRules.loadRule(ruleID);
+    }
+
+    //Tested
+    public List<Rule> getRules() throws SQLException {
+        List<Rule> rules = new ArrayList<>();
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Rules");
+        ResultSet rs = stmt.executeQuery();
+
+        rs.last();
+        int total = rs.getRow();
+        rs.beforeFirst();
+
+        for (int i = 0; i < total; i++) {
+            rules.add(databaseRules.loadRuleFromResultSet(rs));
+        }
+
+        return rules;
     }
 
     public void insertGroupPermission(GroupPermission groupPermission) throws Exception {
@@ -242,10 +270,6 @@ public class WebBackend implements FromFrontEnd {
             assignmentHistories.addAll(databaseDevices.loadDeviceAssignmentHistory(device));
         }
         return assignmentHistories;
-    }
-
-    public void deleteRule(Rule rule) throws Exception {
-        databaseRules.deleteFromRules(rule.getId());
     }
 
     public void deleteAssignment(Assignment assignment) throws Exception {

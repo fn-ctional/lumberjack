@@ -1,5 +1,7 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data;
 
+import java.util.Objects;
+
 public class Rule {
 
     private String id;
@@ -25,4 +27,12 @@ public class Rule {
     }
 
     public void setMaximumRemovalTime(int maximumRemovalTime) { this.maximumRemovalTime = maximumRemovalTime; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (getClass() != o.getClass()) return false;
+        Rule r = (Rule) o;
+        return Objects.equals(id, r.id) &&
+                maximumRemovalTime == r.maximumRemovalTime;
+    }
 }

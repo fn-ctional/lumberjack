@@ -98,7 +98,11 @@ public interface FromFrontEnd {
 
     void deleteDevice(String deviceID) throws Exception;
 
-    void deleteRule(Rule rule) throws Exception;
+    void deleteRule(String rule) throws Exception;
+
+    List<Rule> getRules() throws SQLException;
+
+    Rule getRule(String ruleID) throws SQLException;
 
     void deleteAssignment(Assignment assignment) throws Exception;
 

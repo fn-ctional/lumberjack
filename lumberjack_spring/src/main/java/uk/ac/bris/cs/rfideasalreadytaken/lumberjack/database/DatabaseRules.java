@@ -3,8 +3,10 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Rule;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.UserGroup;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Service
@@ -25,5 +27,22 @@ public class DatabaseRules {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM Rules WHERE id = ?");
         stmt.setString(1, ruleID);
         stmt.execute();
+    }
+
+    public Rule loadRuleFromResultSet(ResultSet rs) throws SQLException {
+        if (rs.next()) {
+            Rule rule = new Rule();
+            rule.setId(rs.getString("id"));
+            rule.setMaximumRemovalTime(rs.getInt("MaximumRemovalTime"));
+            return rule;
+        }
+        return null;
+    }
+
+    public Rule loadRule(String ruleID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Rules WHERE id = ?");
+        stmt.setString(1, ruleID);
+        ResultSet rs = stmt.executeQuery();
+        return loadRuleFromResultSet(rs);
     }
 }

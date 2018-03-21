@@ -303,8 +303,6 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(frontEndDatabaseManager.getDevice(testDevice.getId()).getType(), "tablet");
     }
 
-    */
-
     @Test
     public void testGetUserGroup() throws Exception {
         UserGroup testUserGroup = new UserGroup("groupOne");
@@ -332,4 +330,35 @@ public class FrontEndDatabaseManagerTests {
         frontEndDatabaseManager.insertUserGroup(testUserGroup);
         assertEquals(frontEndDatabaseManager.getUserGroup(testUserGroup.getId()), testUserGroup);
     }
+
+    */
+
+    @Test
+    public void testGetRule() throws Exception {
+        Rule testRule = new Rule("ruleSet1",20);
+        assertEquals(frontEndDatabaseManager.getRule(testRule.getId()),testRule);
+    }
+
+    @Test
+    public void testGetRules() throws Exception {
+        List<Rule> obtainedRules = frontEndDatabaseManager.getRules();
+        assertTrue(obtainedRules.contains(new Rule("ruleSet1",20)));
+        assertTrue(obtainedRules.contains(new Rule("ruleSet2",22)));
+    }
+
+    @Test
+    public void testDeleteRule() throws Exception {
+        Rule testRule = new Rule("test_rule_1",10);
+        frontEndDatabaseManager.insertRule(testRule);
+        frontEndDatabaseManager.deleteRule(testRule.getId());
+        assertNull(frontEndDatabaseManager.getRule(testRule.getId()));
+    }
+
+    @Test
+    public void testInsertRule() throws Exception {
+        Rule testRule = new Rule("test_rule_1",10);
+        frontEndDatabaseManager.insertRule(testRule);
+        assertEquals(frontEndDatabaseManager.getRule(testRule.getId()), testRule);
+    }
+
 }
