@@ -64,17 +64,13 @@ public interface FromFrontEnd {
 
     void insertUsers(List<User> users) throws Exception;
 
-    List<AssignmentHistory> getUserAH(User user) throws Exception;
-
-    List<AssignmentHistory> getUsersAH(ArrayList<User> users) throws Exception;
+    List<AssignmentHistory> getUserAssignmentHistory(String userID) throws Exception;
 
     void insertDevice(Device device) throws Exception;
 
     void insertDevices(List<Device> devices) throws Exception;
 
-    List<AssignmentHistory> getDeviceAH(Device device) throws Exception;
-
-    List<AssignmentHistory> getDevicesAH(ArrayList<Device> devices) throws Exception;
+    List<AssignmentHistory> getDeviceAssignmentHistory(String deviceID) throws Exception;
 
     void insertGroupPermission(GroupPermission groupPermission) throws Exception;
 
@@ -103,8 +99,6 @@ public interface FromFrontEnd {
     List<Rule> getRules() throws SQLException;
 
     Rule getRule(String ruleID) throws SQLException;
-
-    void deleteAssignment(Assignment assignment) throws Exception;
 
     void deleteGroupPermission(String groupPermissionID) throws Exception;
 

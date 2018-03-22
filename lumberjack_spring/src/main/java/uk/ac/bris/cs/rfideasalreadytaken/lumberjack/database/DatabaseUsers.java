@@ -37,12 +37,20 @@ public class DatabaseUsers {
     }
 
 
-    public List<AssignmentHistory> loadUserAssignmentHistory(User user) throws SQLException {
-        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM AssignmentHistory WHERE UserId = ?");
-        stmt.setString(1, user.getId());
+    public List<AssignmentHistory> loadUserAssignmentHistory(String userID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM AssignmentHistory WHERE UserID = ?");
+        stmt.setString(1, userID);
         ResultSet rs = stmt.executeQuery();
         ArrayList<AssignmentHistory> assignmentHistories = new ArrayList<AssignmentHistory>();
-        while (rs.next()) assignmentHistories.add(databaseAssignments.loadAssignmentHistoryFromResultSet(rs));
+
+        rs.last();
+        int total = rs.getRow();
+        rs.beforeFirst();
+
+        for (int i = 0; i < total; i++) {
+            assignmentHistories.add(databaseAssignments.loadAssignmentHistoryFromResultSet(rs));
+        }
+
         return assignmentHistories;
     }
 

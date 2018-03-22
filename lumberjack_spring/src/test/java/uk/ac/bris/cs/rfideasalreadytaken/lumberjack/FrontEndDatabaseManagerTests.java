@@ -395,5 +395,24 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(frontEndDatabaseManager.getGroupPermission(testGroupPermission.getRuleID(),testGroupPermission.getUserGroupID()), testGroupPermission);
     }
 
+    @Test
+    public void testLoadAssignmentHistoryFromUserID() throws Exception {
+        List<AssignmentHistory> history = frontEndDatabaseManager.getUserAssignmentHistory("Callum2468");
+
+        assertEquals(history.get(0).getUserID(), "Callum2468");
+        assertEquals(history.get(0).getDeviceID(), "laptop01");
+        assertEquals(history.get(0).getReturnedByID(), "Aidan9876");
+    }
+
+    @Test
+    public void testLoadAssignmentHistoryFromDeviceID() throws Exception {
+        List<AssignmentHistory> history = frontEndDatabaseManager.getDeviceAssignmentHistory("laptop01");
+
+        assertEquals(history.get(0).getUserID(), "Callum2468");
+        assertEquals(history.get(0).getDeviceID(), "laptop01");
+        assertEquals(history.get(0).getReturnedByID(), "Aidan9876");
+    }
+
     */
+
 }

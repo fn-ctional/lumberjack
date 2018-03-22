@@ -280,32 +280,13 @@ public class WebBackend implements FromFrontEnd {
         return permissions;
     }
 
-    public List<AssignmentHistory> getUserAH(User user) throws SQLException{
-        return databaseUsers.loadUserAssignmentHistory(user);
-    }
 
-    public List<AssignmentHistory> getUsersAH(ArrayList<User> users) throws Exception {
-        List<AssignmentHistory> assignmentHistories = new ArrayList<AssignmentHistory>();
-        for (User user : users) {
-            assignmentHistories.addAll(databaseUsers.loadUserAssignmentHistory(user));
-        }
-        return assignmentHistories;
+    public List<AssignmentHistory> getUserAssignmentHistory(String userID) throws SQLException{
+        return databaseUsers.loadUserAssignmentHistory(userID);
     }
 
 
-    public List<AssignmentHistory> getDeviceAH(Device device) throws SQLException {
-        return databaseDevices.loadDeviceAssignmentHistory(device);
-    }
-
-    public List<AssignmentHistory> getDevicesAH(ArrayList<Device> devices) throws Exception {
-        List<AssignmentHistory> assignmentHistories = new ArrayList<AssignmentHistory>();
-        for (Device device : devices) {
-            assignmentHistories.addAll(databaseDevices.loadDeviceAssignmentHistory(device));
-        }
-        return assignmentHistories;
-    }
-
-    public void deleteAssignment(Assignment assignment) throws Exception {
-        databaseAssignments.deleteFromAssignments(assignment.getId());
+    public List<AssignmentHistory> getDeviceAssignmentHistory(String deviceID) throws SQLException {
+        return databaseDevices.loadDeviceAssignmentHistory(deviceID);
     }
 }

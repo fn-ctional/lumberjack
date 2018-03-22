@@ -30,13 +30,21 @@ public class DatabaseDevices {
          return device;
     }
 
-    public List<AssignmentHistory> loadDeviceAssignmentHistory(Device device) throws SQLException {
+    public List<AssignmentHistory> loadDeviceAssignmentHistory(String deviceID) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM AssignmentHistory WHERE DeviceId = ?");
-        stmt.setString(1, device.getId());
+        stmt.setString(1, deviceID);
         ResultSet rs = stmt.executeQuery();
-        List<AssignmentHistory> assignmentHistorys = new ArrayList<AssignmentHistory>();
-        while (rs.next()) assignmentHistorys.add(databaseAssignments.loadAssignmentHistoryFromResultSet(rs));
-        return assignmentHistorys;
+        List<AssignmentHistory> assignmentHistories = new ArrayList<AssignmentHistory>();
+
+        rs.last();
+        int total = rs.getRow();
+        rs.beforeFirst();
+
+        for (int i = 0; i < total; i++) {
+            assignmentHistories.add(databaseAssignments.loadAssignmentHistoryFromResultSet(rs));
+        }
+
+        return assignmentHistories;
     }
 
     public Device loadDeviceFromResultSet(ResultSet rs) throws SQLException {
