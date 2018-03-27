@@ -34,7 +34,6 @@ public class FrontEndDatabaseManagerTests {
         databaseUtility.insertTestCases();
     }
 
-    /*
 
     @Test
     public void testInsertUser() throws Exception {
@@ -413,6 +412,5 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(history.get(0).getReturnedByID(), "Aidan9876");
     }
 
-    */
 
 }

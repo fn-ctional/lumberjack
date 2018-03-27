@@ -33,7 +33,6 @@ public class CardReaderBackendTests {
         database.insertTestCases();
     }
 
-	/*
 
 	@Test
     public void testRemoveDevice() throws Exception {
@@ -179,6 +178,5 @@ public class CardReaderBackendTests {
 	}
 
 
-	*/
 
 }
