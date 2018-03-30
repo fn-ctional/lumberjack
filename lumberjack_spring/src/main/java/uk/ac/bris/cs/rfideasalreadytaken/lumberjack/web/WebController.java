@@ -1,22 +1,33 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.AuthenticationBackend;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.DevicesCSVDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.UsersCSVDTO;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import static org.springframework.security.config.Elements.HEADERS;
 
 @Controller
 public class WebController extends WebMvcConfigurerAdapter {
@@ -224,87 +235,119 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "add";
     }
 
+
     /**
-     * POST request handler for adding users through CSV upload.
-     * It accepts JSON form of the CSV containing one list for each column.
-     * The size of each list must be the same and any columns that do not exist in the JSON should be initialised with
-     * default values.
-      @param usersCSVDTO A JSON object containing:
-        - List of Scan Values : scanValue
-        - List of Device Limits : deviceLimit
-        - List of Number of Devices Removed : devicesRemoved
-        - List of Booleans, canRemove : canRemove
-        - List of GroupIDs : groupID
+     * CSV file upload POST mapping. CSV must include headers that match user object.
+     * Any missing columns will be filled in with default values.
+     * @param csv CSV file including headers that match the user object.
+     *            Headers are non-capitalised and separated by spaces.
      * @param model
-     * @return
+     * @return The message page detailing the success or error of the upload.
      */
-    @PostMapping(value = "/add/user/CSV", consumes = "text/json", produces = "text/plain")
-    public String addUsersCSV(@RequestBody UsersCSVDTO usersCSVDTO, Model model) {
-        List<User> newUsers = new ArrayList<>();
+    @PostMapping(value = "/add/user/CSV", consumes = "text/csv", produces = "text/plain")
+    public String addUsersCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
+        List<User> newUsers = parseUserCSV(csv);
 
-        for (int i = 0; i < usersCSVDTO.getScanValue().size(); i++) {
-            User newUser = new User();
-            newUser.setScanValue(usersCSVDTO.getScanValue().get(i));
-            newUser.setDeviceLimit(usersCSVDTO.getDeviceLimit().get(i));
-            newUser.setDevicesRemoved(usersCSVDTO.getDevicesRemoved().get(i));
-            newUser.setCanRemove(usersCSVDTO.getCanRemove().get(i));
-            newUser.setGroupId(usersCSVDTO.getGroupID().get(i));
-            //TODO: how to assign the userID?
-
-            newUsers.add(newUser);
-        }
-        try {
-            webBackend.insertUsers(newUsers);
-            model.addAttribute("messageType", "Successful Upload");
-            model.addAttribute("messageString", "New users successfully added!");
-        } catch (Exception e) {
-            model.addAttribute("messageType", "Failed Upload");
-            model.addAttribute("messageString","Unknown CSV upload error, please try again!");
-        }
+        webBackend.insertUsers(newUsers);
+        model.addAttribute("messageType", "Successful Upload");
+        model.addAttribute("messageString", "New users successfully added!");
 
         return "CSVUploaded";
     }
 
-    /**
-     * POST request handler for adding devices through CSV upload.
-     * It accepts JSON form of the CSV containing one list for each column.
-     * The size of each list must be the same and any columns that do not exist in the JSON should be initialised with
-     * default values.
-      @param devicesCSVDTO A JSON object containing:
-        - List of Device Types : deviceType
-        - List of Booleans, Is Available : available
-        - List of Booleans, Currently Assigned : currentlyAssigned
-        - List of Rule IDs : ruleID
-        - List of Scan Values : scanValue
-     * @param model
-     * @return
-     */
-    @PostMapping(value = "/add/device/CSV", consumes = "text/json", produces = "text/plain")
-    public String addDevicesCSV(@RequestBody DevicesCSVDTO devicesCSVDTO, Model model) {
-        List<Device> newDevices = new ArrayList<>();
+    private List<User> parseUserCSV(MultipartFile csv) throws FileUploadException {
+        Iterable<CSVRecord> records = multipartFileToRecords(csv);
 
-        for (int i = 0; i < devicesCSVDTO.getScanValue().size(); i++) {
-            Device newDevice = new Device();
+        List<User> newUsers = new ArrayList<>();
+        for (CSVRecord record : records) {
+            User newUser = new User();
 
-            newDevice.setType(devicesCSVDTO.getType().get(i));
-            newDevice.setAvailable(devicesCSVDTO.getAvailable().get(i));
-            newDevice.setCurrentlyAssigned(devicesCSVDTO.getCurrentlyAssigned().get(i));
-            newDevice.setRuleID(devicesCSVDTO.getRuleID().get(i));
-            newDevice.setScanValue(devicesCSVDTO.getScanValue().get(i));
-            //TODO: how to set device ID?
+            newUser.setScanValue(record.get("scan value"));
+            try {
+                newUser.setDeviceLimit(Integer.parseInt(record.get("device limit")));
+            } catch (NumberFormatException e) {
+                newUser.setDeviceLimit(0);
+            }
+            try {
+                newUser.setDevicesRemoved(Integer.parseInt(record.get("devices removed")));
+            } catch (NumberFormatException e) {
+                newUser.setDevicesRemoved(0);
+            }
+            newUser.setCanRemove(Boolean.parseBoolean(record.get("can remove")));
+            newUser.setGroupId(record.get("group id"));
+            newUser.setId(UUID.randomUUID().toString());
 
-            newDevices.add(newDevice);
+            newUsers.add(newUser);
         }
-        try {
+
+        return newUsers;
+    }
+
+
+
+    /**
+     * CSV file upload POST mapping. CSV must include headers that match device object.
+     * Any missing columns will be filled in with default values.
+     * @param csv CSV file including headers that match the user object.
+     *            Headers are non-capitalised and separated by spaces.
+     * @param model
+     * @return The message page detailing the success or error of the upload.
+     */
+    @PostMapping(value = "/add/device/CSV", consumes = "text/csv", produces = "text/plain")
+    public String addDevicesCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
+            List<Device> newDevices = parseDeviceCSV(csv);
+
             webBackend.insertDevices(newDevices);
             model.addAttribute("messageType", "Successful Upload");
             model.addAttribute("messageString", "New devices successfully added!");
-        } catch (Exception e) {
-            model.addAttribute("messageType", "Failed Upload");
-            model.addAttribute("messageString","Unknown CSV upload error, please try again!");
+
+        return "CSVUploaded";
+    }
+
+    private List<Device> parseDeviceCSV(MultipartFile csv) throws FileUploadException {
+        Iterable<CSVRecord> records = multipartFileToRecords(csv);
+
+
+        List<Device> newDevices = new ArrayList<>();
+        for (CSVRecord record : records) {
+            Device newDevice = new Device();
+
+            newDevice.setScanValue(record.get("scan value"));
+            newDevice.setAvailable(Boolean.parseBoolean(record.get("can remove")));
+            newDevice.setRuleID(record.get("rule id"));
+            newDevice.setCurrentlyAssigned(Boolean.parseBoolean(record.get("can remove")));
+            newDevice.setType(record.get("scan value"));
+            newDevice.setId(UUID.randomUUID().toString());
+
+        newDevices.add(newDevice);
         }
 
-        return "message";
+        return newDevices;
+    }
+
+    private Iterable<CSVRecord> multipartFileToRecords(MultipartFile csv) throws FileUploadException {
+        try {
+            File file = new File(csv.getOriginalFilename());
+            csv.transferTo(file);
+            Reader in = new FileReader(file);
+            Iterable<CSVRecord> records = CSVFormat.DEFAULT
+                    .withHeader(HEADERS)
+                    .withFirstRecordAsHeader()
+                    .parse(in);
+            return records;
+        } catch (IOException e) {
+            throw new FileUploadException();
+        }
+    }
+
+    //TODO: Not sure if this works
+    @ExceptionHandler(FileUploadException.class)
+    public ModelAndView handleUploadError() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("message");
+        mav.addObject("messageType", "Failed Upload");
+        mav.addObject("messageString","Unknown CSV upload error, please try again!");
+        return mav;
     }
 
     @GetMapping("/group/{id}")

@@ -28,7 +28,7 @@ public class DatabaseConnection {
         dataSource.setPassword(password);
         dataSource.setConnectTimeout(5000);
 
-        final boolean debug = true;
+        final boolean debug = false;
         if (debug) debugConnection(serverName,portNumber,databaseName,username,password);
 
         conn = dataSource.getConnection();

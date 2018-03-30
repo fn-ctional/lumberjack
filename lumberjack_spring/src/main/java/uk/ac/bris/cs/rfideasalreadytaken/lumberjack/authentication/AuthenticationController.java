@@ -128,11 +128,8 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
     }
 
     private AdminUser createUserAccount(AdminUserDTO accountDTO, BindingResult result) throws EmailNotPermittedException, Exception {
-        AdminUser registered = null;
 
-        registered = userService.registerNewUserAccount(accountDTO);
-
-        return registered;
+        return userService.registerNewUserAccount(accountDTO);
     }
 
 
