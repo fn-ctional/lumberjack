@@ -38,9 +38,7 @@ jobs:
 
       # run tests!
       - run: mkdir lumberjack_spring/config/
-          && mv circleci.properties lumberjack_spring/config/testdatabase.properties 
-          && cp lumberjack_spring/config/testdatabase.properties lumberjack_spring/config/database.properties
+          && mv circleci_config/* lumberjack_spring/config/ 
           && cd lumberjack_spring/ 
-          && touch config/email.properties && touch config/keystore.p12
           && mvn test
 
