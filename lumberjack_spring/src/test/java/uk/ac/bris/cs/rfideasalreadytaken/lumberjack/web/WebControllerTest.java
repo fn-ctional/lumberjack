@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@TestPropertySource({ "classpath:${envTarget:config/testdatabase}.properties" })
+@TestPropertySource(locations = "file:${user.dir}/config/testdatabase.properties")
 @SpringBootTest
 @WithMockUser(roles = "ADMINISTRATOR")
 public class WebControllerTest {

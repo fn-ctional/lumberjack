@@ -19,8 +19,8 @@ import java.util.Properties;
  * Security beans defined in SecurityConfig.
  */
 @Configuration
-@PropertySource({ "classpath:${envTarget:config/database}.properties" })
-@PropertySource({ "classpath:${envTarget:config/email}.properties" })
+@PropertySource({ "file:${user.dir}/config/database.properties" })
+@PropertySource({ "file:${user.dir}/config/email.properties" })
 public class SpringConfiguration {
 
     @Bean

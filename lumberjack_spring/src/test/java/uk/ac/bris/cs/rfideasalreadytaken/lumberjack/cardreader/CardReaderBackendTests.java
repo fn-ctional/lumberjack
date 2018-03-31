@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNull;
 
 
 @RunWith(SpringRunner.class)
-@TestPropertySource({ "classpath:${envTarget:config/testdatabase}.properties" })
+@TestPropertySource(locations = "file:${user.dir}/config/testdatabase.properties")
 @SpringBootTest
 public class CardReaderBackendTests {
 
