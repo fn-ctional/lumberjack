@@ -30,12 +30,15 @@ jobs:
     
     steps:
       - checkout
+
       # Download and cache dependencies
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "lumberjack_spring/pom.xml" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
+
+      - run: cd lumberjack_spring && mvn dependency:go-offline
 
       - save_cache:
           paths:
@@ -46,5 +49,11 @@ jobs:
       - run: mkdir lumberjack_spring/config/
           && mv circleci_config/* lumberjack_spring/config/ 
           && cd lumberjack_spring/ 
-          && mvn test
+          && mvn package
+
+      - store_test_results:
+          path: lumberjack_spring/target/surefire-reports
+      
+      - store_artifacts:
+          path: lumberjack_spring/target/*.jar
 
