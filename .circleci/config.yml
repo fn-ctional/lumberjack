@@ -4,6 +4,7 @@
 #
 version: 2
 jobs:
+  
   build:
     docker:
       # specify the version you desire here
@@ -36,9 +37,9 @@ jobs:
           key: v1-dependencies-{{ checksum "lumberjack_spring/pom.xml" }}
 
       # run tests!
-      - run: mkdir lumberjack_spring/src/main/resources/config/
-          && mv circleci.properties lumberjack_spring/src/main/resources/config/database.properties 
-          && cp lumberjack_spring/src/main/resources/config/testdatabase.properties lumberjack_spring/src/main/resources/config/database.properties
+      - run: mkdir lumberjack_spring/config/
+          && mv circleci.properties lumberjack_spring/config/testdatabase.properties 
+          && cp lumberjack_spring/testdatabase.properties lumberjack_spring/config/database.properties
           && cd lumberjack_spring/ 
-          && mvn test
+          && mvn package
 
