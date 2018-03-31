@@ -10,6 +10,12 @@ jobs:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
       - image: circleci/mysql:latest-ram
+        environment:
+          MYSQL_HOST: 127.0.0.1
+          MYSQL_DB: circle_test
+          MYSQL_USER: ubuntu
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_PASSWORD:
      
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
