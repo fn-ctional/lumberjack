@@ -63,8 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout()
                     .logoutSuccessUrl("/login")
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .and()
-                    .requiresChannel().antMatchers("*").requiresSecure()
+//                .and()
+//                    .requiresChannel().antMatchers("*").requiresSecure()
                 .and()
                     .csrf().disable();//TODO: this should be fixed and enabled for release
     }

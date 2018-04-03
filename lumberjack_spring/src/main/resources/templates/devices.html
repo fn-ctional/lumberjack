@@ -45,12 +45,12 @@
                     <tbody>
                     <th:block th:each="device : ${deviceList}">
                         <tr>
-                            <td th:text="${device.getId()}">ID</td>
+                            <td><a th:href="@{'/device/' + ${device.getId()}}"><span th:text="${device.getId()}">ID</span></a></td>
                             <td th:text="${device.getScanValue()}">Scan Value</td>
                             <td th:text="${device.getType()}">Type</td>
                             <td th:text="${device.isAvailable() == true ? '✓' : '✗'}">Available?</td>
                             <td th:text="${device.isCurrentlyAssigned() == true ? '✓' : '✗'}">Assigned?</td>
-                            <td th:text="${device.getRuleID()}">Rule ID</td>
+                            <td><a th:href="@{'/rule/' + ${device.getRuleID()}}"><span th:text="${device.getRuleID()}">Rule ID</span></a></td>
                         </tr>
                     </th:block>
                     </tbody>

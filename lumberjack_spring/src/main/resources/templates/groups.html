@@ -27,33 +27,28 @@
             <p th:if="!${found} and ${multi}" class="lead">No groups found.</p>
 
             <p th:if="${blank}" class="lead">
-                View <a href="/users">all groups</a> or <a href="/search/group">search</a> for one.
+                View <a href="/groups">all groups</a> or <a href="/search/group">search</a> for one.
             </p>
 
-            <div th:if="!${blank} and ${found}" class="table-responsive">
+            <div th:if="!${blank} and ${found} and ${multi}" class="table-responsive">
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Scan Value</th>
-                        <th>Devices Removed</th>
-                        <th>Device Limit</th>
-                        <th>Can Remove?</th>
+                        <th>Group ID</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <th:block th:each="user : ${userList}">
+                    <th:block th:each="group : ${userGroupList}">
                         <tr>
-                            <td th:text="${user.getId()}">ID</td>
-                            <td th:text="${user.getScanValue()}">Scan Value</td>
-                            <td th:text="${user.getDevicesRemoved()}">Devices Removed</td>
-                            <td th:text="${user.getDeviceLimit()}">Device Limit</td>
-                            <td th:text="${user.canRemove() == true ? '✓' : '✗'}">Can Remove?</td>
+                            <td><a th:href="@{'/group/' + ${group.getId()}}"><span th:text="${group.getId()}">ID</span></a></td>
                         </tr>
                     </th:block>
                     </tbody>
                 </table>
             </div>
+
+
+
         </main>
 
     </div>

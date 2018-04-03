@@ -39,16 +39,18 @@
                         <th>Devices Removed</th>
                         <th>Device Limit</th>
                         <th>Can Remove?</th>
+                        <th>Group</th>
                     </tr>
                     </thead>
                     <tbody>
                     <th:block th:each="user : ${userList}">
                         <tr>
-                            <td th:text="${user.getId()}">ID</td>
+                            <td><a th:href="@{'/user/' + ${user.getId()}}"><span th:text="${user.getId()}">ID</span></a></td>
                             <td th:text="${user.getScanValue()}">Scan Value</td>
                             <td th:text="${user.getDevicesRemoved()}">Devices Removed</td>
                             <td th:text="${user.getDeviceLimit()}">Device Limit</td>
                             <td th:text="${user.canRemove() == true ? '✓' : '✗'}">Can Remove?</td>
+                            <td><a th:href="@{'/group/' + ${user.getGroupId()}}"><span th:text="${user.getGroupId()}">Group ID</span></a></td>
                         </tr>
                     </th:block>
                     </tbody>

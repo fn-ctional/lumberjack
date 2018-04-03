@@ -15,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.AuthenticationBackend;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.UserGroup;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.DevicesCSVDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
@@ -147,10 +148,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         Boolean found = false;
         List<Device> deviceList = new ArrayList<>();
         try {
-            // TODO
-            // deviceList = webBackend.getDevices();
-            //Device device = new Device();
-            //deviceList.add(device);
+            deviceList = webBackend.getDevices();
             if (!deviceList.isEmpty()) {
                 found = true;
             }
@@ -174,9 +172,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         Boolean found = false;
         model.addAttribute("searchTerm", id);
         try {
-            // TODO
-            //Device device = webBackend.getDevice(id);
-            Device device = new Device();
+            Device device = webBackend.getDevice(id);
             if (device.getId().equals(id)) {
                 deviceList.add(device);
                 found = true;
@@ -350,26 +346,47 @@ public class WebController extends WebMvcConfigurerAdapter {
         return mav;
     }
 
-    @GetMapping("/group/{id}")
-    public String fakeGroup(@PathVariable String id, Model model) {
-        List<User> userList = new ArrayList<>();
+    @GetMapping("/group")
+    public String group(Model model) {
+        model.addAttribute("blank", true);
+        return "groups";
+    }
+
+    @GetMapping("/groups")
+    public String allGroups(Model model) {
+        model.addAttribute("multi", true);
         Boolean found = false;
-        model.addAttribute("searchTerm", "2");
+        List<UserGroup> userGroupList = new ArrayList<>();
         try {
-            User user1 = new User("2", "473810572", 2, 1, true, "2");
-            User user2 = new User("6", "234567891", 3, 2, true, "2");
-            User user3 = new User("199", "471920472", 1, 0, true, "2");
-            User user4 = new User("198", "722402823", 0, 0, false, "2");
-            userList.add(user1);
-            userList.add(user2);
-            userList.add(user3);
-            userList.add(user4);
-            found = true;
+            userGroupList = webBackend.getUserGroups();
+            if (!userGroupList.isEmpty()) {
+                found = true;
+            }
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
         model.addAttribute("found", found);
-        model.addAttribute(userList);
+        model.addAttribute(userGroupList);
         return "groups";
     }
+    // TODO
+    @GetMapping("/group/{id}")
+    public String groupSpecified(@PathVariable String id, Model model) {
+        List<UserGroup> groupList = new ArrayList<>();
+        Boolean found = false;
+        model.addAttribute("searchTerm", id);
+        try {
+            UserGroup userGroup = webBackend.getUserGroup(id);
+            if (userGroup.getId().equals(id)) {
+                groupList.add(userGroup);
+                found = true;
+            }
+        } catch (Exception e) {
+            System.out.println("SQL Error");
+        }
+        model.addAttribute("found", found);
+        model.addAttribute(groupList);
+        return "groups";
+    }
+
 }
