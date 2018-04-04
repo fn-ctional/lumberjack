@@ -4,25 +4,14 @@
 
 This system is being developed as part of a project with The University of Bristol Department of Computer Science, for a second year project. The team is comprised of 6 students with varying areas of expertise and interest.
 
-To run the project, navigate to the root of the project directory <code>lumberjack_spring</code> and run
-Spring Boot <code>mvn spring-boot:run</code>.
+Lumberjack allows for the simple logging of devices. By simply scanning a device's RFID tag and a user's RFID identification, the device becomes assigned to that user until it is scanned back in. System administrators can view which devices are taken out, and to whom, and configure everything through the web interface.
 
-Navigate to <a href="http://localhost:8080/">localhost:8080</a> to enter the
-web front-end.
+Currently lumberjack:
+* Allows users to take out devices within seconds
+* Tracks which user has taken out the device with an easy to use web interface
+* Supports assigning user groups and device types, with rules for when each group can take out devices
+* Supports limits to how many devices a user can take out
+* Will add new users and devices through CSV file upload, or through the web interface
+* Allows you to download all users and devices in CSV format
 
-It is neccessary to provide configuration files in resources/config/ detailing the following:
-
-<code>database.properties:
--ip
--port
--database
--username
--password</code>
-
-<code>email.properties:
--host
--port
--username
--password</code>
-
-Additionally, testdatabase.properties is required to run unit tests, with the same fields as database.properties. 
+Please check the git wiki pages https://github.com/fn-ctional/lumberjack/wiki for instructions on how to download, run and use lumberjack!
