@@ -3,6 +3,8 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,12 +18,14 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.Authenticatio
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.UserGroup;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileDownloadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.DevicesCSVDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.UsersCSVDTO;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -231,7 +235,6 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "add";
     }
 
-
     /**
      * CSV file upload POST mapping. CSV must include headers that match user object.
      * Any missing columns will be filled in with default values.
@@ -242,7 +245,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      */
     @PostMapping(value = "/add/user/CSV", consumes = "text/csv", produces = "text/plain")
     public String addUsersCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
-        List<User> newUsers = parseUserCSV(csv);
+        List<User> newUsers = webBackend.parseUserCSV(csv);
 
         webBackend.insertUsers(newUsers);
         model.addAttribute("messageType", "Successful Upload");
@@ -250,36 +253,6 @@ public class WebController extends WebMvcConfigurerAdapter {
 
         return "CSVUploaded";
     }
-
-    private List<User> parseUserCSV(MultipartFile csv) throws FileUploadException {
-        Iterable<CSVRecord> records = multipartFileToRecords(csv);
-
-        List<User> newUsers = new ArrayList<>();
-        for (CSVRecord record : records) {
-            User newUser = new User();
-
-            newUser.setScanValue(record.get("scan value"));
-            try {
-                newUser.setDeviceLimit(Integer.parseInt(record.get("device limit")));
-            } catch (NumberFormatException e) {
-                newUser.setDeviceLimit(0);
-            }
-            try {
-                newUser.setDevicesRemoved(Integer.parseInt(record.get("devices removed")));
-            } catch (NumberFormatException e) {
-                newUser.setDevicesRemoved(0);
-            }
-            newUser.setCanRemove(Boolean.parseBoolean(record.get("can remove")));
-            newUser.setGroupId(record.get("group id"));
-            newUser.setId(UUID.randomUUID().toString());
-
-            newUsers.add(newUser);
-        }
-
-        return newUsers;
-    }
-
-
 
     /**
      * CSV file upload POST mapping. CSV must include headers that match device object.
@@ -291,7 +264,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      */
     @PostMapping(value = "/add/device/CSV", consumes = "text/csv", produces = "text/plain")
     public String addDevicesCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
-            List<Device> newDevices = parseDeviceCSV(csv);
+            List<Device> newDevices = webBackend.parseDeviceCSV(csv);
 
             webBackend.insertDevices(newDevices);
             model.addAttribute("messageType", "Successful Upload");
@@ -300,39 +273,25 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "CSVUploaded";
     }
 
-    private List<Device> parseDeviceCSV(MultipartFile csv) throws FileUploadException {
-        Iterable<CSVRecord> records = multipartFileToRecords(csv);
-
-
-        List<Device> newDevices = new ArrayList<>();
-        for (CSVRecord record : records) {
-            Device newDevice = new Device();
-
-            newDevice.setScanValue(record.get("scan value"));
-            newDevice.setAvailable(Boolean.parseBoolean(record.get("can remove")));
-            newDevice.setRuleID(record.get("rule id"));
-            newDevice.setCurrentlyAssigned(Boolean.parseBoolean(record.get("can remove")));
-            newDevice.setType(record.get("scan value"));
-            newDevice.setId(UUID.randomUUID().toString());
-
-        newDevices.add(newDevice);
+    @GetMapping(value = "/CSV/users", produces = "text/csv")
+    public void getUsersCSV(HttpServletResponse response) throws FileDownloadException {
+        try {
+            String csv = webBackend.getUsersCSV();
+            response.getWriter().append(csv);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            throw new FileDownloadException();
         }
-
-        return newDevices;
     }
 
-    private Iterable<CSVRecord> multipartFileToRecords(MultipartFile csv) throws FileUploadException {
+    @GetMapping(value = "/CSV/devices", produces = "text/csv")
+    public void getDevicesCSV(HttpServletResponse response) throws FileDownloadException {
         try {
-            File file = new File(csv.getOriginalFilename());
-            csv.transferTo(file);
-            Reader in = new FileReader(file);
-            Iterable<CSVRecord> records = CSVFormat.DEFAULT
-                    .withHeader(HEADERS)
-                    .withFirstRecordAsHeader()
-                    .parse(in);
-            return records;
-        } catch (IOException e) {
-            throw new FileUploadException();
+            String csv = webBackend.getDevicesCSV();
+            response.getWriter().append(csv);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            throw new FileDownloadException();
         }
     }
 
@@ -343,6 +302,16 @@ public class WebController extends WebMvcConfigurerAdapter {
         mav.setViewName("message");
         mav.addObject("messageType", "Failed Upload");
         mav.addObject("messageString","Unknown CSV upload error, please try again!");
+        return mav;
+    }
+
+    //TODO: Not sure if this works
+    @ExceptionHandler(FileUploadException.class)
+    public ModelAndView handleDownloadError() {
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("message");
+        mav.addObject("messageType", "Failed Download");
+        mav.addObject("messageString","Unknown CSV download error, please try again!");
         return mav;
     }
 
