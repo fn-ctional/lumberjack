@@ -1,15 +1,14 @@
 #include <iostream>
 #include "Event.hpp"
-#include "Connection.hpp"
+#include "Network.hpp"
 #include "Config.hpp"
 
 int main() {
   auto config = Config::load("/home/fred/.lumberjack").value();
-
-  auto connection = Connection::Connection(config.path);
-  auto response = Connection::Response();
-
   auto source = Event::Source(config.source);
+
+  auto network = Network::Network::create()
+                 .expect("Unable to create network object");
 
   while ( true ) {
 
@@ -22,11 +21,14 @@ int main() {
     }
 
     auto data = "{\"user\":\"" + user + "\",\"device\":\"" + device_opt.value() + "\"}";
-    if ( !connection.send(data, response) ) {
-      std::cerr << "[data send failed]" << std::endl;
-    } else {
-      std::cout << response.body << std::endl;
+    auto result = network.send( config.path, data );
+    if ( result.is_err() ) {
+      std::cout << "[data send failed]" << std::endl;
+      continue;
     }
+
+    auto response = result.expect("This shouldn't happen");
+    std::cout << response.code << ": " << response.data << std::endl;
 
   }
 }
