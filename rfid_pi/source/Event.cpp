@@ -2,7 +2,7 @@
 #include <chrono>
 #include <type_traits>
 
-void source_f(const char*, Channel::Write<Event::Code>);
+void source_f(const std::string&, Channel::Write<Event::Code>);
 char toChar(Event::Code);
 
 
@@ -28,7 +28,7 @@ auto future(int milliseconds) {
 
 // A Source object stores a Channel and its reader.
 // The Writer is passed, along with the event source path, to a thread that runs the source_f function.
-Event::Source::Source(const char *path)
+Event::Source::Source(const std::string &path)
 : reader(channel.get_read().value())
 , source(source_f, path, channel.get_write().value()) {}
 
@@ -81,7 +81,7 @@ char toChar(Event::Code code) {
 
 // Events are read from the file specified by path.
 // By communicating over a channel, a source object can perform non-blocking reads.
-void source_f(const char *path, Channel::Write<Event::Code> chan) {
+void source_f(const std::string &path, Channel::Write<Event::Code> chan) {
   auto file = std::ifstream(path);
   Event::Event event;
   auto buffer = reinterpret_cast<char*>( &event );

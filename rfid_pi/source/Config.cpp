@@ -1,8 +1,6 @@
 #include "Config.hpp"
 
-#include <string>
 #include <fstream>
-#include <cstring>
 #include <utility>
 
 static int PATH =     0b00001;
@@ -14,7 +12,7 @@ static int ALL =      0b11111;
 
 static bool parse_line(std::ifstream&, std::string&, std::string&);
 
-std::optional<Config::Config> Config::load(const char *path) {
+std::optional<Config::Config> Config::load(const std::string &path) {
   std::string key, value;
   Config config;
   std::ifstream file(path);
@@ -25,27 +23,27 @@ std::optional<Config::Config> Config::load(const char *path) {
     if ( !parse_line(file, key, value) ) continue;
 
     if ( !(filled_fields & PATH) && key == "path" ) {
-      config.path = strdup(value.c_str());
+      config.path = value;
       filled_fields |= PATH;
     }
 
     else if ( !(filled_fields & LOGIN) && key == "login" ) {
-      config.login = strdup(value.c_str());
+      config.login = value;
       filled_fields |= LOGIN;
     }
 
     else if ( !(filled_fields & SOURCE)  && key == "source" ) {
-      config.source = strdup(value.c_str());
+      config.source = value;
       filled_fields |= SOURCE;
     }
 
     else if ( !(filled_fields & USERNAME) && key == "username" ) {
-      config.username = strdup(value.c_str());
+      config.username = value;
       filled_fields |= USERNAME;
     }
 
     else if ( !(filled_fields & PASSWORD) && key == "password" ) {
-      config.password = strdup(value.c_str());
+      config.password = value;
       filled_fields |= PASSWORD;
     }
   }
@@ -91,26 +89,4 @@ static bool parse_line(std::ifstream &file, std::string &key, std::string &value
 
   return read_separator;
 
-}
-
-Config::Config::Config(Config &&c)
-: path(c.path)
-, login(c.login)
-, source(c.source)
-, username(c.username)
-, password(c.password)
-{
-  c.path = nullptr;
-  c.login = nullptr;
-  c.source = nullptr;
-  c.username = nullptr;
-  c.password = nullptr;
-}
-
-Config::Config::~Config() {
-  if ( path )     free((void*)path);
-  if ( login )    free((void*)login);
-  if ( source )   free((void*)source);
-  if ( username ) free((void*)username);
-  if ( password ) free((void*)password);
 }
