@@ -47,13 +47,18 @@
                 var available = /*[[${available}]]*/ '0';
                 var taken = /*[[${taken}]]*/'0';
                 var other = /*[[${other}]]*/'0';
+                var takeouts = [];
+                var returns = [];
                 /*]]>*/
             </script>
 
             <script>
                 // Takeouts and Returns
-                tos = Array.from({length: 10}, () => Math.floor(Math.random() * 400));
-                rtn = Array.from({length: 10}, () => Math.floor(Math.random() * 400));
+                // // Random Values
+                // tos = Array.from({length: 10}, () => Math.floor(Math.random() * 400));
+                // rtn = Array.from({length: 10}, () => Math.floor(Math.random() * 400));
+                tos = takeouts;
+                rtn = returns;
                 new Chart(document.getElementById("takeouts"), {
                     type: 'line',
                     data: {

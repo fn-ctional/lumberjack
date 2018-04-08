@@ -1,7 +1,5 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -27,9 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Calendar.*;
 import static org.springframework.security.config.Elements.HEADERS;
 
 @Controller
@@ -84,6 +84,19 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("other", other);
         model.addAttribute("name", name);
         return "dashboard";
+    }
+
+    @RequestMapping("/test")
+    public String test(Model model) {
+        model.addAttribute("messageType", "Test");
+        List<Integer> takeouts = new ArrayList<>();
+        try {
+            takeouts = webBackend.getRecentTakeouts();
+        } catch (Exception e) {
+            System.out.println("SQL Error");
+        }
+        model.addAttribute("messageString", takeouts);
+        return "message";
     }
 
     /**
@@ -297,7 +310,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("messageType", "Successful Upload");
         model.addAttribute("messageString", "New users successfully added!");
 
-        return "CSVUploaded";
+        return "message";
     }
 
     /**
@@ -316,7 +329,7 @@ public class WebController extends WebMvcConfigurerAdapter {
             model.addAttribute("messageType", "Successful Upload");
             model.addAttribute("messageString", "New devices successfully added!");
 
-        return "CSVUploaded";
+        return "message";
     }
 
     @GetMapping(value = "/CSV/users", produces = "text/csv")

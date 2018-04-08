@@ -23,9 +23,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Calendar.*;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Calendar.HOUR;
 import static org.springframework.security.config.Elements.HEADERS;
 
 @Service
@@ -440,6 +443,22 @@ public class WebBackend implements FromFrontEnd {
 
     public int getOtherCount() throws SQLException {
         return databaseDevices.getOtherCount();
+    }
+
+    public List<Integer> getRecentTakeouts() throws SQLException {
+        Calendar end = Calendar.getInstance();
+        Calendar start = Calendar.getInstance();
+        start.add(HOUR, -9);
+        List<Assignment> assignments = databaseAssignments.getAssignmentsByDate(start, end);
+        System.out.println(assignments);
+        List<String> times = getTimes(start);
+        return new ArrayList<>();
+    }
+
+    private List<String> getTimes(Calendar start) {
+        List<String> times = new ArrayList<>();
+        System.out.println(start.get(Calendar.MINUTE) % 30);
+        return times;
     }
 
 }
