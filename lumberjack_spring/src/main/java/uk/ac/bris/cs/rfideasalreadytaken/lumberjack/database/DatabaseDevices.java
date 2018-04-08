@@ -115,5 +115,33 @@ public class DatabaseDevices {
         return device.isAvailable();
     }
 
+    public int getAvailableCount() throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT COUNT(*) AS Count " +
+                "FROM Devices WHERE Available = TRUE AND CurrentlyAssigned = FALSE");
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return rs.getInt("Count");
+        }
+        return 0;
+    }
 
+    public int getTakenCount() throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT COUNT(*) AS Count " +
+                "FROM Devices WHERE Available = TRUE AND CurrentlyAssigned = TRUE");
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return rs.getInt("Count");
+        }
+        return 0;
+    }
+
+    public int getOtherCount() throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT COUNT(*) AS Count " +
+                "FROM Devices WHERE Available = FALSE");
+        ResultSet rs = stmt.executeQuery();
+        if (rs.next()) {
+            return rs.getInt("Count");
+        }
+        return 0;
+    }
 }

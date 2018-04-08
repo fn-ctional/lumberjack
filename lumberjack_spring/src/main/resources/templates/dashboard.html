@@ -42,6 +42,14 @@
                 </div>
             </div>
 
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                var available = /*[[${available}]]*/ '0';
+                var taken = /*[[${taken}]]*/'0';
+                var other = /*[[${other}]]*/'0';
+                /*]]>*/
+            </script>
+
             <script>
                 // Takeouts and Returns
                 tos = Array.from({length: 10}, () => Math.floor(Math.random() * 400));
@@ -72,9 +80,9 @@
                 });
 
                 // Devices Status
-                av  = Math.floor((Math.random() * 400) + 1);
-                tnk = Math.floor((Math.random() * (120)) + 1);
-                otr = Math.floor((Math.random() * 20) + 1);
+                av  = available;
+                tnk = taken;
+                otr = other;
                 vals = [av, tnk, otr];
                 new Chart(document.getElementById("device-status"), {
                     type: 'doughnut',

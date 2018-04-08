@@ -429,4 +429,17 @@ public class WebBackend implements FromFrontEnd {
     public List<Rule> getGroupRules(String userGroupID) throws SQLException {
         return databaseUserGroups.loadGroupRules(userGroupID);
     }
+
+    public int getAvailableCount() throws SQLException {
+        return databaseDevices.getAvailableCount();
+    }
+
+    public int getTakenCount() throws SQLException {
+        return databaseDevices.getTakenCount();
+    }
+
+    public int getOtherCount() throws SQLException {
+        return databaseDevices.getOtherCount();
+    }
+
 }

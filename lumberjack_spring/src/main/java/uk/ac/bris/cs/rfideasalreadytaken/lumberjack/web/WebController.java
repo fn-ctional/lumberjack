@@ -65,6 +65,23 @@ public class WebController extends WebMvcConfigurerAdapter {
         String email = auth.getName();
         AdminUser user = authenticationBackend.findByEmail(email);
         String name = user.getName();
+        // Get stats for the graphs
+        List<Integer> takeouts = new ArrayList<>();
+        List<Integer> returns  = new ArrayList<>();
+        int available = 0, taken = 0, other = 0;
+        try {
+            available = webBackend.getAvailableCount();
+            taken     = webBackend.getTakenCount();
+            other     = webBackend.getOtherCount();
+        } catch (Exception e) {
+            System.out.println("SQL Error");
+        }
+        // Add attributes
+        model.addAttribute(takeouts);
+        model.addAttribute(returns);
+        model.addAttribute("available", available);
+        model.addAttribute("taken", taken);
+        model.addAttribute("other", other);
         model.addAttribute("name", name);
         return "dashboard";
     }
