@@ -2,14 +2,12 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.GroupPermission;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.UserGroup;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -95,6 +93,24 @@ public class DatabaseUserGroups {
         return loadGroupPermissionFromResultSet(rs);
     }
 
+    private List<Rule> loadRulesFromResultSet(ResultSet rs) throws SQLException{
+        List<Rule> rules = new ArrayList<>();
+        while (rs.next()) {
+            Rule rule = new Rule();
+            rule.setId(rs.getString("id"));
+            rule.setMaximumRemovalTime(rs.getInt("MaximumRemovalTime"));
+            rules.add(rule);
+        }
+        return rules;
+    }
 
+    public List<Rule> loadGroupRules(String userGroupID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT R.id, " +
+                " R.MaximumRemovalTime FROM GroupPermissions INNER JOIN Rules R ON GroupPermissions.RuleID = R.id " +
+                "WHERE UserGroupID = ?");
+        stmt.setString(1, userGroupID);
+        ResultSet rs = stmt.executeQuery();
+        return loadRulesFromResultSet(rs);
+    }
 
 }

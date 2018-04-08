@@ -49,29 +49,58 @@
             </div>
 
             <!-- Block for showing one group in detail -->
-            <div th:if="!${blank} and ${found} and !${multi}" class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Scan Value</th>
-                        <th>Devices Removed</th>
-                        <th>Device Limit</th>
-                        <th>Can Remove?</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <th:block th:each="user : ${userList}">
+            <div th:if="!${blank} and ${found} and !${multi}">
+
+                <p th:if="!${gotUsers}" class="lead">This group has no users.</p>
+
+                <div th:if="${gotUsers}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
                         <tr>
-                            <td><a th:href="@{'/user/' + ${user.getId()}}"><span th:text="${user.getId()}">ID</span></a></td>
-                            <td th:text="${user.getScanValue()}">Scan Value</td>
-                            <td th:text="${user.getDevicesRemoved()}">Devices Removed</td>
-                            <td th:text="${user.getDeviceLimit()}">Device Limit</td>
-                            <td th:text="${user.canRemove() == true ? '✓' : '✗'}">Can Remove?</td>
+                            <th>ID</th>
+                            <th>Scan Value</th>
+                            <th>Devices Removed</th>
+                            <th>Device Limit</th>
+                            <th>Can Remove?</th>
                         </tr>
-                    </th:block>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="user : ${userList}">
+                            <tr>
+                                <td><a th:href="@{'/user/' + ${user.getId()}}"><span th:text="${user.getId()}">ID</span></a></td>
+                                <td th:text="${user.getScanValue()}">Scan Value</td>
+                                <td th:text="${user.getDevicesRemoved()}">Devices Removed</td>
+                                <td th:text="${user.getDeviceLimit()}">Device Limit</td>
+                                <td th:text="${user.canRemove() == true ? '✓' : '✗'}">Can Remove?</td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2>Group Rules</h2>
+
+                <p th:if="!${gotRules}" class="lead">This group has no rules.</p>
+
+                <div th:if="${gotRules}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Maximum Removal Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="rule : ${ruleList}">
+                            <tr>
+                                <td th:text="${rule.getId()}">ID</td>
+                                <td th:text="${rule.getMaximumRemovalTime()}">Time</td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
 
         </main>

@@ -16,13 +16,10 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.AuthenticationBackend;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.AssignmentHistory;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.UserGroup;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileDownloadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.DevicesCSVDTO;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.UsersCSVDTO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -373,21 +370,23 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     @GetMapping("/group/{id}")
     public String groupSpecified(@PathVariable String id, Model model) {
-        List<UserGroup> groupList = new ArrayList<>();
+        // Make sure group exists
         Boolean found = false;
         model.addAttribute("searchTerm", id);
         try {
             UserGroup userGroup = webBackend.getUserGroup(id);
             if (userGroup.getId().equals(id)) {
-                groupList.add(userGroup);
                 found = true;
             }
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
         List<User> userList = new ArrayList<>();
+        List<Rule> ruleList = new ArrayList<>();
         boolean gotUsers = false;
+        boolean gotRules = false;
         if (found) {
+            // Get group users
             try {
                 userList = webBackend.getGroupUsers(id);
                 if (!userList.isEmpty()) {
@@ -396,11 +395,21 @@ public class WebController extends WebMvcConfigurerAdapter {
             } catch (Exception e) {
                 System.out.println("SQL Error");
             }
+            // Get group rules
+            try {
+                ruleList = webBackend.getGroupRules(id);
+                if (!ruleList.isEmpty()) {
+                    gotRules = true;
+                }
+            } catch (Exception e) {
+                System.out.println("SQL Error");
+            }
         }
         model.addAttribute("found", found);
         model.addAttribute("gotUsers", gotUsers);
+        model.addAttribute("gotRules", gotRules);
         model.addAttribute("userList", userList);
-        model.addAttribute("groupList", groupList);
+        model.addAttribute("ruleList", ruleList);
         return "groups";
     }
 

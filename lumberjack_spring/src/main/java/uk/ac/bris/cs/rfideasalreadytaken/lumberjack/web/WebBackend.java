@@ -422,7 +422,11 @@ public class WebBackend implements FromFrontEnd {
         return stringBuilder.toString();
     }
 
-    public List<User> getGroupUsers(String userGroupID) throws SQLException{
+    public List<User> getGroupUsers(String userGroupID) throws SQLException {
         return databaseUsers.loadUsersFromUserGroup(userGroupID);
+    }
+
+    public List<Rule> getGroupRules(String userGroupID) throws SQLException {
+        return databaseUserGroups.loadGroupRules(userGroupID);
     }
 }
