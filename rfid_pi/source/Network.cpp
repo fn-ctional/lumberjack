@@ -34,8 +34,8 @@ Result<Network::Network,int> Network::Network::create() {
   auto handle = curl_easy_init();
   if ( handle == nullptr ) return Result<Network,int>::Err(0);
 
-  // curl_easy_setopt(handle, CURLOPT_READFUNCTION, write_data);
-  // curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, read_response);
+  curl_easy_setopt(handle, CURLOPT_READFUNCTION, write_data);
+  curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, read_response);
   curl_easy_setopt(handle, CURLOPT_COOKIEFILE, "");
 
   // auto header = curl_slist_append(nullptr, "Transfer-Encoding:");
