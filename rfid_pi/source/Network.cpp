@@ -95,6 +95,10 @@ Result<Network::Response,int> Network::Network::send(const std::string &url, con
   return perform( handle.get(), nullptr );
 }
 
+Network::Form Network::Network::new_form() const {
+  return curl_mime_init( handle.get() );
+}
+
 size_t write_data(char *buff, size_t size, size_t n, String *str) {
   size_t copy_size = std::min(str->size, size * n);
   if ( copy_size > 0 ) {

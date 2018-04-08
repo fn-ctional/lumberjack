@@ -10,6 +10,12 @@ int main() {
   auto network = Network::Network::create()
                  .expect("Unable to create network object");
 
+  auto login_form = network.new_form();
+  login_form.add("email",    config.username);
+  login_form.add("password", config.password);
+
+  network.send(config.login, login_form).expect("Unable to log in");
+
   while ( true ) {
 
     auto user = source.readline(-1).value();
