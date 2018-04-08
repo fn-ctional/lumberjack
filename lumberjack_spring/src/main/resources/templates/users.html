@@ -56,6 +56,42 @@
                     </tbody>
                 </table>
             </div>
+
+            <div th:if="!${blank} and ${found} and !${multi}">
+
+                <h2>Assignment History</h2>
+
+                <p th:if="!${taken}" class="lead">This user has no assignment history.</p>
+
+                <div th:if="${taken}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Device ID</th>
+                            <th>Taken Out</th>
+                            <th>Returned</th>
+                            <th>Returned on Time?</th>
+                            <th>Returned By</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="takeout : ${takeoutList}">
+                            <tr>
+                                <td th:text="${takeout.getAssignmentHistoryID()}">ID</td>
+                                <td><a th:href="@{'/device/' + ${takeout.getDeviceID()}}"><span th:text="${takeout.getDeviceID()}">Device ID</span></a></td>
+                                <td th:text="|${takeout.getDateAssigned()}   ${takeout.getTimeAssigned()}|">Date Time</td>
+                                <td th:text="|${takeout.getDateReturned()}   ${takeout.getTimeReturned()}|">Date Time</td>
+                                <td th:text="${takeout.isReturnedOnTime() == true ? '✓' : '✗'}">On Time?</td>
+                                <td><a th:href="@{'/user/' + ${takeout.getReturnedByID()}}"><span th:text="${takeout.getReturnedByID()}">Returned By</span></a></td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
         </main>
 
     </div>

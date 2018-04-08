@@ -30,6 +30,7 @@
                 View <a href="/groups">all groups</a> or <a href="/search/group">search</a> for one.
             </p>
 
+            <!-- Block for showing multiple groups -->
             <div th:if="!${blank} and ${found} and ${multi}" class="table-responsive">
                 <table class="table table-striped">
                     <thead>
@@ -47,7 +48,10 @@
                 </table>
             </div>
 
+            <!-- Block for showing one group in detail -->
+            <div th:if="!${blank} and ${found} and !${multi}">
 
+            </div>
 
         </main>
 

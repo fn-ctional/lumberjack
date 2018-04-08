@@ -16,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.AuthenticationBackend;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.AssignmentHistory;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.UserGroup;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileDownloadException;
@@ -113,6 +114,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      */
     @GetMapping("/user/{id}")
     public String userSpecified(@PathVariable String id, Model model) {
+        // Get the user details
         List<User> userList = new ArrayList<>();
         Boolean found = false;
         model.addAttribute("searchTerm", id);
@@ -125,8 +127,23 @@ public class WebController extends WebMvcConfigurerAdapter {
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
+        // Get the assignment history
+        List<AssignmentHistory> takeoutList = new ArrayList<>();
+        boolean taken = false;
+        if (found){
+            try {
+                takeoutList = webBackend.getUserAssignmentHistory(id);
+                if (!takeoutList.isEmpty()) {
+                    taken = true;
+                }
+            } catch (Exception e) {
+                System.out.println("SQL Error");
+            }
+        }
+        model.addAttribute("taken", taken);
         model.addAttribute("found", found);
-        model.addAttribute(userList);
+        model.addAttribute("userList", userList);
+        model.addAttribute("takeoutList", takeoutList);
         return "users";
     }
 
