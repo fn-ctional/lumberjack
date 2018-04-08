@@ -421,4 +421,8 @@ public class WebBackend implements FromFrontEnd {
         }
         return stringBuilder.toString();
     }
+
+    public List<User> getGroupUsers(String userGroupID) throws SQLException{
+        return databaseUsers.loadUsersFromUserGroup(userGroupID);
+    }
 }

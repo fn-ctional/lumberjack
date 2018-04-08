@@ -10,6 +10,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.UserGroup;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Service
 public class DatabaseUserGroups {

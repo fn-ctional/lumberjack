@@ -49,8 +49,29 @@
             </div>
 
             <!-- Block for showing one group in detail -->
-            <div th:if="!${blank} and ${found} and !${multi}">
-                
+            <div th:if="!${blank} and ${found} and !${multi}" class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Scan Value</th>
+                        <th>Devices Removed</th>
+                        <th>Device Limit</th>
+                        <th>Can Remove?</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="user : ${userList}">
+                        <tr>
+                            <td><a th:href="@{'/user/' + ${user.getId()}}"><span th:text="${user.getId()}">ID</span></a></td>
+                            <td th:text="${user.getScanValue()}">Scan Value</td>
+                            <td th:text="${user.getDevicesRemoved()}">Devices Removed</td>
+                            <td th:text="${user.getDeviceLimit()}">Device Limit</td>
+                            <td th:text="${user.canRemove() == true ? '✓' : '✗'}">Can Remove?</td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
             </div>
 
         </main>

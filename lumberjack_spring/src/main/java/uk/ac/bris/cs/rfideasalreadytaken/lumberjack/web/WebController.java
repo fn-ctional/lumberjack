@@ -385,8 +385,22 @@ public class WebController extends WebMvcConfigurerAdapter {
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
+        List<User> userList = new ArrayList<>();
+        boolean gotUsers = false;
+        if (found) {
+            try {
+                userList = webBackend.getGroupUsers(id);
+                if (!userList.isEmpty()) {
+                    gotUsers = true;
+                }
+            } catch (Exception e) {
+                System.out.println("SQL Error");
+            }
+        }
         model.addAttribute("found", found);
-        model.addAttribute(groupList);
+        model.addAttribute("gotUsers", gotUsers);
+        model.addAttribute("userList", userList);
+        model.addAttribute("groupList", groupList);
         return "groups";
     }
 
