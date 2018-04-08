@@ -201,8 +201,23 @@ public class WebController extends WebMvcConfigurerAdapter {
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
+        // Get the assignment history
+        List<AssignmentHistory> takeoutList = new ArrayList<>();
+        boolean taken = false;
+        if (found){
+            try {
+                takeoutList = webBackend.getDeviceAssignmentHistory(id);
+                if (!takeoutList.isEmpty()) {
+                    taken = true;
+                }
+            } catch (Exception e) {
+                System.out.println("SQL Error");
+            }
+        }
         model.addAttribute("found", found);
-        model.addAttribute(deviceList);
+        model.addAttribute("taken", taken);
+        model.addAttribute("takeoutList", takeoutList);
+        model.addAttribute("deviceList", deviceList);
         return "devices";
     }
 
@@ -355,7 +370,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute(userGroupList);
         return "groups";
     }
-    // TODO
+
     @GetMapping("/group/{id}")
     public String groupSpecified(@PathVariable String id, Model model) {
         List<UserGroup> groupList = new ArrayList<>();
