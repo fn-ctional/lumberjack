@@ -447,6 +447,7 @@ public class WebBackend implements FromFrontEnd {
         return databaseDevices.getOtherCount();
     }
 
+    //Tested
     public List<Integer> getRecentTakeouts(int hoursToGet) throws SQLException {
 
         Calendar end = Calendar.getInstance();
@@ -457,20 +458,41 @@ public class WebBackend implements FromFrontEnd {
         start.add(MONTH, 1);
         end.add(MONTH, 1);
 
-
         List<Integer> takeouts = new ArrayList<>();
-
 
         for(int i = -(hoursToGet); i != 0; i++)
         {
-            takeouts.add(databaseAssignments.getAssignmentsByTime(start, end));
+            takeouts.add(databaseAssignments.getAssignmentsTakeoutsByTime(start, end));
             start.add(HOUR,1);
             end.add(HOUR,1);
-            System.out.println(takeouts.get(i+hoursToGet));
         }
 
 
         return takeouts;
+    }
+
+    //Tested
+    public List<Integer> getRecentReturns(int hoursToGet) throws SQLException {
+
+        Calendar end = Calendar.getInstance();
+        Calendar start = Calendar.getInstance();
+        start.add(HOUR, -hoursToGet);
+        end.add(HOUR, -(hoursToGet-1));
+
+        start.add(MONTH, 1);
+        end.add(MONTH, 1);
+
+        List<Integer> returns = new ArrayList<>();
+
+        for(int i = -(hoursToGet); i != 0; i++)
+        {
+            returns.add(databaseAssignments.getAssignmentsReturnsByTime(start, end));
+            start.add(HOUR,1);
+            end.add(HOUR,1);
+        }
+
+
+        return returns;
     }
 
     private List<String> getTimes(Calendar start) {

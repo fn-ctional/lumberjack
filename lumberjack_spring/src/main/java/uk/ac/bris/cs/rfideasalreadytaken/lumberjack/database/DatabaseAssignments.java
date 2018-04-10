@@ -145,15 +145,13 @@ public class DatabaseAssignments {
             stmt.execute();
     }
 
-    public int getAssignmentsByTime(Calendar start, Calendar end) throws SQLException {
+    public int getAssignmentsTakeoutsByTime(Calendar start, Calendar end) throws SQLException {
 
 
         String startDate = start.get(YEAR) + "-" + start.get(MONTH) + "-" + start.get(DATE);
         String startTime = start.get(HOUR_OF_DAY) + ":" + start.get(MINUTE) + ":" + start.get(SECOND);
         String endDate = end.get(YEAR) + "-" + end.get(MONTH) + "-" + end.get(DATE);
         String endTime = end.get(HOUR_OF_DAY) + ":" + end.get(MINUTE) + ":" + end.get(SECOND);
-
-        System.out.println(startDate);
 
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM AssignmentHistory WHERE " +
                 "DateAssigned >= CAST(? AS DATE) AND DateAssigned <= CAST(? AS DATE)" +
@@ -180,6 +178,30 @@ public class DatabaseAssignments {
         ResultSet rs2 = stmt2.executeQuery();
         rs2.last();
         history += rs2.getRow();
+
+        return history;
+    }
+
+    public int getAssignmentsReturnsByTime(Calendar start, Calendar end) throws SQLException {
+
+
+        String startDate = start.get(YEAR) + "-" + start.get(MONTH) + "-" + start.get(DATE);
+        String startTime = start.get(HOUR_OF_DAY) + ":" + start.get(MINUTE) + ":" + start.get(SECOND);
+        String endDate = end.get(YEAR) + "-" + end.get(MONTH) + "-" + end.get(DATE);
+        String endTime = end.get(HOUR_OF_DAY) + ":" + end.get(MINUTE) + ":" + end.get(SECOND);
+
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM AssignmentHistory WHERE " +
+                "DateReturned >= CAST(? AS DATE) AND DateReturned <= CAST(? AS DATE)" +
+                " AND TimeReturned >= CAST(? AS TIME) AND TimeReturned <= CAST(? AS TIME)");
+
+        stmt.setString(1, startDate);
+        stmt.setString(2, endDate);
+        stmt.setString(3, startTime);
+        stmt.setString(4, endTime);
+
+        ResultSet rs = stmt.executeQuery();
+        rs.last();
+        int history = rs.getRow();
 
         return history;
     }

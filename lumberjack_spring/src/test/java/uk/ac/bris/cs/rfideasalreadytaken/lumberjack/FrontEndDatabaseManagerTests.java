@@ -413,19 +413,33 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(history.get(0).getReturnedByID(), "Aidan9876");
     }
 
-    */
-
     @Test
     public void testGetRecentTakeouts() throws Exception {
         List<Integer> takeouts = webBackend.getRecentTakeouts(9);
-        Integer zero = 0;
+        Integer amount = 0;
 
         for(int i = 0; i != 8; i++)
         {
-            assertEquals(zero, takeouts.get(i));
+            assertEquals(amount, takeouts.get(i));
         }
 
-        zero = 2;
-        assertEquals(zero, takeouts.get(8));
+        amount = 2;
+        assertEquals(amount, takeouts.get(8));
     }
+
+    @Test
+    public void testGetRecentReturns() throws Exception {
+        List<Integer> returns = webBackend.getRecentReturns(9);
+        Integer amount = 0;
+
+        for(int i = 0; i != 8; i++)
+        {
+            assertEquals(amount, returns.get(i));
+        }
+
+        amount = 1;
+        assertEquals(amount, returns.get(8));
+    }
+
+    */
 }
