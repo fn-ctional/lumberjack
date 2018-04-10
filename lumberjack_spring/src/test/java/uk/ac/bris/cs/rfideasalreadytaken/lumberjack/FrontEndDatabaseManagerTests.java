@@ -34,6 +34,7 @@ public class FrontEndDatabaseManagerTests {
         databaseTesting.insertTestCases();
     }
 
+    /*
 
     @Test
     public void testInsertUser() throws Exception {
@@ -412,5 +413,19 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(history.get(0).getReturnedByID(), "Aidan9876");
     }
 
+    */
 
+    @Test
+    public void testGetRecentTakeouts() throws Exception {
+        List<Integer> takeouts = webBackend.getRecentTakeouts(9);
+        Integer zero = 0;
+
+        for(int i = 0; i != 8; i++)
+        {
+            assertEquals(zero, takeouts.get(i));
+        }
+
+        zero = 2;
+        assertEquals(zero, takeouts.get(8));
+    }
 }

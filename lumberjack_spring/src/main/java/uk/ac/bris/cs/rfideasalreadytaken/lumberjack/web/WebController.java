@@ -91,7 +91,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("messageType", "Test");
         List<Integer> takeouts = new ArrayList<>();
         try {
-            takeouts = webBackend.getRecentTakeouts();
+            takeouts = webBackend.getRecentTakeouts(9);
         } catch (Exception e) {
             System.out.println("SQL Error");
         }

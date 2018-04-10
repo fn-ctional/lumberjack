@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.util.Calendar.HOUR;
+import static java.util.Calendar.MONTH;
 import static org.springframework.security.config.Elements.HEADERS;
 
 @Service
@@ -294,15 +295,16 @@ public class WebBackend implements FromFrontEnd {
         return permissions;
     }
 
-
+    //Tested
     public List<AssignmentHistory> getUserAssignmentHistory(String userID) throws SQLException{
         return databaseUsers.loadUserAssignmentHistory(userID);
     }
 
-
+    //Tested
     public List<AssignmentHistory> getDeviceAssignmentHistory(String deviceID) throws SQLException {
         return databaseDevices.loadDeviceAssignmentHistory(deviceID);
     }
+
 
     public List<User> parseUserCSV(MultipartFile csv) throws FileUploadException {
         Iterable<CSVRecord> records = multipartFileToRecords(csv);
@@ -445,14 +447,30 @@ public class WebBackend implements FromFrontEnd {
         return databaseDevices.getOtherCount();
     }
 
-    public List<Integer> getRecentTakeouts() throws SQLException {
+    public List<Integer> getRecentTakeouts(int hoursToGet) throws SQLException {
+
         Calendar end = Calendar.getInstance();
         Calendar start = Calendar.getInstance();
-        start.add(HOUR, -9);
-        List<Assignment> assignments = databaseAssignments.getAssignmentsByDate(start, end);
-        System.out.println(assignments);
-        List<String> times = getTimes(start);
-        return new ArrayList<>();
+        start.add(HOUR, -hoursToGet);
+        end.add(HOUR, -(hoursToGet-1));
+
+        start.add(MONTH, 1);
+        end.add(MONTH, 1);
+
+
+        List<Integer> takeouts = new ArrayList<>();
+
+
+        for(int i = -(hoursToGet); i != 0; i++)
+        {
+            takeouts.add(databaseAssignments.getAssignmentsByTime(start, end));
+            start.add(HOUR,1);
+            end.add(HOUR,1);
+            System.out.println(takeouts.get(i+hoursToGet));
+        }
+
+
+        return takeouts;
     }
 
     private List<String> getTimes(Calendar start) {
