@@ -45,46 +45,81 @@
             </div>
 
             <div class="container-fluid">
-                <div th:if="${type} == user" class="row">
-                    <form action="#" th:action="@{/add/user}" method="post">
+                <div class="row">
+                    <div class="col-lg">
 
-                        <div class="form-group row" >
-                            <label for="scanValue" class="col-6 col-form-label">Scan Value</label>
-                            <div class="col-6">
-                                <input type="text" class="form-control" id="scanValue" name="scanValue" placeholder="123456789" required="required" />
+                        <p class="lead">
+                            Add a single user:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div th:if="${type} == user" class="row">
+                                <form action="#" th:action="@{/add/user}" method="post">
+
+                                    <div class="form-group row" >
+                                        <label for="scanValue" class="col-lg col-form-label">Scan Value</label>
+                                        <div class="col-lg">
+                                            <input type="text" class="form-control" id="scanValue" name="scanValue" placeholder="123456789" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="deviceLimit" class="col-lg col-form-label">Device Limit</label>
+                                        <div class="col-lg">
+                                            <input type="number" min="0" step="1" placeholder="0" class="form-control" id="deviceLimit" name="deviceLimit" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="canRemove" class="col-lg col-form-label">Can Remove Devices?</label>
+                                        <div class="col-lg">
+                                            <input type="checkbox" name="canRemove" id="canRemove" value="true" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="groupID" class="col-lg col-form-label">Group</label>
+                                        <div class="col-lg">
+                                            <select class="form-control" id="groupID" name="groupID" required="required">
+                                                <option value="" selected="selected" disabled="disabled" hidden="hidden">Choose group</option>
+                                                <th:block th:each="group : ${groups}">
+                                                    <option th:value="${group.getId()}" th:text="${group.getId()}">Group ID</option>
+                                                </th:block>
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </form>
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="deviceLimit" class="col-6 col-form-label">Device Limit</label>
-                            <div class="col-6">
-                                <input type="number" min="0" step="1" placeholder="0" class="form-control" id="deviceLimit" name="deviceLimit" required="required" />
-                            </div>
+                    </div>
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Or upload a CSV file:
+                        </p>
+
+                        <div class="container-fluid">
+                            <form action="/add/user/CSV" method="post" class="col-lg" enctype="multipart/form-data">
+
+                                <div class="form-group row">
+                                    <input type="file" class="form-control" name="file"/>
+                                </div>
+
+                                <div class="form-group row">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+
+                            </form>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="canRemove" class="col-6 col-form-label">Can Remove Devices?</label>
-                            <div class="col-6">
-                                <input type="checkbox" name="canRemove" id="canRemove" value="true" />
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="groupID" class="col-6 col-form-label">Group</label>
-                            <div class="col-6">
-                                <select class="form-control" id="groupID" name="groupID" required="required">
-                                    <option value="" selected="selected" disabled="disabled" hidden="hidden">Choose group</option>
-                                    <th:block th:each="group : ${groups}">
-                                        <option th:value="${group.getId()}" th:text="${group.getId()}">Group ID</option>
-                                    </th:block>
-                                </select>
-
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Submit</button>
-
-                    </form>
+                    </div>
                 </div>
             </div>
 

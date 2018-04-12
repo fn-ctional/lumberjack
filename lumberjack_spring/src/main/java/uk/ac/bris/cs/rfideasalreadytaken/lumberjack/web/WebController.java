@@ -350,7 +350,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @param model The session/page model.
      * @return The message page detailing the success or error of the upload.
      */
-    @PostMapping(value = "/csv/user", consumes = "text/csv", produces = "text/plain")
+    @PostMapping(value = "/add/user/CSV", consumes = "text/csv", produces = "text/plain")
     public String addUsersCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
         List<User> newUsers = webBackend.parseUserCSV(csv);
 
@@ -369,7 +369,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @param model The session/page model.
      * @return The message page detailing the success or error of the upload.
      */
-    @PostMapping(value = "/csv/device", consumes = "text/csv", produces = "text/plain")
+    @PostMapping(value = "/add/device/CSV", consumes = "text/csv", produces = "text/plain")
     public String addDevicesCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
             List<Device> newDevices = webBackend.parseDeviceCSV(csv);
 
