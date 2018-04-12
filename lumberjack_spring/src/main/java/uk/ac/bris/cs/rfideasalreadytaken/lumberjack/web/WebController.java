@@ -320,7 +320,6 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     @PostMapping("/add/user")
     public String addUser(@RequestParam Map<String, String> request, Model model) {
-        model.addAttribute("admin", true);
         // Set user attributes
         User newUser = new User();
         newUser.setId(UUID.randomUUID().toString());
@@ -356,7 +355,6 @@ public class WebController extends WebMvcConfigurerAdapter {
         List<User> newUsers = webBackend.parseUserCSV(csv);
 
         webBackend.insertUsers(newUsers);
-        model.addAttribute("admin", true);
         model.addAttribute("messageType", "Successful Upload");
         model.addAttribute("messageString", "New users successfully added!");
 
@@ -373,12 +371,11 @@ public class WebController extends WebMvcConfigurerAdapter {
      */
     @PostMapping(value = "/csv/device", consumes = "text/csv", produces = "text/plain")
     public String addDevicesCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
-        List<Device> newDevices = webBackend.parseDeviceCSV(csv);
+            List<Device> newDevices = webBackend.parseDeviceCSV(csv);
 
-        webBackend.insertDevices(newDevices);
-        model.addAttribute("admin", true);
-        model.addAttribute("messageType", "Successful Upload");
-        model.addAttribute("messageString", "New devices successfully added!");
+            webBackend.insertDevices(newDevices);
+            model.addAttribute("messageType", "Successful Upload");
+            model.addAttribute("messageString", "New devices successfully added!");
 
         return "message";
     }

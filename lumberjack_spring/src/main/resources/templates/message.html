@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head th:include ="fragments/header :: head (title='lumberjack - ' + ${messageType})">
 </head>
@@ -10,8 +11,9 @@
 <div th:replace="fragments/header :: navbar"></div>
 
 <!-- Page Content -->
-
-<div th:if="${admin}" th:replace="fragments/sidebar :: sidebar"></div>
+<div sec:authorize="isAuthenticated()">
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+</div>
 
 <div class="container">
 
