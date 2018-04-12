@@ -5,7 +5,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -16,7 +15,6 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUse
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileDownloadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadException;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.UserDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -282,7 +280,6 @@ public class WebController extends WebMvcConfigurerAdapter {
      */
     @RequestMapping("/add")
     public String add(Model model) {
-        model.addAttribute("user", new ArrayList<UserDTO>());
         model.addAttribute("blank", true);
         return "add";
     }
@@ -299,8 +296,6 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("groups", new ArrayList<UserGroup>());
         switch (type) {
             case "user":
-                UserDTO userDTO = new UserDTO();
-                model.addAttribute(userDTO);
                 List<UserGroup> groups = new ArrayList<>();
                 try {
                     groups = webBackend.getUserGroups();
@@ -324,20 +319,27 @@ public class WebController extends WebMvcConfigurerAdapter {
     }
 
     @PostMapping("/add/user")
-    public String addUser(@RequestParam MultiValueMap<String, String> request, @ModelAttribute UserDTO userDTO) {
+    public String addUser(@RequestParam Map<String, String> request, Model model) {
+        model.addAttribute("admin", true);
+        // Set user attributes
+        User newUser = new User();
+        newUser.setId(UUID.randomUUID().toString());
+        newUser.setScanValue(request.get("scanValue"));
+        newUser.setDeviceLimit(new Integer(request.get("deviceLimit")));
+        newUser.setDevicesRemoved(0);
+        newUser.setCanRemove(request.containsKey("canRemove"));
+        newUser.setGroupId(request.get("groupID"));
+        // Add user to the database
         try {
-            // Set user attributes
-            User newUser = new User();
-            newUser.setId(UUID.randomUUID().toString());
-            newUser.setScanValue(userDTO.getScanValue());
-            newUser.setDeviceLimit(userDTO.getDeviceLimit());
-            newUser.setDevicesRemoved(0);
-            System.out.println(request);
-
+            webBackend.insertUser(newUser);
         } catch (Exception e) {
             System.out.println("SQL Exception");
+            model.addAttribute("messageType", "User Adding Failed");
+            model.addAttribute("messageString", "The user has not been added. Please try again.");
+            return "message";
         }
-
+        model.addAttribute("messageType", "User Added");
+        model.addAttribute("messageString", "The user has been added!");
         return "message";
     }
 
@@ -354,6 +356,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         List<User> newUsers = webBackend.parseUserCSV(csv);
 
         webBackend.insertUsers(newUsers);
+        model.addAttribute("admin", true);
         model.addAttribute("messageType", "Successful Upload");
         model.addAttribute("messageString", "New users successfully added!");
 
@@ -370,11 +373,12 @@ public class WebController extends WebMvcConfigurerAdapter {
      */
     @PostMapping(value = "/csv/device", consumes = "text/csv", produces = "text/plain")
     public String addDevicesCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
-            List<Device> newDevices = webBackend.parseDeviceCSV(csv);
+        List<Device> newDevices = webBackend.parseDeviceCSV(csv);
 
-            webBackend.insertDevices(newDevices);
-            model.addAttribute("messageType", "Successful Upload");
-            model.addAttribute("messageString", "New devices successfully added!");
+        webBackend.insertDevices(newDevices);
+        model.addAttribute("admin", true);
+        model.addAttribute("messageType", "Successful Upload");
+        model.addAttribute("messageString", "New devices successfully added!");
 
         return "message";
     }
