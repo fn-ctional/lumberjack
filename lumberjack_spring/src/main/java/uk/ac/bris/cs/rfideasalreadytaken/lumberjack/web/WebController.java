@@ -1,8 +1,6 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -17,19 +15,11 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUse
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileDownloadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadException;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.DevicesCSVDTO;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.UsersCSVDTO;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.*;
-
-import static java.util.Calendar.*;
-import static java.util.stream.Collectors.toList;
-import static org.springframework.security.config.Elements.HEADERS;
 
 @Controller
 public class WebController extends WebMvcConfigurerAdapter {
@@ -42,7 +32,7 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * Adding view controllers to serve the basic pages that don't require complex mappings.
-     * @param registry
+     * @param registry The registry of simple views with no need for model attributes
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -55,8 +45,8 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * GET request handler for serving the admin dashboard with the active user's name as a model attribute.
-     * @param model
-     * @return
+     * @param model The session/page model.
+     * @return dashboard.html.
      */
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
@@ -113,8 +103,8 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * Basic request handler for serving the users page when no specific user is specified.
-     * @param model
-     * @return
+     * @param model The session/page model.
+     * @return users.html.
      */
     @GetMapping("/user")
     public String user(Model model) {
@@ -124,8 +114,8 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * GET request handler for returning the page populated with all the users in the database.
-     * @param model
-     * @return
+     * @param model The session/page model.
+     * @return users.html.
      */
     @GetMapping("/users")
     public String allUsers(Model model) {
@@ -147,9 +137,9 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * GET request handler for serving the users page populated with a specified (id) user from the database.
-     * @param id
-     * @param model
-     * @return
+     * @param id The target user ID.
+     * @param model The session/page model.
+     * @return users.html.
      */
     @GetMapping("/user/{id}")
     public String userSpecified(@PathVariable String id, Model model) {
@@ -188,8 +178,8 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * Basic request handler for serving the devices page when no specific device is specified.
-     * @param model
-     * @return
+     * @param model The session/page model.
+     * @return devices.html.
      */
     @GetMapping("/device")
     public String device(Model model) {
@@ -199,8 +189,8 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * GET request handler for returning the page populated with all the devices in the database.
-     * @param model
-     * @return
+     * @param model The session/page model.
+     * @return devices.html.
      */
     @GetMapping("/devices")
     public String allDevices(Model model) {
@@ -222,9 +212,9 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * GET request handler for serving the device page populated with a specified (id) device from the database.
-     * @param id
-     * @param model
-     * @return
+     * @param id The target device ID.
+     * @param model The session/page model.
+     * @return devices.html.
      */
     @GetMapping("/device/{id}")
     public String deviceSpecified(@PathVariable String id, Model model) {
@@ -262,8 +252,8 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * Basic request handler for serving the search page when no search type is specified.
-     * @param model
-     * @return
+     * @param model The session/page model.
+     * @return search.html.
      */
     @RequestMapping("/search")
     public String search(Model model) {
@@ -273,9 +263,9 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * GET request handler for searching a type of entity e.g. user or device.
-     * @param type
-     * @param model
-     * @return
+     * @param type The target search type.
+     * @param model The session/page model.
+     * @return search.html.
      */
     @GetMapping("/search/{type}")
     public String searchType(@PathVariable String type, Model model) {
@@ -285,8 +275,8 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * Basic request handler for serving the add page when no add type is specified.
-     * @param model
-     * @return
+     * @param model The session/page model.
+     * @return add.html.
      */
     @RequestMapping("/add")
     public String add(Model model) {
@@ -296,9 +286,9 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     /**
      * GET request handler for adding a type of entity e.g. user or device.
-     * @param type
-     * @param model
-     * @return
+     * @param type The target type to add.
+     * @param model The session/page model.
+     * @return add.html.
      */
     @GetMapping("/add/{type}")
     public String addType(@PathVariable String type, Model model) {
@@ -311,7 +301,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * Any missing columns will be filled in with default values.
      * @param csv CSV file including headers that match the user object.
      *            Headers are non-capitalised and separated by spaces.
-     * @param model
+     * @param model The session/page model.
      * @return The message page detailing the success or error of the upload.
      */
     @PostMapping(value = "/add/user/CSV", consumes = "text/csv", produces = "text/plain")
@@ -330,7 +320,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * Any missing columns will be filled in with default values.
      * @param csv CSV file including headers that match the user object.
      *            Headers are non-capitalised and separated by spaces.
-     * @param model
+     * @param model The session/page model.
      * @return The message page detailing the success or error of the upload.
      */
     @PostMapping(value = "/add/device/CSV", consumes = "text/csv", produces = "text/plain")
