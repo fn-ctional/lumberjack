@@ -5,6 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,6 +16,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUse
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileDownloadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadException;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.UserDTO;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -68,9 +70,9 @@ public class WebController extends WebMvcConfigurerAdapter {
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
-        // Spoof Values
-        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
-        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
+//        // Spoof Values
+//        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
+//        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
         // Add list model attributes separately
         for (int i = 0; i < times.size(); i++) {
             String timeI    = "time"   + Integer.toString(i);
@@ -280,6 +282,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      */
     @RequestMapping("/add")
     public String add(Model model) {
+        model.addAttribute("user", new ArrayList<UserDTO>());
         model.addAttribute("blank", true);
         return "add";
     }
@@ -293,7 +296,49 @@ public class WebController extends WebMvcConfigurerAdapter {
     @GetMapping("/add/{type}")
     public String addType(@PathVariable String type, Model model) {
         model.addAttribute("type", type);
+        model.addAttribute("groups", new ArrayList<UserGroup>());
+        switch (type) {
+            case "user":
+                UserDTO userDTO = new UserDTO();
+                model.addAttribute(userDTO);
+                List<UserGroup> groups = new ArrayList<>();
+                try {
+                    groups = webBackend.getUserGroups();
+                } catch (Exception e) {
+                    System.out.println("SQL Exception");
+                }
+                model.addAttribute("groups", groups);
+                break;
+            case "device":
+                Device device = new Device();
+                model.addAttribute(device);
+                break;
+            case "group":
+                UserGroup group = new UserGroup();
+                model.addAttribute(group);
+                break;
+            default:
+                break;
+        }
         return "add";
+    }
+
+    @PostMapping("/add/user")
+    public String addUser(@RequestParam MultiValueMap<String, String> request, @ModelAttribute UserDTO userDTO) {
+        try {
+            // Set user attributes
+            User newUser = new User();
+            newUser.setId(UUID.randomUUID().toString());
+            newUser.setScanValue(userDTO.getScanValue());
+            newUser.setDeviceLimit(userDTO.getDeviceLimit());
+            newUser.setDevicesRemoved(0);
+            System.out.println(request);
+
+        } catch (Exception e) {
+            System.out.println("SQL Exception");
+        }
+
+        return "message";
     }
 
     /**
@@ -304,7 +349,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @param model The session/page model.
      * @return The message page detailing the success or error of the upload.
      */
-    @PostMapping(value = "/add/user/CSV", consumes = "text/csv", produces = "text/plain")
+    @PostMapping(value = "/csv/user", consumes = "text/csv", produces = "text/plain")
     public String addUsersCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
         List<User> newUsers = webBackend.parseUserCSV(csv);
 
@@ -323,7 +368,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @param model The session/page model.
      * @return The message page detailing the success or error of the upload.
      */
-    @PostMapping(value = "/add/device/CSV", consumes = "text/csv", produces = "text/plain")
+    @PostMapping(value = "/csv/device", consumes = "text/csv", produces = "text/plain")
     public String addDevicesCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
             List<Device> newDevices = webBackend.parseDeviceCSV(csv);
 
@@ -334,7 +379,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
-    @GetMapping(value = "/CSV/users", produces = "text/csv")
+    @GetMapping(value = "/csv/users", produces = "text/csv")
     public void getUsersCSV(HttpServletResponse response) throws FileDownloadException {
         try {
             String csv = webBackend.getUsersCSV();
@@ -345,7 +390,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         }
     }
 
-    @GetMapping(value = "/CSV/devices", produces = "text/csv")
+    @GetMapping(value = "/csv/devices", produces = "text/csv")
     public void getDevicesCSV(HttpServletResponse response) throws FileDownloadException {
         try {
             String csv = webBackend.getDevicesCSV();

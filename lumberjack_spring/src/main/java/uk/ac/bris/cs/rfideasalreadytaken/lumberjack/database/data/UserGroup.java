@@ -6,7 +6,8 @@ public class UserGroup {
 
     private String id;
 
-    public UserGroup(){};
+    public UserGroup(){
+    };
 
     public UserGroup(String groupName){
         this.id = groupName;

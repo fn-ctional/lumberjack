@@ -23,35 +23,59 @@
                 Add
                 <span th:if="${type} == user">Users</span>
                 <span th:if="${type} == device">Devices</span>
+                <span th:if="${type} == group">User Groups</span>
             </h2>
 
             <span id="type" style="display: none;" th:text="${type}"></span>
 
-            <!--<div th:if="${blank}">-->
-                <!--<p class="lead">What do you want to search for?</p>-->
+            <div th:if="${blank}">
+                <p class="lead">What do you want to add?</p>
 
-                <!--<div class="row">-->
-                    <!--<div class="col-sm-auto">-->
-                        <!--<a class="btn btn-primary" href="/search/user" role="button">Users</a>-->
-                    <!--</div>-->
-                    <!--<div class="col-sm-auto">-->
-                        <!--<a class="btn btn-primary" href="/search/device" role="button">Devices</a>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
+                <div class="row">
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/add/user" role="button">Users</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/add/device" role="button">Devices</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/add/group" role="button">User Groups</a>
+                    </div>
+                </div>
+            </div>
 
-            <!--<div th:if="!${blank}">-->
-                <!--<p class="lead">Enter an ID:</p>-->
+            <div th:if="${type} == user" class="table-responsive">
+                <form action="#" th:action="@{/add/user}" th:object="${userDTO}" method="post">
 
-                <!--<form onsubmit="location.href='/' + document.getElementById('type').innerHTML + '/' + document.getElementById('searchBar').value; return false;">-->
-                    <!--<div class="input-group mb-3">-->
-                        <!--<input id="searchBar" type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2"/>-->
-                        <!--<div class="input-group-append">-->
-                            <!--<button type="submit" class="btn btn-default btn-sm">&#x1f50d;</button>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</form>-->
-            <!--</div>-->
+                    <div class="form-group">
+                        <label for="scanValue">Scan Value</label>
+                        <input type="text" th:field="*{scanValue}" class="form-control" id="scanValue" placeholder="123456789"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deviceLimit">Device Limit</label>
+                        <input type="number" min="0" step="1" th:field="*{deviceLimit}" class="form-control" id="deviceLimit"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="canRemove">Can Remove Devices?</label>
+                        <input type="checkbox" class="form-control" name="canRemove" id="canRemove" value="canRemove"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupID">Group</label>
+                        <select th:field="*{groupID}" class="form-control" id="groupID">
+                            <option value="null">No Group</option>
+                            <th:block th:each="group : ${groups}">
+                                <option th:value="${group.getId()}" th:text="${group.getId()}">Group ID</option>
+                            </th:block>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit</button>
+
+                </form>
+            </div>
 
         </main>
 
