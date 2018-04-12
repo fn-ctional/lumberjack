@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Calendar.*;
@@ -467,7 +468,6 @@ public class WebBackend implements FromFrontEnd {
             end.add(HOUR,1);
         }
 
-
         return takeouts;
     }
 
@@ -491,13 +491,25 @@ public class WebBackend implements FromFrontEnd {
             end.add(HOUR,1);
         }
 
-
         return returns;
     }
 
-    private List<String> getTimes(Calendar start) {
+    public List<String> getTimes(int hoursToGet) {
+        Calendar end = Calendar.getInstance();
+        end.add(HOUR, -(hoursToGet-1));
+
+        end.add(MONTH, 1);
+
         List<String> times = new ArrayList<>();
-        System.out.println(start.get(Calendar.MINUTE) % 30);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
+        for(int i = -(hoursToGet); i != 0; i++)
+        {
+            String time = sdf.format(end.getTime());
+            times.add(time);
+            end.add(HOUR,1);
+        }
+
         return times;
     }
 

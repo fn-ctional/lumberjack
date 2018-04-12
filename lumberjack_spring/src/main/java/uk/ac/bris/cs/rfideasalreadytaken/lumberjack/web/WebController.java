@@ -23,13 +23,12 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.data.UsersCSVDTO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.sql.Array;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.Calendar.*;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.security.config.Elements.HEADERS;
 
 @Controller
@@ -68,17 +67,30 @@ public class WebController extends WebMvcConfigurerAdapter {
         // Get stats for the graphs
         List<Integer> takeouts = new ArrayList<>();
         List<Integer> returns  = new ArrayList<>();
+        List<String>  times    = webBackend.getTimes(6);
         int available = 0, taken = 0, other = 0;
         try {
             available = webBackend.getAvailableCount();
             taken     = webBackend.getTakenCount();
             other     = webBackend.getOtherCount();
+            takeouts  = webBackend.getRecentTakeouts(6);
+            returns   = webBackend.getRecentReturns(6);
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
+        // Spoof Values
+        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
+        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
+        // Add list model attributes separately
+        for (int i = 0; i < times.size(); i++) {
+            String timeI    = "time"   + Integer.toString(i);
+            String takeoutI = "take"   + Integer.toString(i);
+            String returnI  = "return" + Integer.toString(i);
+            model.addAttribute(timeI, times.get(i));
+            model.addAttribute(takeoutI, takeouts.get(i));
+            model.addAttribute(returnI, returns.get(i));
+        }
         // Add attributes
-        model.addAttribute(takeouts);
-        model.addAttribute(returns);
         model.addAttribute("available", available);
         model.addAttribute("taken", taken);
         model.addAttribute("other", other);
@@ -89,9 +101,9 @@ public class WebController extends WebMvcConfigurerAdapter {
     @RequestMapping("/test")
     public String test(Model model) {
         model.addAttribute("messageType", "Test");
-        List<Integer> takeouts = new ArrayList<>();
+        List<String> takeouts = new ArrayList<>();
         try {
-            takeouts = webBackend.getRecentTakeouts(9);
+            takeouts = webBackend.getTimes(10);
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
