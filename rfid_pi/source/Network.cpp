@@ -1,6 +1,7 @@
 #include "Network.hpp"
 #include <cstring>
 #include <algorithm>
+#include <utility>
 #include <iostream>
 
 struct String {
@@ -16,12 +17,12 @@ Network::Form::Form( curl_mime *mime ) noexcept
 : form( mime, _delete )
 {}
 
-Network::Form& Network::Form::add(const std::string &name, const std::string &data) {
+Network::Form&& Network::Form::add(const std::string &name, const std::string &data) {
   curl_mimepart *part = curl_mime_addpart( form.get() );
   curl_mime_name( part, name.c_str() );
   curl_mime_data( part, data.c_str(), data.length() );
 
-  return *this;
+  return std::move( *this );
 }
 
 void Network::Form::_delete(curl_mime *mime) {
@@ -71,12 +72,13 @@ Result<Network::Response,int> perform( CURL *handle, curl_slist *header ) {
   return Result<Network::Response,int>::Ok(response);
 }
 
-Result<Network::Response,int> Network::Network::send(const std::string &url, const std::string &body) {
+Result<Network::Response,int> Network::Network::send(const std::string &url, const std::string &verb, const std::string &body) {
   auto length = body.size();
   auto content_len = "Content-Length: " + std::to_string( length );
   auto header = curl_slist_append( nullptr, content_len.c_str() );
 
   curl_easy_setopt( handle.get(), CURLOPT_URL, url.c_str() );
+  curl_easy_setopt( handle.get(), CURLOPT_CUSTOMREQUEST, verb.c_str() );
 
   auto upload = length != 0;
   auto data = String{ body.c_str(), length };
@@ -88,9 +90,10 @@ Result<Network::Response,int> Network::Network::send(const std::string &url, con
   return perform( handle.get(), header );
 }
 
-Result<Network::Response,int> Network::Network::send(const std::string &url, const Form &form) {
+Result<Network::Response,int> Network::Network::send(const std::string &url, const std::string &verb, const Form &form) {
   curl_easy_setopt( handle.get(), CURLOPT_MIMEPOST, form.form.get() );
   curl_easy_setopt( handle.get(), CURLOPT_URL, url.c_str() );
+  curl_easy_setopt( handle.get(), CURLOPT_CUSTOMREQUEST, verb.c_str() );
 
   return perform( handle.get(), nullptr );
 }

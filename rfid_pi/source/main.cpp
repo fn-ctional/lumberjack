@@ -4,17 +4,18 @@
 #include "Config.hpp"
 
 int main() {
-  auto config = Config::load("/home/fred/.lumberjack").value();
+  const auto config = Config::load("/home/fred/.lumberjack").value();
   auto source = Event::Source(config.source);
 
   auto network = Network::Network::create()
                  .expect("Unable to create network object");
 
-  auto login_form = network.new_form();
-  login_form.add("email",    config.username);
-  login_form.add("password", config.password);
+  const auto login_form = network.new_form()
+             .add("email",    config.username)
+             .add("password", config.password);
 
-  network.send(config.login, login_form).expect("Unable to log in");
+  network.send( config.login, "POST", login_form )
+         .expect("Unable to log in");
 
   while ( true ) {
 
@@ -27,7 +28,7 @@ int main() {
     }
 
     auto data = "{\"user\":\"" + user + "\",\"device\":\"" + device_opt.value() + "\"}";
-    auto result = network.send( config.path, data );
+    auto result = network.send( config.path, "PATCH", data );
     if ( result.is_err() ) {
       std::cout << "[data send failed]" << std::endl;
       continue;

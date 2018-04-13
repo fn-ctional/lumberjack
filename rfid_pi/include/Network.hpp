@@ -23,8 +23,8 @@ namespace Network {
 
     Form new_form() const;
 
-    Result<Response,int> send(const std::string&, const std::string&);
-    Result<Response,int> send(const std::string&, const Form&);
+    Result<Response,int> send(const std::string&, const std::string&, const std::string&);
+    Result<Response,int> send(const std::string&, const std::string&, const Form&);
   private:
     static void _delete(CURL*);
     std::unique_ptr<CURL, decltype(&_delete)> handle;
@@ -33,10 +33,10 @@ namespace Network {
   class Form {
   public:
     Form(curl_mime*) noexcept;
-    Form& add(const std::string&, const std::string&);
+    Form&& add(const std::string&, const std::string&);
 
   private:
-    friend Result<Response,int> Network::send(const std::string&, const Form&);
+    friend Result<Response,int> Network::send(const std::string&, const std::string&, const Form&);
     static void _delete(curl_mime*);
     std::unique_ptr<curl_mime, decltype(&_delete)> form;
   };
