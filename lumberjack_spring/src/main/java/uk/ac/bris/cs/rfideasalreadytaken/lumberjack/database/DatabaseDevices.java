@@ -61,6 +61,21 @@ public class DatabaseDevices {
         return null;
     }
 
+    public List<Device> loadDevicesFromResultSet(ResultSet rs) throws SQLException {
+        List<Device> devices = new ArrayList<>();
+        while (rs.next()) {
+            Device device = new Device();
+            device.setAvailable(rs.getBoolean("Available"));
+            device.setCurrentlyAssigned(rs.getBoolean("CurrentlyAssigned"));
+            device.setType(rs.getString("Type"));
+            device.setId(rs.getString("id"));
+            device.setScanValue(rs.getString("ScanValue"));
+            device.setRuleID(rs.getString("RuleID"));
+            devices.add(device);
+        }
+        return devices;
+    }
+
     public Device loadDevice(String deviceID) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Devices WHERE id = ?");
         stmt.setString(1, deviceID);
@@ -143,5 +158,12 @@ public class DatabaseDevices {
             return rs.getInt("Count");
         }
         return 0;
+    }
+
+    public List<Device> loadDevicesByRule(String ruleID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Devices WHERE RuleID = ?");
+        stmt.setString(1, ruleID);
+        ResultSet rs = stmt.executeQuery();
+        return loadDevicesFromResultSet(rs);
     }
 }

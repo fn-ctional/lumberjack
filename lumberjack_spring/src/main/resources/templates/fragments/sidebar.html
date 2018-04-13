@@ -63,6 +63,16 @@
         </li>
     </ul>
     <ul class="nav nav-pills flex-column">
+        <li class="nav-link">
+            <strong>Rules</strong>
+        </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/rules' ? 'active':''}" href="/rules">
+                All Rules
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
         <li class="nav-item">
             <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/help' ? 'active':''}" href="/help">
                 Help

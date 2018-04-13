@@ -491,4 +491,74 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "groups";
     }
 
+    @GetMapping("/rule")
+    public String rule(Model model) {
+        model.addAttribute("blank", true);
+        return "rules";
+    }
+
+    @GetMapping("/rules")
+    public String allRules(Model model) {
+        model.addAttribute("multi", true);
+        Boolean found = false;
+        List<Rule> ruleList = new ArrayList<>();
+        try {
+            ruleList = webBackend.getRules();
+            if (!ruleList.isEmpty()) {
+                found = true;
+            }
+        } catch (Exception e) {
+            System.out.println("SQL Error");
+        }
+        model.addAttribute("found", found);
+        model.addAttribute(ruleList);
+        return "rules";
+    }
+
+    @GetMapping("/rule/{id}")
+    public String ruleSpecified(@PathVariable String id, Model model) {
+        // Make sure rule exists
+        Boolean found = false;
+        model.addAttribute("searchTerm", id);
+        try {
+            Rule rule = webBackend.getRule(id);
+            if (rule.getId().equals(id)) {
+                found = true;
+                model.addAttribute("thisRule", rule);
+            }
+        } catch (Exception e) {
+            System.out.println("SQL Error");
+        }
+        List<UserGroup> groupList = new ArrayList<>();
+        List<Device> deviceList = new ArrayList<>();
+        boolean gotGroups = false;
+        boolean gotDevices = false;
+        if (found) {
+            // Get groups with this rule
+            try {
+                groupList = webBackend.getUserGroupsByRule(id);
+                if (!groupList.isEmpty()) {
+                    gotGroups = true;
+                }
+            } catch (Exception e) {
+                System.out.println("SQL Error");
+            }
+            // Get devices with this rule
+            try {
+                deviceList = webBackend.getDevicesByRule(id);
+                if (!deviceList.isEmpty()) {
+                    gotDevices = true;
+                }
+            } catch (Exception e) {
+                System.out.println("SQL Error");
+            }
+        }
+        model.addAttribute("found", found);
+        model.addAttribute("gotGroups", gotGroups);
+        model.addAttribute("gotDevices", gotDevices);
+        model.addAttribute("groupList", groupList);
+        model.addAttribute("deviceList", deviceList);
+        return "rules";
+    }
+
 }

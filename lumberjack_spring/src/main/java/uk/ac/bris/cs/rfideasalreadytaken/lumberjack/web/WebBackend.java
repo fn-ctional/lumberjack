@@ -513,4 +513,12 @@ public class WebBackend implements FromFrontEnd {
         return times;
     }
 
+    public List<UserGroup> getUserGroupsByRule(String ruleID) throws SQLException {
+        return databaseUserGroups.loadGroupsByRule(ruleID);
+    }
+
+    public List<Device> getDevicesByRule(String ruleID) throws SQLException {
+        return databaseDevices.loadDevicesByRule(ruleID);
+    }
+
 }

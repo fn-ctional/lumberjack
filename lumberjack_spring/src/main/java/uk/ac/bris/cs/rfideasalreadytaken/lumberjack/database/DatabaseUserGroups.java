@@ -113,4 +113,22 @@ public class DatabaseUserGroups {
         return loadRulesFromResultSet(rs);
     }
 
+    private List<UserGroup> loadUserGroupsFromResultSet(ResultSet rs) throws SQLException {
+        List<UserGroup> groups = new ArrayList<>();
+        while(rs.next()) {
+            UserGroup group = new UserGroup();
+            group.setId(rs.getString("id"));
+            groups.add(group);
+        }
+        return groups;
+    }
+
+    public List<UserGroup> loadGroupsByRule(String ruleID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT UserGroups.id FROM " +
+                " UserGroups INNER JOIN GroupPermissions GP ON UserGroups.id = GP.UserGroupID WHERE RuleID = ?");
+        stmt.setString(1, ruleID);
+        ResultSet rs = stmt.executeQuery();
+        return loadUserGroupsFromResultSet(rs);
+    }
+
 }
