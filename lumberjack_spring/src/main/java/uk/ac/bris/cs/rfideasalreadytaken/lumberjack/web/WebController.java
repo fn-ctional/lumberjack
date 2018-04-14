@@ -345,14 +345,14 @@ public class WebController extends WebMvcConfigurerAdapter {
     /**
      * CSV file upload POST mapping. CSV must include headers that match user object.
      * Any missing columns will be filled in with default values.
-     * @param csv CSV file including headers that match the user object.
+     * @param file CSV file including headers that match the user object.
      *            Headers are non-capitalised and separated by spaces.
      * @param model The session/page model.
      * @return The message page detailing the success or error of the upload.
      */
-    @PostMapping(value = "/add/user/CSV", consumes = "text/csv", produces = "text/plain")
-    public String addUsersCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
-        List<User> newUsers = webBackend.parseUserCSV(csv);
+    @PostMapping(value = "/add/user/CSV")
+    public String addUsersCSV(@RequestParam("file") MultipartFile file, Model model) throws FileUploadException, SQLException {
+        List<User> newUsers = webBackend.parseUserCSV(file);
 
         webBackend.insertUsers(newUsers);
         model.addAttribute("messageType", "Successful Upload");
@@ -364,14 +364,14 @@ public class WebController extends WebMvcConfigurerAdapter {
     /**
      * CSV file upload POST mapping. CSV must include headers that match device object.
      * Any missing columns will be filled in with default values.
-     * @param csv CSV file including headers that match the user object.
+     * @param file CSV file including headers that match the user object.
      *            Headers are non-capitalised and separated by spaces.
      * @param model The session/page model.
      * @return The message page detailing the success or error of the upload.
      */
-    @PostMapping(value = "/add/device/CSV", consumes = "text/csv", produces = "text/plain")
-    public String addDevicesCSV(@RequestParam MultipartFile csv, Model model) throws FileUploadException, SQLException {
-            List<Device> newDevices = webBackend.parseDeviceCSV(csv);
+    @PostMapping(value = "/add/device/CSV")
+    public String addDevicesCSV(@RequestParam("file") MultipartFile file, Model model) throws FileUploadException, SQLException {
+            List<Device> newDevices = webBackend.parseDeviceCSV(file);
 
             webBackend.insertDevices(newDevices);
             model.addAttribute("messageType", "Successful Upload");
@@ -413,7 +413,7 @@ public class WebController extends WebMvcConfigurerAdapter {
     }
 
     //TODO: Not sure if this works
-    @ExceptionHandler(FileUploadException.class)
+    @ExceptionHandler(FileDownloadException.class)
     public ModelAndView handleDownloadError() {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("message");
