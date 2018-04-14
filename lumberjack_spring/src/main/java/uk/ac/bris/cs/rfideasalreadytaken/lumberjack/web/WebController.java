@@ -402,7 +402,6 @@ public class WebController extends WebMvcConfigurerAdapter {
         }
     }
 
-    //TODO: Not sure if this works
     @ExceptionHandler(FileUploadException.class)
     public ModelAndView handleUploadError() {
         ModelAndView mav = new ModelAndView();
@@ -412,7 +411,6 @@ public class WebController extends WebMvcConfigurerAdapter {
         return mav;
     }
 
-    //TODO: Not sure if this works
     @ExceptionHandler(FileDownloadException.class)
     public ModelAndView handleDownloadError() {
         ModelAndView mav = new ModelAndView();
