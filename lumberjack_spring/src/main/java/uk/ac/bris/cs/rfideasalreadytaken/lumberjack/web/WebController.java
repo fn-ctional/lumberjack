@@ -334,7 +334,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         } catch (Exception e) {
             System.out.println("SQL Exception");
             model.addAttribute("messageType", "User Adding Failed");
-            model.addAttribute("messageString", "The user has not been added. Please try again.");
+            model.addAttribute("messageString", e.getMessage());
             return "message";
         }
         model.addAttribute("messageType", "User Added");

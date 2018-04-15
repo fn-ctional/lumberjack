@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="container-fluid">
+            <div th:if="${type} == user" class="container-fluid">
                 <div class="row">
                     <div class="col-lg">
 
@@ -53,7 +53,7 @@
                         </p>
 
                         <div class="container-fluid">
-                            <div th:if="${type} == user" class="row">
+                            <div class="row">
                                 <form action="#" th:action="@{/add/user}" method="post">
 
                                     <div class="form-group row" >
@@ -66,7 +66,7 @@
                                     <div class="form-group row">
                                         <label for="deviceLimit" class="col-lg col-form-label">Device Limit</label>
                                         <div class="col-lg">
-                                            <input type="number" min="0" step="1" placeholder="0" class="form-control" id="deviceLimit" name="deviceLimit" required="required" />
+                                            <input type="number" min="0" step="1" placeholder="0" value="0" class="form-control" id="deviceLimit" name="deviceLimit" required="required" />
                                         </div>
                                     </div>
 
