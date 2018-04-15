@@ -6,6 +6,9 @@
 // to create Read and Write objects respectively. The Channel object must live for as long as the Read and Write
 // objects are in use.
 //
+// The type of the data in the Channel must be Trivially Copyable to work with memcpy, this is enforced in Channel as
+// it is assumed that Read and Write cannot be created any other way due to their private constructors.
+//
 // Example of usage:
 // > auto channel = Channel<int>();
 // > auto read = channel.get_read();
@@ -15,6 +18,7 @@
 // > assert( 42 == x);
 
 #include <optional>
+#include <type_traits>
 
 namespace Channel {
 
@@ -123,7 +127,7 @@ namespace Channel {
 
   // This class manages the Data object used by a Read and Write.
   // The Channel object must outlive the both of the Read and Write objects that it creates.
-  // A Read or Write object will only be constructed once, subsequent requests will not return an object
+  // A Read or Write object will only be constructed once, subsequent requests will not return an object.
   //
   // The read_exists and write_exists members keep track of whether or not these objects have been created.
   //  Having multiple Write objects could result in them writing over each other.
@@ -154,6 +158,7 @@ namespace Channel {
   //                                    otherwise this is empty
   template<class T>
   class Channel {
+    static_assert(std::is_trivially_copyable<T>(), "The data in a Channel must be Trivially Copyable.");
   public:
     Channel()
       : data(new Data<T>())

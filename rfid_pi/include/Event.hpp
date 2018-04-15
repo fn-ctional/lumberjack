@@ -33,7 +33,7 @@ namespace Event {
   // This class reads input events from a specified file and returns the characters from the keyboard events.
   //
   // Constructor:
-  //  inputs: const char *path - The path to the device file
+  //  inputs: const std::string &path - The path to the device file
   //
   // read:
   //  This method tries to read a single character from the source, optionally blocking
@@ -51,7 +51,7 @@ namespace Event {
   //   input: bool block - If true, this method blocks, if false, this function returns immediately
   class Source {
   public:
-    Source(const char*);
+    Source(const std::string&);
 
     std::optional<char> read(bool);
     std::optional<std::string> readline(int);
