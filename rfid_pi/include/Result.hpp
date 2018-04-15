@@ -14,7 +14,6 @@ public:
   template<typename... Args>
   static Result<O,E> Err(Args&&... args) {
     return Result<O,E>(
-      // std::variant<O,E>( std::in_place_index_t<1>(), args... )
       E( args... )
     );
   }
@@ -22,7 +21,6 @@ public:
   template<typename... Args>
   static Result<O,E> Ok(Args&&... args) {
     return Result<O,E>(
-      // std::variant<O,E>( std::in_place_index_t<0>(), args... )
       O( args... )
     );
   }
@@ -58,6 +56,10 @@ public:
     }
     return std::move( *ptr );
   };
+
+  O&& unwrap() {
+    return std::move( *std::get_if<O>( &variant ) );
+  }
 private:
   std::variant<O,E> variant;
 };

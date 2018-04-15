@@ -76,6 +76,8 @@ Result<Network::Response,int> Network::Network::send(const std::string &url, con
   auto length = body.size();
   auto content_len = "Content-Length: " + std::to_string( length );
   auto header = curl_slist_append( nullptr, content_len.c_str() );
+  // TODO: Remove this hard coding
+  header = curl_slist_append( header, "Content-Type: application/json");
 
   curl_easy_setopt( handle.get(), CURLOPT_URL, url.c_str() );
   curl_easy_setopt( handle.get(), CURLOPT_CUSTOMREQUEST, verb.c_str() );

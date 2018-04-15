@@ -34,7 +34,7 @@ int main() {
       continue;
     }
 
-    auto response = result.expect("This shouldn't happen");
+    auto response = result.unwrap();
     std::cout << response.code << ": " << response.data << std::endl;
 
   }
