@@ -3,8 +3,12 @@
 #include "Network.hpp"
 #include "Config.hpp"
 
+[[noreturn]] Config::Config&& handle_config_error( Config::Error );
+
 int main() {
-  const auto config = Config::load("/home/fred/.lumberjack").value();
+  const auto config = Config::load("/home/fred/.lumberjack")
+                      .unwrap_or( handle_config_error );
+
   auto source = Event::Source(config.source);
 
   auto network = Network::Network::create()
@@ -38,4 +42,14 @@ int main() {
     std::cout << response.code << ": " << response.data << std::endl;
 
   }
+}
+
+[[noreturn]] Config::Config&& handle_config_error( Config::Error error ) {
+  switch ( error ) {
+    case Config::FileNotFound:
+      throw std::logic_error( "Configuration file not found" );
+    case Config::MissingFields:
+      throw std::logic_error( "Configuration file missing fields" );
+  }
+  std::abort();
 }

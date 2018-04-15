@@ -6,7 +6,7 @@
 #include <variant>
 
 template<typename O, typename E>
-class Result {
+class [[nodiscard]] Result {
 public:
   Result(O &&o) : variant( std::move(o) ) {};
   Result(E &&e) : variant( std::move(e) ) {};
@@ -59,6 +59,18 @@ public:
 
   O&& unwrap() {
     return std::move( *std::get_if<O>( &variant ) );
+  }
+
+  template<typename Fn>
+  O&& unwrap_or(Fn fn) {
+    auto ptr = std::get_if<O>( &variant );
+
+    if ( ptr == nullptr ) {
+      return fn( *std::get_if<E>( &variant ) );
+    }
+
+    return std::move( *ptr );
+
   }
 private:
   std::variant<O,E> variant;

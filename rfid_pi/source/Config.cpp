@@ -12,10 +12,14 @@ static int ALL =      0b11111;
 
 static bool parse_line(std::ifstream&, std::string&, std::string&);
 
-std::optional<Config::Config> Config::load(const std::string &path) {
+Result<Config::Config,Config::Error> Config::load(const std::string &path) {
   std::string key, value;
   Config config;
   std::ifstream file(path);
+
+  if ( !file.good() ) {
+    return Result<Config,Error>::Err( FileNotFound );
+  }
 
   int filled_fields = 0;
 
@@ -49,9 +53,9 @@ std::optional<Config::Config> Config::load(const std::string &path) {
   }
 
   if ( filled_fields == ALL ) {
-    return std::make_optional(std::move(config));
+    return Result<Config,Error>::Ok( std::move(config) );
   } else {
-    return std::nullopt;
+    return Result<Config,Error>::Err( MissingFields );
   }
 
 }

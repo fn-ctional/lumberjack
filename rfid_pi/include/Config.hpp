@@ -14,10 +14,12 @@
 // > }
 // > auto config = config_opt.value();
 
-#include <optional>
+#include "Result.hpp"
 #include <string>
 
 namespace Config {
+
+  enum Error { FileNotFound, MissingFields };
 
   class Config {
   public:
@@ -29,7 +31,7 @@ namespace Config {
   //
   // return: std::optional<Config>   - This contains a Config object if the file contained all the fields
   // inputs: const std::string &path - The path to the configuration file
-  std::optional<Config> load(const std::string&);
+  Result<Config,Error> load(const std::string&);
 
 }
 
