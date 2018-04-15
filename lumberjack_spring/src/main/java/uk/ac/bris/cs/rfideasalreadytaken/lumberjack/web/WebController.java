@@ -305,8 +305,13 @@ public class WebController extends WebMvcConfigurerAdapter {
                 model.addAttribute("groups", groups);
                 break;
             case "device":
-                Device device = new Device();
-                model.addAttribute(device);
+                List<Rule> rules = new ArrayList<>();
+                try {
+                    rules = webBackend.getRules();
+                } catch (Exception e) {
+                    System.out.println("SQL Exception");
+                }
+                model.addAttribute("rules", rules);
                 break;
             case "group":
                 UserGroup group = new UserGroup();
@@ -339,6 +344,30 @@ public class WebController extends WebMvcConfigurerAdapter {
         }
         model.addAttribute("messageType", "User Added");
         model.addAttribute("messageString", "The user has been added!");
+        return "message";
+    }
+
+    @PostMapping("/add/device")
+    public String addDevice(@RequestParam Map<String, String> request, Model model) {
+        // Set device attributes
+        Device newDevice = new Device();
+        newDevice.setId(UUID.randomUUID().toString());
+        newDevice.setScanValue(request.get("scanValue"));
+        newDevice.setType(request.get("deviceType"));
+        newDevice.setAvailable(request.containsKey("available"));
+        newDevice.setCurrentlyAssigned(false);
+        newDevice.setRuleID(request.get("ruleID"));
+        // Add device to the database
+        try {
+            webBackend.insertDevice(newDevice);
+        } catch (Exception e) {
+            System.out.println("SQL Exception");
+            model.addAttribute("messageType", "Device Adding Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        model.addAttribute("messageType", "Device Added");
+        model.addAttribute("messageString", "The device has been added!");
         return "message";
     }
 

@@ -44,6 +44,8 @@
                 </div>
             </div>
 
+            <!-- Adding Users -->
+
             <div th:if="${type} == user" class="container-fluid">
                 <div class="row">
                     <div class="col-lg">
@@ -107,6 +109,87 @@
 
                         <div class="container-fluid">
                             <form action="/add/user/CSV" method="post" class="col-lg" enctype="multipart/form-data">
+
+                                <div class="form-group row">
+                                    <input type="file" class="form-control" name="file"/>
+                                </div>
+
+                                <div class="form-group row">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adding Devices -->
+
+            <div th:if="${type} == device" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Add a single device:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/add/device}" method="post">
+
+                                    <div class="form-group row" >
+                                        <label for="scanValue2" class="col-lg col-form-label">Scan Value</label>
+                                        <div class="col-lg">
+                                            <input type="text" class="form-control" id="scanValue2" name="scanValue" placeholder="123456789" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" >
+                                        <label for="deviceType" class="col-lg col-form-label">Device Type</label>
+                                        <div class="col-lg">
+                                            <input type="text" class="form-control" id="deviceType" name="deviceType" placeholder="laptop" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="available" class="col-lg col-form-label">Available to be taken out?</label>
+                                        <div class="col-lg">
+                                            <input type="checkbox" name="available" id="available" value="true" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="ruleID" class="col-lg col-form-label">Rule Set</label>
+                                        <div class="col-lg">
+                                            <select class="form-control" id="ruleID" name="ruleID" required="required">
+                                                <option value="" selected="selected" disabled="disabled" hidden="hidden">Choose rule</option>
+                                                <th:block th:each="rule : ${rules}">
+                                                    <option th:value="${rule.getId()}" th:text="${rule.getId()}">Rule ID</option>
+                                                </th:block>
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Or upload a CSV file:
+                        </p>
+
+                        <div class="container-fluid">
+                            <form action="/add/device/CSV" method="post" class="col-lg" enctype="multipart/form-data">
 
                                 <div class="form-group row">
                                     <input type="file" class="form-control" name="file"/>
