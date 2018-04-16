@@ -649,6 +649,7 @@ public class WebController extends WebMvcConfigurerAdapter {
     @PostMapping("/delete/user")
     public String deleteUser(@RequestParam Map<String, String> request, Model model) {
         String id = request.get("userID");
+        System.out.println(request);
         try {
             // If user doesn't exist
             if (!webBackend.userExists(id)) {
