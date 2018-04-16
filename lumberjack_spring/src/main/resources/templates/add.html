@@ -92,9 +92,12 @@
                                                     <option th:value="${group.getId()}" th:text="${group.getId()}">Group ID</option>
                                                 </th:block>
                                             </select>
-
                                         </div>
                                     </div>
+
+                                    <p class="form-text text-muted row">
+                                        If a user does not have a group, they will not be able to take out devices. You can add the user to a group later.
+                                    </p>
 
                                     <div class="form-group row">
                                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -173,9 +176,12 @@
                                                     <option th:value="${rule.getId()}" th:text="${rule.getId()}">Rule ID</option>
                                                 </th:block>
                                             </select>
-
                                         </div>
                                     </div>
+
+                                    <p class="form-text text-muted row">
+                                        If a device does not have a rule, nobody will be able to take it out. You can add a rule later.
+                                    </p>
 
                                     <div class="form-group row">
                                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -234,27 +240,6 @@
                                         </div>
                                     </div>
 
-                                    <!--<fieldset class="form-group row">-->
-                                        <!--<p class="lead col-lg">Rules</p>-->
-                                        <!--<div class="col-lg">-->
-                                            <!--<div class="form-check">-->
-
-                                                <!--<label class="form-check-label">-->
-                                                    <!--<input class="form-check-input" type="radio" name="ruleName" id="ruleName" value="option1" checked="checked" />-->
-                                                    <!--No Rule-->
-                                                <!--</label>-->
-
-                                                <!--<th:block th:each="rule : ${rules}">-->
-                                                    <!--<label class="form-check-label">-->
-                                                        <!--<input class="form-check-input" type="radio" name="ruleName" th:value="${rule.getId()}" />-->
-                                                        <!--<span th:text="${rule.getId()}">ID</span> - <span th:text="${rule.getMaximumRemovalTime()}">20</span> hours-->
-                                                    <!--</label>-->
-                                                <!--</th:block>-->
-
-                                            <!--</div>-->
-                                        <!--</div>-->
-                                    <!--</fieldset>-->
-
                                     <fieldset class="form-group row">
                                         <p class="col-form-legend col-sm-2">Rules</p>
                                         <div class="col-sm-10">
@@ -273,6 +258,52 @@
                                     <p id="ruleHelp" class="form-text text-muted row">
                                         Devices have rules, and if a group and device share a rule, that group's users can take out the device.
                                         (You can select no rules).
+                                    </p>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adding Rules -->
+
+            <div th:if="${type} == rule" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Add a rule:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/add/rule}" method="post">
+
+                                    <div class="form-group row" >
+                                        <label for="ruleName" class="col-sm-4 col-form-label">Rule ID</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" id="ruleName" name="ruleName" placeholder="Room 3b" required="required" />
+                                            <p id="ruleNameHelp" class="form-text text-muted">
+                                                Must be unique.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="maximumTime" class="col-sm-4 col-form-label">Maximum Removal Time</label>
+                                        <div class="col-sm-4">
+                                            <input type="number" min="1" step="1" placeholder="0" value="1" class="form-control" id="maximumTime" name="maximumTime" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <p class="form-text text-muted row">
+                                        A rule is like a group for devices. It specifies which user groups can take out the device, and for how long.
                                     </p>
 
                                     <div class="form-group row">

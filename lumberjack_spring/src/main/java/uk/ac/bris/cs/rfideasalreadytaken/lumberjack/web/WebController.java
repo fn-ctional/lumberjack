@@ -409,6 +409,26 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    @PostMapping("/add/rule")
+    public String addRule(@RequestParam Map<String, String> request, Model model) {
+        // Set rule attributes
+        Rule newRule = new Rule();
+        newRule.setId(request.get("ruleName"));
+        newRule.setMaximumRemovalTime(new Integer(request.get("maximumTime")));
+        // Add rule to the database
+        try {
+            webBackend.insertRule(newRule);
+        } catch (Exception e) {
+            System.out.println("SQL Exception");
+            model.addAttribute("messageType", "Rule Adding Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        model.addAttribute("messageType", "Rule Added");
+        model.addAttribute("messageString", "The rule has been added!");
+        return "message";
+    }
+
     /**
      * CSV file upload POST mapping. CSV must include headers that match user object.
      * Any missing columns will be filled in with default values.
