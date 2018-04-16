@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.data.ScanDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.AssignmentHistory;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 
 import java.sql.PreparedStatement;
@@ -136,6 +137,14 @@ public class DatabaseUsers {
     //TODO: I don't think this function has correct operation
     public boolean isUserAtDeviceLimit(User user){
         return user.getDeviceLimit() == user.getDevicesRemoved();
+    }
+
+    public boolean userExists(String userID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Users WHERE id = ?");
+        stmt.setString(1, userID);
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+        return rs.getString("id").equals(userID);
     }
 
 }

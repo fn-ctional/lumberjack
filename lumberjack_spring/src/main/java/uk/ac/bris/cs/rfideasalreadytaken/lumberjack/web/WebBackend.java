@@ -522,4 +522,17 @@ public class WebBackend implements FromFrontEnd {
         return databaseDevices.loadDevicesByRule(ruleID);
     }
 
+    public boolean userHasOutstandingDevices(String userID) throws SQLException {
+        List<Device> devices = databaseDevices.loadOutstandingDevicesByUser(userID);
+        return !devices.isEmpty();
+    }
+
+    public void deleteAssignmentHistoryByUser(String userID) throws SQLException {
+        databaseAssignments.deleteFromAssignmentHistoryByUser(userID);
+    }
+
+    public boolean userExists(String userID) throws SQLException {
+        return databaseUsers.userExists(userID);
+    }
+
 }

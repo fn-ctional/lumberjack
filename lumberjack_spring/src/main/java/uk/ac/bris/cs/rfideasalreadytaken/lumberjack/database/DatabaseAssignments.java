@@ -201,9 +201,20 @@ public class DatabaseAssignments {
 
         ResultSet rs = stmt.executeQuery();
         rs.last();
-        int history = rs.getRow();
 
-        return history;
+        return rs.getRow();
+    }
+
+    public void deleteFromAssignmentsByUser(String userID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM Assignments WHERE UserID = ?");
+        stmt.setString(1, userID);
+        stmt.execute();
+    }
+
+    public void deleteFromAssignmentHistoryByUser(String userID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM AssignmentHistory WHERE UserID = ?");
+        stmt.setString(1, userID);
+        stmt.execute();
     }
 
 }

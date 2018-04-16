@@ -68,9 +68,9 @@ public class WebController extends WebMvcConfigurerAdapter {
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
-        // Spoof Values
-        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
-        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
+//        // Spoof Values
+//        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
+//        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
         // Add list model attributes separately
         for (int i = 0; i < times.size(); i++) {
             String timeI    = "time"   + Integer.toString(i);
@@ -644,6 +644,42 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("groupList", groupList);
         model.addAttribute("deviceList", deviceList);
         return "rules";
+    }
+
+    @PostMapping("/delete/user")
+    public String deleteUser(@RequestParam Map<String, String> request, Model model) {
+        String id = request.get("userID");
+        try {
+            // If user doesn't exist
+            if (!webBackend.userExists(id)) {
+                model.addAttribute("messageType", "Deletion Failed");
+                model.addAttribute("messageString", "This user doesn't exist!");
+                return "message";
+            }
+            // User has outstanding devices, can't be deleted
+            if (webBackend.userHasOutstandingDevices(id)) {
+                model.addAttribute("messageType", "Deletion Failed");
+                model.addAttribute("messageString", "You cannot delete a user with outstanding " +
+                        "device assignments. They must first return the device. This can be done by finding the outstanding " +
+                        "device on the user's page and returning it, or manually by setting Currently Assigned on the device's page.");
+                return "message";
+            }
+            webBackend.deleteUser(id);
+            // Delete assignment history if the box was ticked
+            if (request.containsKey("deleteHistory")) {
+                webBackend.deleteAssignmentHistoryByUser(id);
+            }
+        }
+        catch (Exception e) {
+            model.addAttribute("messageType", "Deletion Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+
+        // Succeeded
+        model.addAttribute("messageType", "Successful Deletion");
+        model.addAttribute("messageString", "User successfully deleted!");
+        return "message";
     }
 
 }

@@ -92,6 +92,40 @@
                     </table>
                 </div>
 
+                <!-- Delete User -->
+
+                <h1></h1>
+
+                <h2>Delete User</h2>
+
+                <div class="container-fluid">
+                    <form action="#" th:action="@{/delete/user/}" method="post">
+
+                        <div class="form-group row">
+                            <div class="col-sm-4">
+                                <input type="checkbox" name="deleteHistory" id="deleteHistory" value="true" />
+                                <label for="deleteHistory" class="form-label">Delete user assignment history?</label>
+                            </div>
+                        </div>
+
+                        <label for="userID" hidden="hidden"></label>
+                        <th:block th:each="user : ${userList}">
+                            <input type="text" th:value="${user.getId()}" name="userID" hidden="hidden" id="userID"/>
+                        </th:block>
+
+                        <p class="form-text text-muted row">
+                            You cannot delete a user with outstanding device assignments. They must first return the device.
+                            This can be done by finding the outstanding device on the user's page and returning it, or manually
+                            by setting Currently Assigned on the device's page.
+                        </p>
+
+                        <div class="form-group row">
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </div>
+
+                    </form>
+                </div>
+
             </div>
 
         </main>

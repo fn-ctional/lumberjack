@@ -166,4 +166,12 @@ public class DatabaseDevices {
         ResultSet rs = stmt.executeQuery();
         return loadDevicesFromResultSet(rs);
     }
+
+    public List<Device> loadOutstandingDevicesByUser(String userID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT Devices.* " +
+                " FROM Assignments INNER JOIN Devices ON Assignments.DeviceID = Devices.id WHERE UserID = ?");
+        stmt.setString(1, userID);
+        ResultSet rs = stmt.executeQuery();
+        return loadDevicesFromResultSet(rs);
+    }
 }
