@@ -40,6 +40,10 @@ body > .container-fluid {
     padding-left: 15px;
 }
 
+code {
+    color: #4f9d89;
+}
+
 /*
 SIDEBAR
 */
