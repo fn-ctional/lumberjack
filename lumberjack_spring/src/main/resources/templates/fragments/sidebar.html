@@ -41,9 +41,19 @@
                 Add Users
             </a>
         </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-link">
+            <strong>User Groups</strong>
+        </li>
         <li>
             <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/groups' ? 'active':''}" href="/groups">
-                User Groups
+                 All User Groups
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/group' ? 'active':''}" href="/add/group">
+                Add User Groups
             </a>
         </li>
     </ul>

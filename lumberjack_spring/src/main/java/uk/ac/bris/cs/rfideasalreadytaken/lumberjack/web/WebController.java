@@ -68,9 +68,9 @@ public class WebController extends WebMvcConfigurerAdapter {
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
-//        // Spoof Values
-//        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
-//        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
+        // Spoof Values
+        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
+        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
         // Add list model attributes separately
         for (int i = 0; i < times.size(); i++) {
             String timeI    = "time"   + Integer.toString(i);
@@ -294,6 +294,7 @@ public class WebController extends WebMvcConfigurerAdapter {
     public String addType(@PathVariable String type, Model model) {
         model.addAttribute("type", type);
         model.addAttribute("groups", new ArrayList<UserGroup>());
+        List<Rule> rules;
         switch (type) {
             case "user":
                 List<UserGroup> groups = new ArrayList<>();
@@ -304,8 +305,8 @@ public class WebController extends WebMvcConfigurerAdapter {
                 }
                 model.addAttribute("groups", groups);
                 break;
-            case "device":
-                List<Rule> rules = new ArrayList<>();
+            case "group":
+                rules = new ArrayList<>();
                 try {
                     rules = webBackend.getRules();
                 } catch (Exception e) {
@@ -313,9 +314,14 @@ public class WebController extends WebMvcConfigurerAdapter {
                 }
                 model.addAttribute("rules", rules);
                 break;
-            case "group":
-                UserGroup group = new UserGroup();
-                model.addAttribute(group);
+            case "device":
+                rules = new ArrayList<>();
+                try {
+                    rules = webBackend.getRules();
+                } catch (Exception e) {
+                    System.out.println("SQL Exception");
+                }
+                model.addAttribute("rules", rules);
                 break;
             default:
                 break;
@@ -368,6 +374,38 @@ public class WebController extends WebMvcConfigurerAdapter {
         }
         model.addAttribute("messageType", "Device Added");
         model.addAttribute("messageString", "The device has been added!");
+        return "message";
+    }
+
+    @PostMapping("/add/group")
+    public String addGroup(@RequestParam Map<String, String> request, Model model) {
+        // Set group and permission(s) attributes
+        UserGroup newGroup = new UserGroup();
+        newGroup.setId(request.get("groupName"));
+        // Get selected rules
+        List<GroupPermission> permissions = new ArrayList<>();
+        List<String> keys = new ArrayList<>(request.keySet());
+        for (int i = 1; i < request.size(); i++) {
+            GroupPermission permission = new GroupPermission();
+            permission.setId(UUID.randomUUID().toString());
+            permission.setUserGroupID(request.get("groupName"));
+            permission.setRuleID(request.get(keys.get(i)));
+            permissions.add(permission);
+        }
+        // Add group and permissions(s) to the database
+        try {
+            webBackend.insertUserGroup(newGroup);
+            for (GroupPermission permission : permissions) {
+                webBackend.insertGroupPermission(permission);
+            }
+        } catch (Exception e) {
+            System.out.println("SQL Exception");
+            model.addAttribute("messageType", "Group Adding Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        model.addAttribute("messageType", "Group Added");
+        model.addAttribute("messageString", "The group has been added!");
         return "message";
     }
 

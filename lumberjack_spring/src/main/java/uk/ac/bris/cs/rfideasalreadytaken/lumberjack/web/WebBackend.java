@@ -367,6 +367,7 @@ public class WebBackend implements FromFrontEnd {
                     .parse(in);
             return records;
         } catch (IOException e) {
+            e.printStackTrace();
             throw new FileUploadException();
         }
     }
