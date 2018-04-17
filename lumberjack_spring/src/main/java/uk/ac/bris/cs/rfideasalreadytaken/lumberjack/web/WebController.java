@@ -649,20 +649,13 @@ public class WebController extends WebMvcConfigurerAdapter {
     @PostMapping("/delete/user")
     public String deleteUser(@RequestParam Map<String, String> request, Model model) {
         String id = request.get("userID");
-        System.out.println(request);
         try {
-            // If user doesn't exist
-            if (!webBackend.userExists(id)) {
-                model.addAttribute("messageType", "Deletion Failed");
-                model.addAttribute("messageString", "This user doesn't exist!");
-                return "message";
-            }
             // User has outstanding devices, can't be deleted
             if (webBackend.userHasOutstandingDevices(id)) {
                 model.addAttribute("messageType", "Deletion Failed");
                 model.addAttribute("messageString", "You cannot delete a user with outstanding " +
-                        "device assignments. They must first return the device. This can be done by finding the outstanding " +
-                        "device on the user's page and returning it, or manually by setting Currently Assigned on the device's page.");
+                        "device assignments. You must first return the device. This can be done by finding the outstanding " +
+                        "device on the user's page and, returning it on the device's page, or manually.");
                 return "message";
             }
             webBackend.deleteUser(id);
@@ -680,6 +673,35 @@ public class WebController extends WebMvcConfigurerAdapter {
         // Succeeded
         model.addAttribute("messageType", "Successful Deletion");
         model.addAttribute("messageString", "User successfully deleted!");
+        return "message";
+    }
+
+    @PostMapping("/delete/device")
+    public String deleteDevice(@RequestParam Map<String, String> request, Model model) {
+        String id = request.get("deviceID");
+        try {
+            if (webBackend.deviceIsOut(id)) {
+                model.addAttribute("messageType", "Deletion Failed");
+                model.addAttribute("messageString", "You cannot delete a device that is " +
+                        "currently out. You must first return the device. This can be done on the device's page, or " +
+                        "by getting the user who has the device to return it manually.");
+                return "message";
+            }
+            webBackend.deleteDevice(id);
+            // Delete assignment history if the box was ticked
+            if (request.containsKey("deleteHistory")) {
+                webBackend.deleteAssignmentHistoryByDevice(id);
+                System.out.println("delete");
+            }
+        } catch (Exception e) {
+            model.addAttribute("messageType", "Deletion Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+
+        // Succeeded
+        model.addAttribute("messageType", "Successful Deletion");
+        model.addAttribute("messageString", "Device successfully deleted!");
         return "message";
     }
 

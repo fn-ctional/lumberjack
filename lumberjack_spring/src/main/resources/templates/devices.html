@@ -92,6 +92,39 @@
                     </table>
                 </div>
 
+                <!-- Delete Device -->
+
+                <h1></h1>
+
+                <h2>Delete Device</h2>
+
+                <div class="container-fluid">
+                    <form action="#" th:action="@{/delete/device/}" method="post">
+
+                        <div class="form-group row">
+                            <div class="col-sm-4">
+                                <input type="checkbox" name="deleteHistory" id="deleteHistory" value="true" />
+                                <label for="deleteHistory" class="form-label">Delete device assignment history?</label>
+                            </div>
+                        </div>
+
+                        <label for="deviceID" hidden="hidden"></label>
+                        <th:block th:each="device : ${deviceList}">
+                            <input type="text" th:value="${device.getId()}" name="deviceID" hidden="hidden" id="deviceID"/>
+                        </th:block>
+
+                        <p class="form-text text-muted row">
+                            You cannot delete a device that is currently out. You must first return the device. This can be
+                            done on the device's page, or by getting the user who has the device to return it manually.
+                        </p>
+
+                        <div class="form-group row">
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </div>
+
+                    </form>
+                </div>
+
             </div>
 
         </main>

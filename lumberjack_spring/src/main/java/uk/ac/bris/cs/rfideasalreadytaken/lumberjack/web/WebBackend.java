@@ -531,8 +531,12 @@ public class WebBackend implements FromFrontEnd {
         databaseAssignments.deleteFromAssignmentHistoryByUser(userID);
     }
 
-    public boolean userExists(String userID) throws SQLException {
-        return databaseUsers.userExists(userID);
+    public boolean deviceIsOut(String deviceID) throws SQLException {
+        return databaseDevices.deviceIsOut(deviceID);
+    }
+
+    public void deleteAssignmentHistoryByDevice(String deviceID) throws SQLException {
+        databaseAssignments.deleteFromAssignmentHistoryByDevice(deviceID);
     }
 
 }

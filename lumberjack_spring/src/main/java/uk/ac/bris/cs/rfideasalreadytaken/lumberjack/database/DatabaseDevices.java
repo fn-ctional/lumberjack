@@ -174,4 +174,12 @@ public class DatabaseDevices {
         ResultSet rs = stmt.executeQuery();
         return loadDevicesFromResultSet(rs);
     }
+
+    public boolean deviceIsOut(String deviceID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT CurrentlyAssigned FROM Devices WHERE id = ?");
+        stmt.setString(1, deviceID);
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+        return rs.getBoolean("CurrentlyAssigned");
+    }
 }

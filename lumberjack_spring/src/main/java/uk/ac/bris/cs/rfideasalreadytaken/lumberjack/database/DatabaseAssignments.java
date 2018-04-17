@@ -205,15 +205,15 @@ public class DatabaseAssignments {
         return rs.getRow();
     }
 
-    public void deleteFromAssignmentsByUser(String userID) throws SQLException {
-        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM Assignments WHERE UserID = ?");
+    public void deleteFromAssignmentHistoryByUser(String userID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM AssignmentHistory WHERE UserID = ?");
         stmt.setString(1, userID);
         stmt.execute();
     }
 
-    public void deleteFromAssignmentHistoryByUser(String userID) throws SQLException {
-        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM AssignmentHistory WHERE UserID = ?");
-        stmt.setString(1, userID);
+    public void deleteFromAssignmentHistoryByDevice(String deviceID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM AssignmentHistory WHERE DeviceID = ?");
+        stmt.setString(1, deviceID);
         stmt.execute();
     }
 
