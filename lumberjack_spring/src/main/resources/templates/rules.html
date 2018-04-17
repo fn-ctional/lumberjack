@@ -110,6 +110,31 @@
                     </table>
                 </div>
 
+                <!-- Delete Rule -->
+
+                <h1></h1>
+
+                <h2>Delete Rule</h2>
+
+                <div class="container-fluid">
+                    <form action="#" th:action="@{/delete/rule/}" method="post">
+
+                        <label for="ruleID" hidden="hidden"></label>
+                        <input type="text" th:value="${searchTerm}" name="ruleID" hidden="hidden" id="ruleID"/>
+
+                        <p class="form-text text-muted row">
+                            Deleting a rule will mean all the devices from the rule set will not be able to be taken out.
+                            Also, if a group only has this rule, that group's users will not be able to take any devices
+                            out.
+                        </p>
+
+                        <div class="form-group row">
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </div>
+
+                    </form>
+                </div>
+
             </div>
 
         </main>

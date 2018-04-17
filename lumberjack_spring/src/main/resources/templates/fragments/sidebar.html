@@ -81,6 +81,11 @@
                 All Rules
             </a>
         </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/rule' ? 'active':''}" href="/add/rule">
+                Add Rules
+            </a>
+        </li>
     </ul>
     <ul class="nav nav-pills flex-column">
         <li class="nav-item">

@@ -724,4 +724,23 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    @PostMapping("/delete/rule")
+    public String deleteRule(@RequestParam Map<String, String> request, Model model) {
+        String id = request.get("ruleID");
+        try {
+            webBackend.removeRuleFromDevices(id);
+            webBackend.deletePermissionsByRule(id);
+            webBackend.deleteRule(id);
+        } catch (Exception e) {
+            model.addAttribute("messageType", "Deletion Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+
+        // Succeeded
+        model.addAttribute("messageType", "Successful Deletion");
+        model.addAttribute("messageString", "Rule successfully deleted!");
+        return "message";
+    }
+
 }

@@ -547,4 +547,12 @@ public class WebBackend implements FromFrontEnd {
         databaseUserGroups.deletePermissionsByGroup(groupID);
     }
 
+    public void removeRuleFromDevices(String ruleID) throws SQLException {
+        databaseDevices.removeRuleFromDevices(ruleID);
+    }
+
+    public void deletePermissionsByRule(String ruleID) throws SQLException {
+        databaseUserGroups.deletePermissionsByRule(ruleID);
+    }
+
 }

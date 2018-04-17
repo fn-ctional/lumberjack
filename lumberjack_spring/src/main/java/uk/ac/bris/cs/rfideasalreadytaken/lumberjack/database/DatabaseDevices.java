@@ -182,4 +182,10 @@ public class DatabaseDevices {
         rs.next();
         return rs.getBoolean("CurrentlyAssigned");
     }
+
+    public void removeRuleFromDevices(String ruleID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Devices SET RuleID = NULL WHERE RuleID = ?");
+        stmt.setString(1, ruleID);
+        stmt.execute();
+    }
 }
