@@ -131,4 +131,10 @@ public class DatabaseUserGroups {
         return loadUserGroupsFromResultSet(rs);
     }
 
+    public void deletePermissionsByGroup(String groupID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM GroupPermissions WHERE UserGroupID = ?");
+        stmt.setString(1, groupID);
+        stmt.execute();
+    }
+
 }

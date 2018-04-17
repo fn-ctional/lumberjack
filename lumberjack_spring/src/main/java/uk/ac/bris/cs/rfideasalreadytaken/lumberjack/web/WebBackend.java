@@ -539,4 +539,12 @@ public class WebBackend implements FromFrontEnd {
         databaseAssignments.deleteFromAssignmentHistoryByDevice(deviceID);
     }
 
+    public void removeGroupFromUsers(String groupID) throws SQLException {
+        databaseUsers.removeGroupFromUsers(groupID);
+    }
+
+    public void deletePermissionsByGroup(String groupID) throws SQLException {
+        databaseUserGroups.deletePermissionsByGroup(groupID);
+    }
+
 }

@@ -139,12 +139,10 @@ public class DatabaseUsers {
         return user.getDeviceLimit() == user.getDevicesRemoved();
     }
 
-    public boolean userExists(String userID) throws SQLException {
-        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Users WHERE id = ?");
-        stmt.setString(1, userID);
-        ResultSet rs = stmt.executeQuery();
-        rs.next();
-        return rs.getString("id").equals(userID);
+    public void removeGroupFromUsers(String groupID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Users SET GroupID = NULL WHERE GroupID = ?");
+        stmt.setString(1, groupID);
+        stmt.execute();
     }
 
 }

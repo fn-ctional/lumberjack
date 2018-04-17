@@ -705,4 +705,23 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    @PostMapping("/delete/group")
+    public String deleteGroup(@RequestParam Map<String, String> request, Model model) {
+        String id = request.get("groupID");
+        try {
+            webBackend.removeGroupFromUsers(id);
+            webBackend.deletePermissionsByGroup(id);
+            webBackend.deleteUserGroup(id);
+        } catch (Exception e) {
+            model.addAttribute("messageType", "Deletion Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+
+        // Succeeded
+        model.addAttribute("messageType", "Successful Deletion");
+        model.addAttribute("messageString", "Group successfully deleted!");
+        return "message";
+    }
+
 }

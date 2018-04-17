@@ -104,6 +104,30 @@
                     </table>
                 </div>
 
+                <!-- Delete Device -->
+
+                <h1></h1>
+
+                <h2>Delete Group</h2>
+
+                <div class="container-fluid">
+                    <form action="#" th:action="@{/delete/group/}" method="post">
+
+                        <label for="groupID" hidden="hidden"></label>
+                        <input type="text" th:value="${searchTerm}" name="groupID" hidden="hidden" id="groupID"/>
+
+                        <p class="form-text text-muted row">
+                            Deleting a group will mean all the group's users cannot take out any devices until they are
+                            allocated to a new group.
+                        </p>
+
+                        <div class="form-group row">
+                            <button type="submit" class="btn btn-primary">Delete</button>
+                        </div>
+
+                    </form>
+                </div>
+
             </div>
 
         </main>
