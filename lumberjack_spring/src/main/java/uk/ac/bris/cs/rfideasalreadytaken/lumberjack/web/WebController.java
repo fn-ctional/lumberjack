@@ -288,37 +288,13 @@ public class WebController extends WebMvcConfigurerAdapter {
     public String addType(@PathVariable String type, Model model) {
         model.addAttribute("type", type);
         model.addAttribute("groups", new ArrayList<UserGroup>());
-        List<Rule> rules;
-        switch (type) {
-            case "user":
-                List<UserGroup> groups = new ArrayList<>();
-                try {
-                    groups = webBackend.getUserGroups();
-                } catch (Exception e) {
-                    System.out.println("SQL Exception");
-                }
-                model.addAttribute("groups", groups);
-                break;
-            case "group":
-                rules = new ArrayList<>();
-                try {
-                    rules = webBackend.getRules();
-                } catch (Exception e) {
-                    System.out.println("SQL Exception");
-                }
-                model.addAttribute("rules", rules);
-                break;
-            case "device":
-                rules = new ArrayList<>();
-                try {
-                    rules = webBackend.getRules();
-                } catch (Exception e) {
-                    System.out.println("SQL Exception");
-                }
-                model.addAttribute("rules", rules);
-                break;
-            default:
-                break;
+        try {
+            switchOnType(type, model, null);
+        } catch (Exception e) {
+            System.out.println("SQL Error");
+            model.addAttribute("messageType", "Error");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
         }
         return "add";
     }
@@ -742,6 +718,88 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("messageType", "Delete");
         model.addAttribute("messageString", "To delete something, go to it's page, and " +
                 "press the delete button (and selecting any relevant deletion options).");
+        return "message";
+    }
+
+    @RequestMapping("/update")
+    public String update(Model model) {
+        model.addAttribute("blank", true);
+        return "update";
+    }
+
+    @GetMapping("/update/{type}")
+    public String updateType(Model model, @PathVariable String type) {
+        model.addAttribute("messageType", "Update");
+        model.addAttribute("messageString", "To update a " + type + ", go to it's page and " +
+                "click the update button.");
+        return "message";
+    }
+
+    @GetMapping("/update/{type}/{id}")
+    public String updateTypeID(@PathVariable String type, @PathVariable String id, Model model) {
+        model.addAttribute("type", type);
+        model.addAttribute("id", id);
+        model.addAttribute("groups", new ArrayList<UserGroup>());
+        model.addAttribute("user", new User());
+        try {
+            switchOnType(type, model, id);
+        } catch (Exception e) {
+            System.out.println("SQL Error");
+            model.addAttribute("messageType", "Error");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        return "update";
+    }
+
+    private void switchOnType(@PathVariable String type, Model model, String id) throws SQLException {
+        List<Rule> rules;
+        switch (type) {
+            case "user":
+                List<UserGroup> groups = new ArrayList<>();
+                if (id != null) {
+                    model.addAttribute("user", webBackend.getUser(id));
+                }
+                groups = webBackend.getUserGroups();
+                model.addAttribute("groups", groups);
+                break;
+            case "group":
+                rules = new ArrayList<>();
+                rules = webBackend.getRules();
+                model.addAttribute("rules", rules);
+                break;
+            case "device":
+                rules = new ArrayList<>();
+                rules = webBackend.getRules();
+                model.addAttribute("rules", rules);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @PostMapping("/update/user")
+    public String updateUser(@RequestParam Map<String, String> request, Model model) {
+        System.out.println(request);
+        // Set user attributes
+        User updateUser = new User();
+        updateUser.setId(request.get("id"));
+        updateUser.setScanValue(request.get("scanValue"));
+        updateUser.setDeviceLimit(new Integer(request.get("deviceLimit")));
+        updateUser.setDevicesRemoved(new Integer(request.get("removed")));
+        updateUser.setCanRemove(request.containsKey("canRemove"));
+        updateUser.setGroupId(request.get("groupID"));
+        // Add user to the database
+        try {
+            webBackend.editUser(updateUser.getId(), updateUser);
+        } catch (Exception e) {
+            System.out.println("SQL Exception");
+            model.addAttribute("messageType", "User Updating Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        model.addAttribute("messageType", "User Updated");
+        model.addAttribute("messageString", "The user has been updated!");
         return "message";
     }
 

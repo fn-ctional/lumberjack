@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 
-<head th:include="fragments/header :: head (title='lumberjack - Add')">
+<head th:include="fragments/header :: head (title='lumberjack - Update')">
 </head>
 
 <body>
@@ -20,7 +20,7 @@
             <h1>Dashboard</h1>
 
             <h2>
-                Add
+                Update
                 <span th:if="${type} == user">Users</span>
                 <span th:if="${type} == device">Devices</span>
                 <span th:if="${type} == group">User Groups</span>
@@ -30,20 +30,20 @@
             <span id="type" style="display: none;" th:text="${type}"></span>
 
             <div th:if="${blank}">
-                <p class="lead">What do you want to add?</p>
+                <p class="lead">What do you want to update?</p>
 
                 <div class="row">
                     <div class="col-sm-auto">
-                        <a class="btn btn-primary" href="/add/user" role="button">Users</a>
+                        <a class="btn btn-primary" href="/update/user" role="button">Users</a>
                     </div>
                     <div class="col-sm-auto">
-                        <a class="btn btn-primary" href="/add/group" role="button">User Groups</a>
+                        <a class="btn btn-primary" href="/update/group" role="button">User Groups</a>
                     </div>
                     <div class="col-sm-auto">
-                        <a class="btn btn-primary" href="/add/device" role="button">Devices</a>
+                        <a class="btn btn-primary" href="/update/device" role="button">Devices</a>
                     </div>
                     <div class="col-sm-auto">
-                        <a class="btn btn-primary" href="/add/rule" role="button">Rules</a>
+                        <a class="btn btn-primary" href="/update/rule" role="button">Rules</a>
                     </div>
                 </div>
             </div>
@@ -55,31 +55,37 @@
                     <div class="col-lg">
 
                         <p class="lead">
-                            Add a single user:
+                            Update a user:
                         </p>
 
                         <div class="container-fluid">
                             <div class="row">
-                                <form action="#" th:action="@{/add/user}" method="post">
+                                <form action="#" th:action="@{/update/user}" method="post">
+
+                                    <label for="userID" hidden="hidden"></label>
+                                    <input type="text" th:value="${user.getId()}" name="id" hidden="hidden" id="userID"/>
+
+                                    <label for="removed" hidden="hidden"></label>
+                                    <input type="text" th:value="${user.getDevicesRemoved()}" name="removed" hidden="hidden" id="removed"/>
 
                                     <div class="form-group row" >
                                         <label for="scanValue" class="col-lg col-form-label">Scan Value</label>
                                         <div class="col-lg">
-                                            <input type="text" class="form-control" id="scanValue" name="scanValue" placeholder="123456789" required="required" />
+                                            <input th:value="${user.getScanValue()}" type="text" class="form-control" id="scanValue" name="scanValue" placeholder="123456789" required="required" />
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label for="deviceLimit" class="col-lg col-form-label">Device Limit</label>
                                         <div class="col-lg">
-                                            <input type="number" min="0" step="1" placeholder="0" value="0" class="form-control" id="deviceLimit" name="deviceLimit" required="required" />
+                                            <input th:value="${user.getDeviceLimit()}" type="number" min="0" step="1" placeholder="0" value="0" class="form-control" id="deviceLimit" name="deviceLimit" required="required" />
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label for="canRemove" class="col-lg col-form-label">Can Remove Devices?</label>
                                         <div class="col-lg">
-                                            <input type="checkbox" name="canRemove" id="canRemove" value="true" />
+                                            <input type="checkbox" name="canRemove" id="canRemove" value="true" th:attr="checked=${user.canRemove() ? 'checked' : null}"/>
                                         </div>
                                     </div>
 
@@ -87,45 +93,20 @@
                                         <label for="groupID" class="col-lg col-form-label">Group</label>
                                         <div class="col-lg">
                                             <select class="form-control" id="groupID" name="groupID" required="required">
-                                                <option value="" selected="selected" disabled="disabled" hidden="hidden">Choose group</option>
+                                                <option th:value="${user.getGroupId()}" th:text="${user.getGroupId()}">Group ID</option>
                                                 <th:block th:each="group : ${groups}">
-                                                    <option th:value="${group.getId()}" th:text="${group.getId()}">Group ID</option>
+                                                    <option th:if="${group.getId() != user.getGroupId()}" th:value="${group.getId()}" th:text="${group.getId()}">Group ID</option>
                                                 </th:block>
                                             </select>
                                         </div>
                                     </div>
 
-                                    <p class="form-text text-muted row">
-                                        If a user does not have a group, they will not be able to take out devices. You can add the user to a group later.
-                                    </p>
-
                                     <div class="form-group row">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
 
                                 </form>
                             </div>
-                        </div>
-
-                    </div>
-                    <div class="col-lg">
-
-                        <p class="lead">
-                            Or upload a CSV file:
-                        </p>
-
-                        <div class="container-fluid">
-                            <form action="/add/user/CSV" method="post" class="col-lg" enctype="multipart/form-data">
-
-                                <div class="form-group row">
-                                    <input type="file" class="form-control" name="file"/>
-                                </div>
-
-                                <div class="form-group row">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-
-                            </form>
                         </div>
 
                     </div>
@@ -145,6 +126,9 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <form action="#" th:action="@{/add/device}" method="post">
+
+                                    <label for="deviceID" hidden="hidden"></label>
+                                    <input type="text" th:value="${device.getID()}" name="id" hidden="hidden" id="deviceID"/>
 
                                     <div class="form-group row" >
                                         <label for="scanValue2" class="col-lg col-form-label">Scan Value</label>
@@ -192,27 +176,6 @@
                         </div>
 
                     </div>
-                    <div class="col-lg">
-
-                        <p class="lead">
-                            Or upload a CSV file:
-                        </p>
-
-                        <div class="container-fluid">
-                            <form action="/add/device/CSV" method="post" class="col-lg" enctype="multipart/form-data">
-
-                                <div class="form-group row">
-                                    <input type="file" class="form-control" name="file"/>
-                                </div>
-
-                                <div class="form-group row">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-
-                            </form>
-                        </div>
-
-                    </div>
                 </div>
             </div>
 
@@ -229,6 +192,9 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <form action="#" th:action="@{/add/group}" method="post">
+
+                                    <label for="groupID" hidden="hidden"></label>
+                                    <input type="text" th:value="${group.getID()}" name="id" hidden="hidden" id="groupID"/>
 
                                     <div class="form-group row" >
                                         <label for="groupName" class="col-sm-2 col-form-label">Group ID</label>
@@ -285,6 +251,9 @@
                             <div class="row">
                                 <form action="#" th:action="@{/add/rule}" method="post">
 
+                                    <label for="ruleID" hidden="hidden"></label>
+                                    <input type="text" th:value="${rule.getID()}" name="id" hidden="hidden" id="ruleID"/>
+
                                     <div class="form-group row" >
                                         <label for="ruleName" class="col-sm-4 col-form-label">Rule ID</label>
                                         <div class="col-sm-4">
@@ -321,8 +290,6 @@
 
     </div>
 </div>
-
-<div th:replace="fragments/sidebar :: sidebar"></div>
 
 <div th:replace="fragments/footer :: footer"></div>
 
