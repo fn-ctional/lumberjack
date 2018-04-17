@@ -7,19 +7,16 @@
 
 int main() {
   const auto config = Config::load("/home/fred/.lumberjack")
-                      .unwrap_or( handle_config_error );
+                      .get_ok_or( handle_config_error );
 
   auto source = Event::Source(config.source);
 
   auto network = Network::Network::create()
-                 .expect("Unable to create network object");
+                 .get_ok("Unable to create network object");
 
   const auto login_form = network.new_form()
-             .add("email",    config.username)
+             .add("username", config.username)
              .add("password", config.password);
-
-  network.send( config.login, "POST", login_form )
-         .expect("Unable to log in");
 
   while ( true ) {
 
@@ -32,14 +29,31 @@ int main() {
     }
 
     auto data = "{\"user\":\"" + user + "\",\"device\":\"" + device_opt.value() + "\"}";
-    auto result = network.send( config.path, "PATCH", data );
-    if ( result.is_err() ) {
-      std::cout << "[data send failed]" << std::endl;
-      continue;
-    }
 
-    auto response = result.unwrap();
-    std::cout << response.code << ": " << response.data << std::endl;
+    for (uint attempts = 1; attempts <= 3; ++attempts ) {
+
+      auto result = network.send( config.path, "PATCH", data );
+
+      if ( result.is_err() ) {
+        std::cout << "Data send failed (attempt " << attempts << "/3), "
+                  << "error code " << result.get_err() << std::endl;
+        continue;
+      }
+
+      auto response = result.get_ok();
+
+      if ( response.code == 302 ) {
+        auto login_response = network.send( config.login, "POST", login_form )
+                                     .get_ok("Login connection failed");
+        std::cout << "Login: " << login_response.code
+                  << " - " << login_response.data
+                  << std::endl;
+        continue;
+      }
+
+      std::cout << response.code << ": " << response.data << std::endl;
+      break;
+    }
 
   }
 }

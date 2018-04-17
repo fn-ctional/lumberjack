@@ -93,6 +93,7 @@ Result<Network::Response,int> Network::Network::send(const std::string &url, con
 }
 
 Result<Network::Response,int> Network::Network::send(const std::string &url, const std::string &verb, const Form &form) {
+  curl_easy_setopt( handle.get(), CURLOPT_UPLOAD, false );
   curl_easy_setopt( handle.get(), CURLOPT_MIMEPOST, form.form.get() );
   curl_easy_setopt( handle.get(), CURLOPT_URL, url.c_str() );
   curl_easy_setopt( handle.get(), CURLOPT_CUSTOMREQUEST, verb.c_str() );

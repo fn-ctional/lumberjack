@@ -33,44 +33,33 @@ public:
     return std::holds_alternative<O>( variant );
   };
 
-  E& get_err() {
+  E&& get_err() {
     auto ptr = std::get_if<E>( &variant );
     if ( ptr == nullptr ) {
       throw std::logic_error("Attempted to get an error from a Result containing an ok");
     }
-    return *ptr;
+    return std::move( *ptr );
   };
 
-  O& get_ok() {
+  O&& get_ok( std::string msg ) {
     auto ptr = std::get_if<O>( &variant );
     if ( ptr == nullptr ) {
-      throw std::logic_error("Attempted to get an ok from a Result containing an error");
-    }
-    return *ptr;
-  };
-
-  O&& expect(std::string msg) {
-    auto ptr = std::get_if<O>( &variant );
-    if ( ptr == nullptr ) {
-      throw std::logic_error(msg);
+      throw std::logic_error( msg );
     }
     return std::move( *ptr );
   };
 
-  O&& unwrap() {
-    return std::move( *std::get_if<O>( &variant ) );
-  }
+  O&& get_ok() {
+    return get_ok( "Attempted to get an ok from a Result containing an error" );
+  };
 
   template<typename Fn>
-  O&& unwrap_or(Fn fn) {
+  O&& get_ok_or( Fn fn ) {
     auto ptr = std::get_if<O>( &variant );
-
     if ( ptr == nullptr ) {
       return fn( *std::get_if<E>( &variant ) );
     }
-
     return std::move( *ptr );
-
   }
 private:
   std::variant<O,E> variant;
