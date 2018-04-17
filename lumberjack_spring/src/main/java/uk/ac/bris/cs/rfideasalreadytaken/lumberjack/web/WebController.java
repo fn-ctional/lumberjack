@@ -91,13 +91,7 @@ public class WebController extends WebMvcConfigurerAdapter {
     @RequestMapping("/test")
     public String test(Model model) {
         model.addAttribute("messageType", "Test");
-        List<String> takeouts = new ArrayList<>();
-        try {
-            takeouts = webBackend.getTimes(10);
-        } catch (Exception e) {
-            System.out.println("SQL Error");
-        }
-        model.addAttribute("messageString", takeouts);
+        model.addAttribute("messageString", "test");
         return "message";
     }
 
@@ -740,6 +734,14 @@ public class WebController extends WebMvcConfigurerAdapter {
         // Succeeded
         model.addAttribute("messageType", "Successful Deletion");
         model.addAttribute("messageString", "Rule successfully deleted!");
+        return "message";
+    }
+
+    @GetMapping("/delete")
+    public String delete(Model model) {
+        model.addAttribute("messageType", "Delete");
+        model.addAttribute("messageString", "To delete something, go to it's page, and " +
+                "press the delete button (and selecting any relevant deletion options).");
         return "message";
     }
 

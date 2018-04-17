@@ -11,20 +11,25 @@
 <div th:replace="fragments/header :: navbar"></div>
 
 <!-- Page Content -->
-<!--<div sec:authorize="isAuthenticated()">-->
-    <!--<div th:replace="fragments/sidebar :: sidebar"></div>-->
-<!--</div>-->
 
-<div class="container">
+<div class="container-fluid">
+    <div class="row">
 
-    <h1 th:text="${messageType}">
-        Message Type
-    </h1>
+        <div sec:authorize="isAuthenticated()">
+            <div th:replace="fragments/sidebar :: sidebar"></div>
+        </div>
 
-    <p class="lead" th:text="${messageString}">
-        Message
-    </p>
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+            <h1 th:text="${messageType}">
+                Message Type
+            </h1>
 
+            <p class="lead" th:text="${messageString}">
+                Message
+            </p>
+        </main>
+
+    </div>
 </div>
 
 <div th:replace="fragments/footer :: footer"></div>
