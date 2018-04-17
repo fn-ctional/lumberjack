@@ -740,7 +740,9 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("type", type);
         model.addAttribute("id", id);
         model.addAttribute("groups", new ArrayList<UserGroup>());
+        model.addAttribute("rules", new ArrayList<Rule>());
         model.addAttribute("user", new User());
+        model.addAttribute("device", new Device());
         try {
             switchOnType(type, model, id);
         } catch (Exception e) {
@@ -769,6 +771,9 @@ public class WebController extends WebMvcConfigurerAdapter {
                 model.addAttribute("rules", rules);
                 break;
             case "device":
+                if (id != null) {
+                    model.addAttribute("device", webBackend.getDevice(id));
+                }
                 rules = new ArrayList<>();
                 rules = webBackend.getRules();
                 model.addAttribute("rules", rules);
@@ -800,6 +805,30 @@ public class WebController extends WebMvcConfigurerAdapter {
         }
         model.addAttribute("messageType", "User Updated");
         model.addAttribute("messageString", "The user has been updated!");
+        return "message";
+    }
+
+    @PostMapping("/update/device")
+    public String updateDevice(@RequestParam Map<String, String> request, Model model) {
+        // Set device attributes
+        Device newDevice = new Device();
+        newDevice.setId(request.get("id"));
+        newDevice.setScanValue(request.get("scanValue"));
+        newDevice.setType(request.get("deviceType"));
+        newDevice.setAvailable(request.containsKey("available"));
+        newDevice.setCurrentlyAssigned(request.get("assigned").equals("true"));
+        newDevice.setRuleID(request.get("ruleID"));
+        // Add device to the database
+        try {
+            webBackend.editDevice(newDevice.getId(), newDevice);
+        } catch (Exception e) {
+            System.out.println("SQL Exception");
+            model.addAttribute("messageType", "Device Updating Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        model.addAttribute("messageType", "Device Updated");
+        model.addAttribute("messageString", "The device has been updated!");
         return "message";
     }
 

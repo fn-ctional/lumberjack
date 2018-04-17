@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <!-- Adding Users -->
+            <!-- Updating Users -->
 
             <div th:if="${type} == user" class="container-fluid">
                 <div class="row">
@@ -113,41 +113,44 @@
                 </div>
             </div>
 
-            <!-- Adding Devices -->
+            <!-- Updating Devices -->
 
             <div th:if="${type} == device" class="container-fluid">
                 <div class="row">
                     <div class="col-lg">
 
                         <p class="lead">
-                            Add a single device:
+                            Update a device:
                         </p>
 
                         <div class="container-fluid">
                             <div class="row">
-                                <form action="#" th:action="@{/add/device}" method="post">
+                                <form action="#" th:action="@{/update/device}" method="post">
 
                                     <label for="deviceID" hidden="hidden"></label>
-                                    <input type="text" th:value="${device.getID()}" name="id" hidden="hidden" id="deviceID"/>
+                                    <input type="text" th:value="${device.getId()}" name="id" hidden="hidden" id="deviceID"/>
+
+                                    <label for="assigned" hidden="hidden"></label>
+                                    <input type="text" th:value="${device.isCurrentlyAssigned()}" name="assigned" hidden="hidden" id="assigned"/>
 
                                     <div class="form-group row" >
                                         <label for="scanValue2" class="col-lg col-form-label">Scan Value</label>
                                         <div class="col-lg">
-                                            <input type="text" class="form-control" id="scanValue2" name="scanValue" placeholder="123456789" required="required" />
+                                            <input type="text" th:value="${device.getScanValue()}" class="form-control" id="scanValue2" name="scanValue" placeholder="123456789" required="required" />
                                         </div>
                                     </div>
 
                                     <div class="form-group row" >
                                         <label for="deviceType" class="col-lg col-form-label">Device Type</label>
                                         <div class="col-lg">
-                                            <input type="text" class="form-control" id="deviceType" name="deviceType" placeholder="laptop" required="required" />
+                                            <input type="text" th:value="${device.getType()}" class="form-control" id="deviceType" name="deviceType" placeholder="laptop" required="required" />
                                         </div>
                                     </div>
 
                                     <div class="form-group row">
                                         <label for="available" class="col-lg col-form-label">Available to be taken out?</label>
                                         <div class="col-lg">
-                                            <input type="checkbox" name="available" id="available" value="true" />
+                                            <input type="checkbox" name="available" id="available" th:attr="checked=${device.isAvailable() ? 'checked' : null}" value="true" />
                                         </div>
                                     </div>
 
@@ -155,20 +158,16 @@
                                         <label for="ruleID" class="col-lg col-form-label">Rule Set</label>
                                         <div class="col-lg">
                                             <select class="form-control" id="ruleID" name="ruleID" required="required">
-                                                <option value="" selected="selected" disabled="disabled" hidden="hidden">Choose rule</option>
+                                                <option th:value="${device.getRuleID()}" th:text="${device.getRuleID()}">Rule ID</option>
                                                 <th:block th:each="rule : ${rules}">
-                                                    <option th:value="${rule.getId()}" th:text="${rule.getId()}">Rule ID</option>
+                                                    <option th:if="${rule.getId() != device.getRuleID()}" th:value="${rule.getId()}" th:text="${rule.getId()}">Rule ID</option>
                                                 </th:block>
                                             </select>
                                         </div>
                                     </div>
 
-                                    <p class="form-text text-muted row">
-                                        If a device does not have a rule, nobody will be able to take it out. You can add a rule later.
-                                    </p>
-
                                     <div class="form-group row">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
 
                                 </form>
@@ -251,8 +250,8 @@
                             <div class="row">
                                 <form action="#" th:action="@{/add/rule}" method="post">
 
-                                    <label for="ruleID" hidden="hidden"></label>
-                                    <input type="text" th:value="${rule.getID()}" name="id" hidden="hidden" id="ruleID"/>
+                                    <label for="ruleIDF" hidden="hidden"></label>
+                                    <input type="text" th:value="${rule.getID()}" name="id" hidden="hidden" id="ruleIDF"/>
 
                                     <div class="form-group row" >
                                         <label for="ruleName" class="col-sm-4 col-form-label">Rule ID</label>
