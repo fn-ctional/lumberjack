@@ -34,6 +34,7 @@ public class FrontEndDatabaseManagerTests {
         databaseTesting.insertTestCases();
     }
 
+    /*
 
     @Test
     public void testInsertUser() throws Exception {
@@ -411,6 +412,146 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(history.get(0).getDeviceID(), "laptop01");
         assertEquals(history.get(0).getReturnedByID(), "Aidan9876");
     }
+
+    @Test
+    public void testGetRecentTakeouts() throws Exception {
+        List<Integer> takeouts = webBackend.getRecentTakeouts(9);
+        Integer amount = 0;
+
+        for(int i = 0; i != 8; i++)
+        {
+            assertEquals(amount, takeouts.get(i));
+        }
+
+        amount = 2;
+        assertEquals(amount, takeouts.get(8));
+    }
+
+    @Test
+    public void testGetRecentReturns() throws Exception {
+        List<Integer> returns = webBackend.getRecentReturns(9);
+        Integer amount = 0;
+
+        for(int i = 0; i != 8; i++)
+        {
+            assertEquals(amount, returns.get(i));
+        }
+
+        amount = 1;
+        assertEquals(amount, returns.get(8));
+    }
+
+
+
+
+
+
+    @Test
+    public void testDeletePermissions() throws Exception {
+
+        List<GroupPermission> permissions = new List<>;
+        permissions.add(new GroupPermission("ruleSet1","groupOne"));
+
+        List<Integer> returns = webBackend.deletePermissions(9);
+
+        assertNull(webBackend.getGroupPermission("ruleSet1","groupOne"));
+    }
+
+    @Test
+    public void testGroupHasRule() throws Exception {
+        assertTrue(webBackend.groupHasRule("groupOne","ruleSet1"));
+        assertFalse(webBackend.groupHasRule("groupTwo","ruleSet2"));
+    }
+
+    @Test
+    public void testDeletePermissionsByRule() throws Exception {
+        webBackend.deletePermissionsByRule("ruleSet1");
+        assertNull(webBackend.getGroupPermission("ruleSet1","groupOne"));
+        assertNull(webBackend.getGroupPermission("ruleSet1","groupTwo"));
+    }
+
+    @Test
+    public void testDeletePermissionsByGroup() throws Exception {
+        webBackend.deletePermissionsByRule("groupOne");
+        assertNull(webBackend.getGroupPermission("ruleSet1","groupOne"));
+        assertNull(webBackend.getGroupPermission("ruleSet2","groupOne"));
+    }
+
+    @Test
+    public void testRemoveRuleFromDevices() throws Exception {
+        webBackend.removeRuleFromDevices("ruleSet1");
+        List<Devices> devices = webBackend.getDevicesByRule("ruleSet1");
+        asertEqual(devices.size(),0);
+    }
+
+    @Test
+    public void testRemoveGroupFromUsers() throws Exception {
+        webBackend.removeRuleFromDevices("groupOne");
+        List<Users> users = webBackend.getUsers();
+
+        for(User users.at(0) : users)
+        {
+          asertNotEqual(users.getGroupId,"groupOne");
+        }
+    }
+
+    @Test
+    public void testDeleteAssignmentHistoryByDevice() throws Exception {
+        webBackend.deleteAssignmentHistoryByDevice("laptop01");
+        List<AssignmentHistory> history = webBackend.getDeviceAssignmentHistory();
+        asertEqual(history.size(),0);
+    }
+
+
+        @Test
+        public void testDeviceIsOut() throws Exception {
+            assertTrue(webBackend.deviceIsOut("laptop02"));
+            assertFalse(webBackend.deviceIsOut("laptop01"));
+        }
+
+        @Test
+        public void testDeleteAssignmentHistoryByUser() throws Exception {
+            webBackend.deleteAssignmentHistoryByUser("Betty1248");
+            List<AssignmentHistory> history = webBackend.getUserAssignmentHistory();
+            asertEqual(history.size(),0);
+        }
+
+        @Test
+        public void testUserHasOutstandingDevices() throws Exception {
+            assertTrue(webBackend.userHasOutstandingDevices("Callum2468"));
+            assertFalse(webBackend.deviceIsOut("Aidan9876"));
+        }
+
+        @Test
+        public void testGetDevicesByRule() throws Exception {
+            List<Device> obtainedDevices = webBackend.getDevicesByRule("ruleSet1");
+            assertTrue(obtainedDevices.contains(new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1")));
+            assertTrue(obtainedDevices.contains(new Device("laptop03", "93482364723648725", "laptop", false, false, "ruleSet1")));
+        }
+
+        @Test
+        public void testGetUserGroupsByRule() throws Exception {
+            List<UserGroups> obtainedGroups = webBackend.getUserGroupsByRule("ruleSet1");
+            assertTrue(obtainedGroups.contains(new UserGroup("groupOne")));
+            assertTrue(obtainedGroups.contains(new UserGroup("groupTwo")));
+        }
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }

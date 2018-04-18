@@ -1,5 +1,6 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database;
 
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Rule;
@@ -44,5 +45,21 @@ public class DatabaseRules {
         stmt.setString(1, ruleID);
         ResultSet rs = stmt.executeQuery();
         return loadRuleFromResultSet(rs);
+    }
+
+    public boolean groupHasRule(String groupID, String ruleID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM GroupPermissions " +
+                "WHERE UserGroupID = ? AND RuleID = ?");
+        stmt.setString(1, groupID);
+        stmt.setString(2, ruleID);
+        ResultSet rs = stmt.executeQuery();
+        return rs.next();
+    }
+
+    public void updateRule(Rule rule) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Rules SET MaximumRemovalTime = ? WHERE id = ?");
+        stmt.setInt(1, rule.getMaximumRemovalTime());
+        stmt.setString(2, rule.getId());
+        stmt.execute();
     }
 }

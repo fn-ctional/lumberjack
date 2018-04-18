@@ -16,6 +16,16 @@
                 <strong>Dashboard</strong>
             </a>
         </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/search' ? 'active':''}" href="/search">
+                Search
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add' ? 'active':''}" href="/add">
+                Add
+            </a>
+        </li>
     </ul>
     <ul class="nav nav-pills flex-column">
         <li class="nav-link">
@@ -27,13 +37,23 @@
             </a>
         </li>
         <li>
-            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/search/user' ? 'active':''}" href="/search/user">
-                Search Users
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/user' ? 'active':''}" href="/add/user">
+                Add Users
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-link">
+            <strong>User Groups</strong>
+        </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/groups' ? 'active':''}" href="/groups">
+                 All User Groups
             </a>
         </li>
         <li>
-            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/user' ? 'active':''}" href="/add/user">
-                Add Users
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/group' ? 'active':''}" href="/add/group">
+                Add User Groups
             </a>
         </li>
     </ul>
@@ -47,13 +67,23 @@
             </a>
         </li>
         <li>
-            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/search/device' ? 'active':''}" href="/search/device">
-                Search Devices
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/device' ? 'active':''}" href="/add/device">
+                Add Devices
+            </a>
+        </li>
+    </ul>
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-link">
+            <strong>Rules</strong>
+        </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/rules' ? 'active':''}" href="/rules">
+                All Rules
             </a>
         </li>
         <li>
-            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/device' ? 'active':''}" href="/add/device">
-                Add Devices
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/rule' ? 'active':''}" href="/add/rule">
+                Add Rules
             </a>
         </li>
     </ul>

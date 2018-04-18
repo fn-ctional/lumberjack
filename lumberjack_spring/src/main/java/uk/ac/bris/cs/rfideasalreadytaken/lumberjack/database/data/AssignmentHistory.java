@@ -4,7 +4,7 @@ import java.sql.Time;
 
 public class AssignmentHistory {
 
-    private String assignmentHistoryID;
+    private int assignmentHistoryID;
     private String deviceID;
     private String userID;
     private java.sql.Date dateAssigned;
@@ -16,7 +16,7 @@ public class AssignmentHistory {
 
     public AssignmentHistory(){};
 
-    public AssignmentHistory(String assignmentHistoryID, String deviceID, String userID, java.sql.Date dateAssigned, java.sql.Time timeAssigned, java.sql.Date dateReturned, java.sql.Time timeReturned, boolean returnedOnTime, String returnedByID){
+    public AssignmentHistory(int assignmentHistoryID, String deviceID, String userID, java.sql.Date dateAssigned, java.sql.Time timeAssigned, java.sql.Date dateReturned, java.sql.Time timeReturned, boolean returnedOnTime, String returnedByID){
         this.assignmentHistoryID = assignmentHistoryID;
         this.deviceID = deviceID;
         this.userID = userID;
@@ -28,7 +28,7 @@ public class AssignmentHistory {
         this.returnedByID = returnedByID;
     }
 
-    public String getAssignmentHistoryID() {
+    public int getAssignmentHistoryID() {
         return assignmentHistoryID;
     }
 
@@ -64,7 +64,7 @@ public class AssignmentHistory {
         return returnedByID;
     }
 
-    public void setAssignmentHistoryID(String assignmentHistoryID) { this.assignmentHistoryID = assignmentHistoryID; }
+    public void setAssignmentHistoryID(int assignmentHistoryID) { this.assignmentHistoryID = assignmentHistoryID; }
 
     public void setDeviceID(String deviceID) { this.deviceID = deviceID; }
 

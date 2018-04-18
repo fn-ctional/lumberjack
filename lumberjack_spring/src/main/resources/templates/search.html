@@ -23,6 +23,8 @@
                 Search
                 <span th:if="${type} == user">Users</span>
                 <span th:if="${type} == device">Devices</span>
+                <span th:if="${type} == group">User Groups</span>
+                <span th:if="${type} == rule">Rules</span>
             </h2>
 
             <span id="type" style="display: none;" th:text="${type}"></span>
@@ -35,7 +37,13 @@
                         <a class="btn btn-primary" href="/search/user" role="button">Users</a>
                     </div>
                     <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/search/group" role="button">User Groups</a>
+                    </div>
+                    <div class="col-sm-auto">
                         <a class="btn btn-primary" href="/search/device" role="button">Devices</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/search/rule" role="button">Rules</a>
                     </div>
                 </div>
             </div>
@@ -57,8 +65,6 @@
 
     </div>
 </div>
-
-<div th:replace="fragments/sidebar :: sidebar"></div>
 
 <div th:replace="fragments/footer :: footer"></div>
 

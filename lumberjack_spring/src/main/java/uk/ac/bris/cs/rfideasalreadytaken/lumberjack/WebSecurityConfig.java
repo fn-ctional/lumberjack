@@ -44,7 +44,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         final String[] unlocked = {"/", "/about", "/download", "/register", "/registration", "/css/**", "/js/**",
-                "/images/**", "/registrationConfirm*", "/devices", "/rpi"};
+                "/images/**", "/registrationConfirm*", "/test"};
 
         http
                     .authorizeRequests()
@@ -63,8 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .logout()
                     .logoutSuccessUrl("/login")
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .and()
-                    .requiresChannel().antMatchers("*").requiresSecure()
+//                .and()
+//                    .requiresChannel().antMatchers("*").requiresSecure()
                 .and()
                     .csrf().disable();//TODO: this should be fixed and enabled for release
     }

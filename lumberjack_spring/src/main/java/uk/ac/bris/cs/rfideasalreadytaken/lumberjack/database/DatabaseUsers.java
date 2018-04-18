@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.data.ScanDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.AssignmentHistory;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 
 import java.sql.PreparedStatement;
@@ -68,6 +69,21 @@ public class DatabaseUsers {
         return null;
     }
 
+    public List<User> loadUsersFromResultSet(ResultSet rs) throws SQLException {
+        List<User> users = new ArrayList<>();
+        while (rs.next()) {
+            User user = new User();
+            user.setCanRemove(rs.getBoolean("CanRemove"));
+            user.setDeviceLimit(rs.getInt("DeviceLimit"));
+            user.setDevicesRemoved(rs.getInt("DevicesRemoved"));
+            user.setId(rs.getString("id"));
+            user.setScanValue(rs.getString("ScanValue"));
+            user.setGroupId(rs.getString("GroupID"));
+            users.add(user);
+        }
+        return users;
+    }
+
     public boolean isValidUser(ScanDTO scanDTO) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT id FROM Users WHERE ScanValue = ?");
         stmt.setString(1, scanDTO.getUser());
@@ -106,6 +122,12 @@ public class DatabaseUsers {
             stmt.execute();
     }
 
+    public List<User> loadUsersFromUserGroup(String userGroupID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Users WHERE GroupID = ?");
+        stmt.setString(1, userGroupID);
+        ResultSet rs = stmt.executeQuery();
+        return loadUsersFromResultSet(rs);
+    }
 
     //TODO: I don't think this function has correct operation
     public boolean canUserRemoveDevices(User user) {
@@ -115,6 +137,12 @@ public class DatabaseUsers {
     //TODO: I don't think this function has correct operation
     public boolean isUserAtDeviceLimit(User user){
         return user.getDeviceLimit() == user.getDevicesRemoved();
+    }
+
+    public void removeGroupFromUsers(String groupID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Users SET GroupID = NULL WHERE GroupID = ?");
+        stmt.setString(1, groupID);
+        stmt.execute();
     }
 
 }

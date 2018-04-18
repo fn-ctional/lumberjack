@@ -42,21 +42,50 @@
                 </div>
             </div>
 
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                var available = /*[[${available}]]*/ '0';
+                var taken     = /*[[${taken}]]*/'0';
+                var other     = /*[[${other}]]*/'0';
+                var times     = [];
+                var takeouts  = [];
+                var returns   = [];
+                // Time Labels
+                times[0] = /*[[${time0}]]*/'0';
+                times[1] = /*[[${time1}]]*/'0';
+                times[2] = /*[[${time2}]]*/'0';
+                times[3] = /*[[${time3}]]*/'0';
+                times[4] = /*[[${time4}]]*/'0';
+                times[5] = /*[[${time5}]]*/'0';
+                // Takeouts
+                takeouts[0] = /*[[${take0}]]*/'0';
+                takeouts[1] = /*[[${take1}]]*/'0';
+                takeouts[2] = /*[[${take2}]]*/'0';
+                takeouts[3] = /*[[${take3}]]*/'0';
+                takeouts[4] = /*[[${take4}]]*/'0';
+                takeouts[5] = /*[[${take5}]]*/'0';
+                // Returns
+                returns[0] = /*[[${return0}]]*/'0';
+                returns[1] = /*[[${return1}]]*/'0';
+                returns[2] = /*[[${return2}]]*/'0';
+                returns[3] = /*[[${return3}]]*/'0';
+                returns[4] = /*[[${return4}]]*/'0';
+                returns[5] = /*[[${return5}]]*/'0';
+                /*]]>*/
+            </script>
+
             <script>
-                // Takeouts and Returns
-                tos = Array.from({length: 10}, () => Math.floor(Math.random() * 400));
-                rtn = Array.from({length: 10}, () => Math.floor(Math.random() * 400));
                 new Chart(document.getElementById("takeouts"), {
                     type: 'line',
                     data: {
-                        labels: ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
+                        labels: times,
                         datasets: [{
-                            data: tos,
+                            data: takeouts,
                             label: "Takeouts",
                             borderColor: "#7fb658",
                             fill: false
                         }, {
-                            data: rtn,
+                            data: returns,
                             label: "Returns",
                             borderColor: "#e16f00",
                             fill: false
@@ -72,10 +101,7 @@
                 });
 
                 // Devices Status
-                av  = Math.floor((Math.random() * 400) + 1);
-                tnk = Math.floor((Math.random() * (120)) + 1);
-                otr = Math.floor((Math.random() * 20) + 1);
-                vals = [av, tnk, otr];
+                vals = [available, taken, other];
                 new Chart(document.getElementById("device-status"), {
                     type: 'doughnut',
                     data: {
@@ -95,32 +121,11 @@
                     }
                 });
 
-                // new Chart(document.getElementById("doughnut-chart3"), {
-                //     type: 'doughnut',
-                //     data: {
-                //         labels: ["Africa3", "Asia", "Europe", "Latin America", "North America"],
-                //         datasets: [
-                //             {
-                //                 label: "Population (millions)",
-                //                 backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
-                //                 data: [2478,5267,734,784,433]
-                //             }
-                //         ]
-                //     },
-                //     options: {
-                //         title: {
-                //             display: true,
-                //             text: 'Predicted world population (millions) in 2050'
-                //         }
-                //     }
-                // });
             </script>
 
         </main>
     </div>
 </div>
-
-<div th:replace="fragments/sidebar :: sidebar"></div>
 
 <div th:replace="fragments/footer :: footer"></div>
 

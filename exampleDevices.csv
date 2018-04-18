@@ -1,0 +1,2 @@
+scan value,type,available,currently assigned,rule id
+testscan11,test,true,false,ruleSet1

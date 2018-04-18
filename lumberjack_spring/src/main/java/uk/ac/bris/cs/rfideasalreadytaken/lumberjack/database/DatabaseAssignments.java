@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Assignment;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.AssignmentHistory;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +12,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static java.util.Calendar.*;
 
 @Service
 public class DatabaseAssignments {
@@ -41,6 +42,16 @@ public class DatabaseAssignments {
         return null;
     }
 
+    public List<Assignment> loadAssignmentsFromResultSet(ResultSet rs) throws SQLException {
+        List<Assignment> assignments = new ArrayList<>();
+        while (rs.next()) {
+            Assignment assignment = new Assignment();
+            rs.previous();
+            assignment = loadAssignmentFromResultSet(rs);
+            assignments.add(assignment);
+        }
+        return assignments;
+    }
 
     public AssignmentHistory loadAssignmentHistory(Device device) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM AssignmentHistory WHERE DeviceID = ?");
@@ -52,7 +63,7 @@ public class DatabaseAssignments {
     public AssignmentHistory loadAssignmentHistoryFromResultSet(ResultSet rs) throws SQLException {
         if (rs.next()) {
             AssignmentHistory assignmentHistory = new AssignmentHistory();
-            assignmentHistory.setAssignmentHistoryID(rs.getString("id"));
+            assignmentHistory.setAssignmentHistoryID(rs.getInt("id"));
             assignmentHistory.setDeviceID(rs.getString("DeviceID"));
             assignmentHistory.setUserID(rs.getString("UserID"));
             assignmentHistory.setDateAssigned(rs.getDate("DateAssigned"));
@@ -64,6 +75,16 @@ public class DatabaseAssignments {
             return assignmentHistory;
         }
         return null;
+    }
+
+    public List<AssignmentHistory> loadAssignmentHistoriesFromResultSet(ResultSet rs) throws SQLException {
+        List<AssignmentHistory> assignmentHistories = new ArrayList<>();
+        while (rs.next()) {
+            rs.previous();
+            AssignmentHistory assignmentHistory = loadAssignmentHistoryFromResultSet(rs);
+            assignmentHistories.add(assignmentHistory);
+        }
+        return assignmentHistories;
     }
 
     public boolean checkIfReturnedOnTime(Assignment assignment) throws SQLException {
@@ -82,7 +103,7 @@ public class DatabaseAssignments {
         return false;
     }
 
-        public void insertIntoAssignments(Assignment assignment) throws SQLException {
+    public void insertIntoAssignments(Assignment assignment) throws SQLException {
             PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("INSERT INTO Assignments (DeviceID, UserID, DateAssigned, TimeAssigned)\n" +
                     "VALUES (?,?,?,?)");
             stmt.setString(1, assignment.getDeviceID());
@@ -124,5 +145,76 @@ public class DatabaseAssignments {
             stmt.execute();
     }
 
+    public int getAssignmentsTakeoutsByTime(Calendar start, Calendar end) throws SQLException {
+
+
+        String startDate = start.get(YEAR) + "-" + start.get(MONTH) + "-" + start.get(DATE);
+        String startTime = start.get(HOUR_OF_DAY) + ":" + start.get(MINUTE) + ":" + start.get(SECOND);
+        String endDate = end.get(YEAR) + "-" + end.get(MONTH) + "-" + end.get(DATE);
+        String endTime = end.get(HOUR_OF_DAY) + ":" + end.get(MINUTE) + ":" + end.get(SECOND);
+
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM AssignmentHistory WHERE " +
+                "DateAssigned >= CAST(? AS DATE) AND DateAssigned <= CAST(? AS DATE)" +
+                " AND TimeAssigned >= CAST(? AS TIME) AND TimeAssigned <= CAST(? AS TIME)");
+
+        stmt.setString(1, startDate);
+        stmt.setString(2, endDate);
+        stmt.setString(3, startTime);
+        stmt.setString(4, endTime);
+
+        ResultSet rs = stmt.executeQuery();
+        rs.last();
+        int history = rs.getRow();
+
+        PreparedStatement stmt2 = databaseConnection.getConnection().prepareStatement("SELECT * FROM Assignments WHERE " +
+                "DateAssigned >= CAST(? AS DATE) AND DateAssigned <= CAST(? AS DATE)" +
+                " AND TimeAssigned >= CAST(? AS TIME) AND TimeAssigned <= CAST(? AS TIME)");
+
+        stmt2.setString(1, startDate);
+        stmt2.setString(2, endDate);
+        stmt2.setString(3, startTime);
+        stmt2.setString(4, endTime);
+
+        ResultSet rs2 = stmt2.executeQuery();
+        rs2.last();
+        history += rs2.getRow();
+
+        return history;
+    }
+
+    public int getAssignmentsReturnsByTime(Calendar start, Calendar end) throws SQLException {
+
+
+        String startDate = start.get(YEAR) + "-" + start.get(MONTH) + "-" + start.get(DATE);
+        String startTime = start.get(HOUR_OF_DAY) + ":" + start.get(MINUTE) + ":" + start.get(SECOND);
+        String endDate = end.get(YEAR) + "-" + end.get(MONTH) + "-" + end.get(DATE);
+        String endTime = end.get(HOUR_OF_DAY) + ":" + end.get(MINUTE) + ":" + end.get(SECOND);
+
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM AssignmentHistory WHERE " +
+                "DateReturned >= CAST(? AS DATE) AND DateReturned <= CAST(? AS DATE)" +
+                " AND TimeReturned >= CAST(? AS TIME) AND TimeReturned <= CAST(? AS TIME)");
+
+        stmt.setString(1, startDate);
+        stmt.setString(2, endDate);
+        stmt.setString(3, startTime);
+        stmt.setString(4, endTime);
+
+        ResultSet rs = stmt.executeQuery();
+        rs.last();
+
+        return rs.getRow();
+    }
+
+    public void deleteFromAssignmentHistoryByUser(String userID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM AssignmentHistory WHERE UserID = ?");
+        stmt.setString(1, userID);
+        stmt.execute();
+    }
+
+    public void deleteFromAssignmentHistoryByDevice(String deviceID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM AssignmentHistory WHERE DeviceID = ?");
+        stmt.setString(1, deviceID);
+        stmt.execute();
+    }
 
 }

@@ -45,23 +45,94 @@
                     <tbody>
                     <th:block th:each="device : ${deviceList}">
                         <tr>
-                            <td th:text="${device.getId()}">ID</td>
+                            <td><a th:href="@{'/device/' + ${device.getId()}}"><span th:text="${device.getId()}">ID</span></a></td>
                             <td th:text="${device.getScanValue()}">Scan Value</td>
                             <td th:text="${device.getType()}">Type</td>
                             <td th:text="${device.isAvailable() == true ? '✓' : '✗'}">Available?</td>
                             <td th:text="${device.isCurrentlyAssigned() == true ? '✓' : '✗'}">Assigned?</td>
-                            <td th:text="${device.getRuleID()}">Rule ID</td>
+                            <td><a th:href="@{'/rule/' + ${device.getRuleID()}}"><span th:text="${device.getRuleID()}">Rule ID</span></a></td>
                         </tr>
                     </th:block>
                     </tbody>
                 </table>
             </div>
+
+            <div th:if="!${blank} and ${found} and !${multi}">
+
+                <a th:href="@{'/update/device/' + ${searchTerm}}" class="btn btn-primary">Edit</a>
+
+                <h1></h1>
+
+                <h2>Assignment History</h2>
+
+                <p th:if="!${taken}" class="lead">This device has no assignment history.</p>
+
+                <div th:if="${taken}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User ID</th>
+                            <th>Taken Out</th>
+                            <th>Returned</th>
+                            <th>Returned on Time?</th>
+                            <th>Returned By</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="takeout : ${takeoutList}">
+                            <tr>
+                                <td th:text="${takeout.getAssignmentHistoryID()}">ID</td>
+                                <td><a th:href="@{'/user/' + ${takeout.getUserID()}}"><span th:text="${takeout.getUserID()}">User ID</span></a></td>
+                                <td th:text="|${takeout.getDateAssigned()}   ${takeout.getTimeAssigned()}|">Date Time</td>
+                                <td th:text="|${takeout.getDateReturned()}   ${takeout.getTimeReturned()}|">Date Time</td>
+                                <td th:text="${takeout.isReturnedOnTime() == true ? '✓' : '✗'}">On Time?</td>
+                                <td><a th:href="@{'/user/' + ${takeout.getReturnedByID()}}"><span th:text="${takeout.getReturnedByID()}">Returned By</span></a></td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Delete Device -->
+
+                <h1></h1>
+
+                <h2>Delete Device</h2>
+
+                <div class="container-fluid">
+                    <form action="#" th:action="@{/delete/device/}" method="post">
+
+                        <div class="form-group row">
+                            <div class="col-sm-4">
+                                <input type="checkbox" name="deleteHistory" id="deleteHistory" value="true" />
+                                <label for="deleteHistory" class="form-label">Delete device assignment history?</label>
+                            </div>
+                        </div>
+
+                        <label for="deviceID" hidden="hidden"></label>
+                        <th:block th:each="device : ${deviceList}">
+                            <input type="text" th:value="${device.getId()}" name="deviceID" hidden="hidden" id="deviceID"/>
+                        </th:block>
+
+                        <p class="form-text text-muted row">
+                            You cannot delete a device that is currently out. You must first return the device. This can be
+                            done on the device's page, or by getting the user who has the device to return it manually.
+                        </p>
+
+                        <div class="form-group row">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+
         </main>
 
     </div>
 </div>
-
-<div th:replace="fragments/sidebar :: sidebar"></div>
 
 <div th:replace="fragments/footer :: footer"></div>
 

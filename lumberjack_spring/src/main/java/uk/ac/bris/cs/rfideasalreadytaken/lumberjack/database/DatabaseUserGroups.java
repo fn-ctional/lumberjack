@@ -2,14 +2,13 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.GroupPermission;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.UserGroup;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DatabaseUserGroups {
@@ -94,6 +93,64 @@ public class DatabaseUserGroups {
         return loadGroupPermissionFromResultSet(rs);
     }
 
+    private List<Rule> loadRulesFromResultSet(ResultSet rs) throws SQLException{
+        List<Rule> rules = new ArrayList<>();
+        while (rs.next()) {
+            Rule rule = new Rule();
+            rule.setId(rs.getString("id"));
+            rule.setMaximumRemovalTime(rs.getInt("MaximumRemovalTime"));
+            rules.add(rule);
+        }
+        return rules;
+    }
 
+    public List<Rule> loadGroupRules(String userGroupID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT R.id, " +
+                " R.MaximumRemovalTime FROM GroupPermissions INNER JOIN Rules R ON GroupPermissions.RuleID = R.id " +
+                "WHERE UserGroupID = ?");
+        stmt.setString(1, userGroupID);
+        ResultSet rs = stmt.executeQuery();
+        return loadRulesFromResultSet(rs);
+    }
+
+    private List<UserGroup> loadUserGroupsFromResultSet(ResultSet rs) throws SQLException {
+        List<UserGroup> groups = new ArrayList<>();
+        while(rs.next()) {
+            UserGroup group = new UserGroup();
+            group.setId(rs.getString("id"));
+            groups.add(group);
+        }
+        return groups;
+    }
+
+    public List<UserGroup> loadGroupsByRule(String ruleID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT UserGroups.id FROM " +
+                " UserGroups INNER JOIN GroupPermissions GP ON UserGroups.id = GP.UserGroupID WHERE RuleID = ?");
+        stmt.setString(1, ruleID);
+        ResultSet rs = stmt.executeQuery();
+        return loadUserGroupsFromResultSet(rs);
+    }
+
+    public void deletePermissionsByGroup(String groupID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM GroupPermissions WHERE UserGroupID = ?");
+        stmt.setString(1, groupID);
+        stmt.execute();
+    }
+
+    public void deletePermissionsByRule(String ruleID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM GroupPermissions WHERE RuleID = ?");
+        stmt.setString(1, ruleID);
+        stmt.execute();
+    }
+
+    public void deletePermissions(List<GroupPermission> permissions) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM GroupPermissions " +
+                "WHERE RuleID = ? AND UserGroupID = ?");
+        for (GroupPermission p : permissions) {
+            stmt.setString(1, p.getRuleID());
+            stmt.setString(2, p.getUserGroupID());
+            stmt.execute();
+        }
+    }
 
 }

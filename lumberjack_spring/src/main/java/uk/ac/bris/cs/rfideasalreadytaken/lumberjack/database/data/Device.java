@@ -11,7 +11,8 @@ public class Device {
     private boolean currentlyAssigned;
     private String ruleID;
 
-    public Device(){};
+    public Device(){
+    };
 
     public Device(String id, String scanValue, String type, boolean available, boolean currentlyAssigned, String ruleID){
         this.id = id;
