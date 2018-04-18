@@ -537,16 +537,67 @@ public class FrontEndDatabaseManagerTests {
         }
 
 
+@Test
+public void testGetGroupUsers() throws Exception {
+    List<User> users = webBackend.getGroupUsers("groupOne");
+    assertTrue(users.contains(new User("Aidan9876", "1314831486", 2, 0, true, "groupOne")));
+    assertTrue(users.contains(new User("Dorathy0369", "94648329837", 0, 0, true, "groupOne")));
+}
+
+@Test
+public void testGetGroupRules() throws Exception {
+    List<Rule> rules = webBackend.getGroupUsers("groupOne");
+    assertTrue(obtainedRules.contains(new Rule("ruleSet1",20)));
+    assertTrue(obtainedRules.contains(new Rule("ruleSet2",22)));
+}
+
+@Test
+public void testGetAvailableCount() throws Exception {
+    assertEquals(webBackend.getAvailableCount(),3);
+}
+
+@Test
+public void testGetTakenCount() throws Exception {
+    assertEquals(webBackend.getAvailableCount(),1);
+}
+
+@Test
+public void testGetOtherCount() throws Exception {
+    assertEquals(webBackend.getAvailableCount(),0);
+}
+
+@Test
+public void testGetTimes() throws Exception {
+  List<String> times = webBackend.getTimes(3);
+  assertEquals(times.size(),3);
+}
+
+@Test
+public void testUpdateRule() throws Exception {
+  Rule rule = new Rule("ruleSet1", 8);
+  rule = webBackend.getRule("ruleSet1");
+  assertEquals(rule.getMaximumRemovalTime(),8);
+}
+
+@Test
+public void testGetUsersCSV() throws Exception {
+  webBackend.deleteUser("Aidan9876");
+  webBackend.deleteUser("Betty1248");
+  webBackend.deleteUser("Callum2468");
+
+  assertEquals(csv,"id,scan value,device limit,devices removed,can remove,group id\nDorathy0369,94648329837,0,0,true,groupOne\n");
+}
+
+@Test
+public void testGetDevicesCSV() throws Exception {
+  webBackend.deleteDevice("laptop02");
+  webBackend.deleteDevice("laptop03");
+  webBackend.deleteDevice("camera01");
+
+  assertEquals(csv,"id,scan value,type,available,currently assigned,rule id\laptop01,36109839730967812,laptop,true,false,ruleSet1\n");
+}
+
 */
-
-
-
-
-
-
-
-
-
 
 
 
