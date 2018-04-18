@@ -537,10 +537,36 @@ public class FrontEndDatabaseManagerTests {
         }
 
 
+@Test
+public void testGetGroupUsers() throws Exception {
+    List<User> users = webBackend.getGroupUsers("groupOne");
+    assertTrue(users.contains(new User("Aidan9876", "1314831486", 2, 0, true, "groupOne")));
+    assertTrue(users.contains(new User("Dorathy0369", "94648329837", 0, 0, true, "groupOne")));
+}
+
+@Test
+public void testGetGroupRules() throws Exception {
+    List<Rule> rules = webBackend.getGroupUsers("groupOne");
+    assertTrue(obtainedRules.contains(new Rule("ruleSet1",20)));
+    assertTrue(obtainedRules.contains(new Rule("ruleSet2",22)));
+}
+
+@Test
+public void testGetAvailableCount() throws Exception {
+    assertEquals(webBackend.getAvailableCount(),3);
+}
+
+@Test
+public void testGetTakenCount() throws Exception {
+    assertEquals(webBackend.getAvailableCount(),1);
+}
+
+@Test
+public void testGetOtherCount() throws Exception {
+    assertEquals(webBackend.getAvailableCount(),0);
+}
+
 */
-
-
-
 
 
 

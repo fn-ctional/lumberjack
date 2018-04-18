@@ -431,22 +431,27 @@ public class WebBackend implements FromFrontEnd {
         return stringBuilder.toString();
     }
 
+    //Tested
     public List<User> getGroupUsers(String userGroupID) throws SQLException {
         return databaseUsers.loadUsersFromUserGroup(userGroupID);
     }
 
+    //Tested
     public List<Rule> getGroupRules(String userGroupID) throws SQLException {
         return databaseUserGroups.loadGroupRules(userGroupID);
     }
 
+    //Tested
     public int getAvailableCount() throws SQLException {
         return databaseDevices.getAvailableCount();
     }
 
+    //Tested
     public int getTakenCount() throws SQLException {
         return databaseDevices.getTakenCount();
     }
 
+    //Tested
     public int getOtherCount() throws SQLException {
         return databaseDevices.getOtherCount();
     }
