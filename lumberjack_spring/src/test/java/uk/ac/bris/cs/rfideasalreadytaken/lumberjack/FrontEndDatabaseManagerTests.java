@@ -566,8 +566,6 @@ public void testGetOtherCount() throws Exception {
     assertEquals(webBackend.getAvailableCount(),0);
 }
 
-*/
-
 @Test
 public void testGetTimes() throws Exception {
   List<String> times = webBackend.getTimes(3);
@@ -580,6 +578,8 @@ public void testUpdateRule() throws Exception {
   rule = webBackend.getRule("ruleSet1");
   assertEquals(rule.getMaximumRemovalTime(),8);
 }
+
+*/
 
 
 
