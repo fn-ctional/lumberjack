@@ -477,8 +477,6 @@ public class FrontEndDatabaseManagerTests {
         assertNull(webBackend.getGroupPermission("ruleSet2","groupOne"));
     }
 
-    */
-
     @Test
     public void testRemoveRuleFromDevices() throws Exception {
         webBackend.removeRuleFromDevices("ruleSet1");
@@ -497,6 +495,14 @@ public class FrontEndDatabaseManagerTests {
         }
     }
 
+    @Test
+    public void testDeleteAssignmentHistoryByDevice() throws Exception {
+        webBackend.deleteAssignmentHistoryByDevice("laptop01");
+        List<AssignmentHistory> history = webBackend.getDeviceAssignmentHistory();
+        asertEqual(history.size(),0);
+    }
+
+        */
 
 
 
