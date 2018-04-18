@@ -59,6 +59,8 @@
 
             <div th:if="!${blank} and ${found} and !${multi}">
 
+                <a th:href="@{'/update/device/' + ${searchTerm}}" class="btn btn-primary">Edit</a>
+
                 <h1></h1>
 
                 <h2>Assignment History</h2>

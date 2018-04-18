@@ -236,29 +236,29 @@
                 </div>
             </div>
 
-            <!-- Adding Rules -->
+            <!-- Updating Rules -->
 
             <div th:if="${type} == rule" class="container-fluid">
                 <div class="row">
                     <div class="col-lg">
 
                         <p class="lead">
-                            Add a rule:
+                            Update a rule:
                         </p>
 
                         <div class="container-fluid">
                             <div class="row">
-                                <form action="#" th:action="@{/add/rule}" method="post">
+                                <form action="#" th:action="@{/update/rule}" method="post">
 
                                     <label for="ruleIDF" hidden="hidden"></label>
-                                    <input type="text" th:value="${rule.getID()}" name="id" hidden="hidden" id="ruleIDF"/>
+                                    <input type="text" th:value="${rule.getId()}" name="id" hidden="hidden" id="ruleIDF"/>
 
                                     <div class="form-group row" >
                                         <label for="ruleName" class="col-sm-4 col-form-label">Rule ID</label>
                                         <div class="col-sm-4">
-                                            <input type="text" class="form-control" id="ruleName" name="ruleName" placeholder="Room 3b" required="required" />
+                                            <input th:value="${rule.getId()}" type="text" disabled='disabled' class="form-control" id="ruleName" name="ruleName" />
                                             <p id="ruleNameHelp" class="form-text text-muted">
-                                                Must be unique.
+                                                You cannot change a rule name. You can delete a rule and add a new one with the amended name.
                                             </p>
                                         </div>
                                     </div>
@@ -266,7 +266,7 @@
                                     <div class="form-group row">
                                         <label for="maximumTime" class="col-sm-4 col-form-label">Maximum Removal Time</label>
                                         <div class="col-sm-4">
-                                            <input type="number" min="1" step="1" placeholder="0" value="1" class="form-control" id="maximumTime" name="maximumTime" required="required" />
+                                            <input th:value="${rule.getMaximumRemovalTime()}" type="number" min="1" step="1" placeholder="0" value="1" class="form-control" id="maximumTime" name="maximumTime" required="required" />
                                         </div>
                                     </div>
 

@@ -564,4 +564,10 @@ public class WebBackend implements FromFrontEnd {
         databaseUserGroups.deletePermissions(permissions);
     }
 
+    public void updateRule(Rule rule) throws SQLException {
+        System.out.println(rule.getId());
+        System.out.println(rule.getMaximumRemovalTime());
+        databaseRules.updateRule(rule);
+    }
+
 }

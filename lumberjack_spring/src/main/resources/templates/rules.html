@@ -56,6 +56,8 @@
 
                 <p class="lead">Maximum removal time: <code th:text="${thisRule.getMaximumRemovalTime()}">8</code> hours.</p>
 
+                <a th:href="@{'/update/rule/' + ${searchTerm}}" class="btn btn-primary">Edit</a>
+
                 <h1></h1>
 
                 <h2>Groups with this rule</h2>
