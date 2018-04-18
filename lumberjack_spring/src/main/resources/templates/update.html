@@ -185,22 +185,22 @@
                     <div class="col-lg">
 
                         <p class="lead">
-                            Add a group:
+                            Update a group:
                         </p>
 
                         <div class="container-fluid">
                             <div class="row">
-                                <form action="#" th:action="@{/add/group}" method="post">
+                                <form action="#" th:action="@{/update/group}" method="post">
 
-                                    <label for="groupID" hidden="hidden"></label>
-                                    <input type="text" th:value="${group.getID()}" name="id" hidden="hidden" id="groupID"/>
+                                    <label for="groupIDF" hidden="hidden"></label>
+                                    <input type="text" th:value="${group.getId()}" name="id" hidden="hidden" id="groupIDF"/>
 
                                     <div class="form-group row" >
                                         <label for="groupName" class="col-sm-2 col-form-label">Group ID</label>
                                         <div class="col-sm-4">
-                                            <input type="text" class="form-control" id="groupName" name="groupName" placeholder="Yr 1 CompSci" required="required" />
+                                            <input th:value="${group.getId()}" disabled="disabled" type="text" class="form-control" id="groupName" name="groupName" placeholder="Yr 1 CompSci" />
                                             <p id="nameHelp" class="form-text text-muted">
-                                                Must be unique.
+                                                You cannot change a group name. You can delete a group and add a new one with the amended name.
                                             </p>
                                         </div>
                                     </div>
@@ -212,8 +212,8 @@
                                             <th:block th:each="rule : ${rules}">
                                                 <div class="form-check">
                                                     <label th:for="'rule' + ${rule.getId()}" class="col-check-label">
-                                                        <input th:id="'rule' + ${rule.getId()}" type="checkbox" class="form-check-input" th:name="'rule' + ${rule.getId()}" th:value="${rule.getId()}" />
-                                                        <span th:text="${rule.getId()}">ID</span> - <span th:text="${rule.getMaximumRemovalTime()}">2</span> hours
+                                                        <input th:attr="checked=${groupRules.containsKey(rule.getId()) ? 'checked' : null}" th:id="'rule' + ${rule.getId()}" type="checkbox" class="form-check-input" th:name="${rule.getId()}" th:value="${rule.getId()}" />
+                                                        <span th:name="${rule.getId()}" th:text="${rule.getId()}">ID</span> - <span th:text="${rule.getMaximumRemovalTime()}">2</span> hours
                                                     </label>
                                                 </div>
                                             </th:block>
@@ -226,7 +226,7 @@
                                     </p>
 
                                     <div class="form-group row">
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
 
                                 </form>

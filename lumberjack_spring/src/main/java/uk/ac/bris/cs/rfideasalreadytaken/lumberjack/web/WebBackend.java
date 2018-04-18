@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.security.Permission;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -553,6 +554,14 @@ public class WebBackend implements FromFrontEnd {
 
     public void deletePermissionsByRule(String ruleID) throws SQLException {
         databaseUserGroups.deletePermissionsByRule(ruleID);
+    }
+
+    public boolean groupHasRule(String groupID, String ruleID) throws SQLException {
+        return databaseRules.groupHasRule(groupID, ruleID);
+    }
+
+    public void deletePermissions(List<GroupPermission> permissions) throws SQLException {
+        databaseUserGroups.deletePermissions(permissions);
     }
 
 }

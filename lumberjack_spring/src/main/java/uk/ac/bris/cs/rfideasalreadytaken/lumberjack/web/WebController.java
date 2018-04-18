@@ -18,7 +18,9 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadExcepti
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.security.Permission;
 import java.sql.SQLException;
+import java.time.Period;
 import java.util.*;
 
 @Controller
@@ -740,9 +742,11 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("type", type);
         model.addAttribute("id", id);
         model.addAttribute("groups", new ArrayList<UserGroup>());
+        model.addAttribute("groupRules", new HashMap<String, String>());
         model.addAttribute("rules", new ArrayList<Rule>());
         model.addAttribute("user", new User());
         model.addAttribute("device", new Device());
+        model.addAttribute("group", new UserGroup());
         try {
             switchOnType(type, model, id);
         } catch (Exception e) {
@@ -769,6 +773,12 @@ public class WebController extends WebMvcConfigurerAdapter {
                 rules = new ArrayList<>();
                 rules = webBackend.getRules();
                 model.addAttribute("rules", rules);
+                model.addAttribute("group", webBackend.getUserGroup(id));
+                HashMap<String, String> groupRules = new HashMap<>();
+                for (Rule rule : webBackend.getGroupRules(id)) {
+                    groupRules.put(rule.getId(), "");
+                }
+                model.addAttribute("groupRules", groupRules);
                 break;
             case "device":
                 if (id != null) {
@@ -787,16 +797,16 @@ public class WebController extends WebMvcConfigurerAdapter {
     public String updateUser(@RequestParam Map<String, String> request, Model model) {
         System.out.println(request);
         // Set user attributes
-        User updateUser = new User();
-        updateUser.setId(request.get("id"));
-        updateUser.setScanValue(request.get("scanValue"));
-        updateUser.setDeviceLimit(new Integer(request.get("deviceLimit")));
-        updateUser.setDevicesRemoved(new Integer(request.get("removed")));
-        updateUser.setCanRemove(request.containsKey("canRemove"));
-        updateUser.setGroupId(request.get("groupID"));
+        User user = new User();
+        user.setId(request.get("id"));
+        user.setScanValue(request.get("scanValue"));
+        user.setDeviceLimit(new Integer(request.get("deviceLimit")));
+        user.setDevicesRemoved(new Integer(request.get("removed")));
+        user.setCanRemove(request.containsKey("canRemove"));
+        user.setGroupId(request.get("groupID"));
         // Add user to the database
         try {
-            webBackend.editUser(updateUser.getId(), updateUser);
+            webBackend.editUser(user.getId(), user);
         } catch (Exception e) {
             System.out.println("SQL Exception");
             model.addAttribute("messageType", "User Updating Failed");
@@ -811,16 +821,16 @@ public class WebController extends WebMvcConfigurerAdapter {
     @PostMapping("/update/device")
     public String updateDevice(@RequestParam Map<String, String> request, Model model) {
         // Set device attributes
-        Device newDevice = new Device();
-        newDevice.setId(request.get("id"));
-        newDevice.setScanValue(request.get("scanValue"));
-        newDevice.setType(request.get("deviceType"));
-        newDevice.setAvailable(request.containsKey("available"));
-        newDevice.setCurrentlyAssigned(request.get("assigned").equals("true"));
-        newDevice.setRuleID(request.get("ruleID"));
+        Device device = new Device();
+        device.setId(request.get("id"));
+        device.setScanValue(request.get("scanValue"));
+        device.setType(request.get("deviceType"));
+        device.setAvailable(request.containsKey("available"));
+        device.setCurrentlyAssigned(request.get("assigned").equals("true"));
+        device.setRuleID(request.get("ruleID"));
         // Add device to the database
         try {
-            webBackend.editDevice(newDevice.getId(), newDevice);
+            webBackend.editDevice(device.getId(), device);
         } catch (Exception e) {
             System.out.println("SQL Exception");
             model.addAttribute("messageType", "Device Updating Failed");
@@ -829,6 +839,55 @@ public class WebController extends WebMvcConfigurerAdapter {
         }
         model.addAttribute("messageType", "Device Updated");
         model.addAttribute("messageString", "The device has been updated!");
+        return "message";
+    }
+
+    @PostMapping("/update/group")
+    public String updateGroup(@RequestParam Map<String, String> request, Model model) {
+        String id = request.get("id");
+        // Get selected rules
+        List<GroupPermission> permissions = new ArrayList<>();
+        List<String> keys = new ArrayList<>(request.keySet());
+        for (int i = 1; i < request.size(); i++) {
+            GroupPermission permission = new GroupPermission();
+            permission.setId(UUID.randomUUID().toString());
+            permission.setUserGroupID(id);
+            permission.setRuleID(request.get(keys.get(i)));
+            permissions.add(permission);
+        }
+        // Add group and permissions(s) to the database
+        try {
+            // Get deselected rules
+            List<Rule> allRules = webBackend.getRules();
+            List<Rule> deletedRules = new ArrayList<>();
+            for (Rule r : allRules) {
+                if (!request.containsKey(r.getId())) {
+                    deletedRules.add(r);
+                }
+            }
+            // Delete removed permissions
+            List<GroupPermission> deletedPermissions = new ArrayList<>();
+            for (Rule r : deletedRules) {
+                deletedPermissions.add(new GroupPermission(r.getId(), id));
+                System.out.println("deleting " + r.getId());
+            }
+            webBackend.deletePermissions(deletedPermissions);
+            // Insert all selected permissions
+            for (GroupPermission permission : permissions) {
+                // Only insert permission if it doesn't exist
+                if (!webBackend.groupHasRule(permission.getUserGroupID(), permission.getRuleID())) {
+                    webBackend.insertGroupPermission(permission);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("SQL Exception");
+            model.addAttribute("messageType", "Group Updating Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        model.addAttribute("messageType", "Group Updated");
+        model.addAttribute("messageString", "The group has been updated!");
         return "message";
     }
 
