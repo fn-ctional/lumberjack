@@ -541,6 +541,7 @@ public class WebBackend implements FromFrontEnd {
         databaseAssignments.deleteFromAssignmentHistoryByDevice(deviceID);
     }
 
+    //Tested
     public void removeGroupFromUsers(String groupID) throws SQLException {
         databaseUsers.removeGroupFromUsers(groupID);
     }
@@ -550,6 +551,7 @@ public class WebBackend implements FromFrontEnd {
         databaseUserGroups.deletePermissionsByGroup(groupID);
     }
 
+    //Tested
     public void removeRuleFromDevices(String ruleID) throws SQLException {
         databaseDevices.removeRuleFromDevices(ruleID);
     }

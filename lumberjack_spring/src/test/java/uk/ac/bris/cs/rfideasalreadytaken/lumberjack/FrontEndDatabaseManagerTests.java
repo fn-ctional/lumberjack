@@ -444,7 +444,7 @@ public class FrontEndDatabaseManagerTests {
 
 
 
-    
+
 
     @Test
     public void testDeletePermissions() throws Exception {
@@ -479,6 +479,23 @@ public class FrontEndDatabaseManagerTests {
 
     */
 
+    @Test
+    public void testRemoveRuleFromDevices() throws Exception {
+        webBackend.removeRuleFromDevices("ruleSet1");
+        List<Devices> devices = webBackend.getDevicesByRule("ruleSet1");
+        asertEqual(devices.size(),0);
+    }
+
+    @Test
+    public void testRemoveGroupFromUsers() throws Exception {
+        webBackend.removeRuleFromDevices("groupOne");
+        List<Users> users = webBackend.getUsers();
+
+        for(User users.at(0) : users)
+        {
+          asertNotEqual(users.getGroupId,"groupOne");
+        }
+    }
 
 
 
