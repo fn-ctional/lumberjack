@@ -579,11 +579,25 @@ public void testUpdateRule() throws Exception {
   assertEquals(rule.getMaximumRemovalTime(),8);
 }
 
+@Test
+public void testGetUsersCSV() throws Exception {
+  webBackend.deleteUser("Aidan9876");
+  webBackend.deleteUser("Betty1248");
+  webBackend.deleteUser("Callum2468");
+
+  assertEquals(csv,"id,scan value,device limit,devices removed,can remove,group id\nDorathy0369,94648329837,0,0,true,groupOne\n");
+}
+
+@Test
+public void testGetDevicesCSV() throws Exception {
+  webBackend.deleteDevice("laptop02");
+  webBackend.deleteDevice("laptop03");
+  webBackend.deleteDevice("camera01");
+
+  assertEquals(csv,"id,scan value,type,available,currently assigned,rule id\laptop01,36109839730967812,laptop,true,false,ruleSet1\n");
+}
+
 */
-
-
-
-
 
 
 
