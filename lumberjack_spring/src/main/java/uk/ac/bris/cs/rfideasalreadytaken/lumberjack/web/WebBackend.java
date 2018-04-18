@@ -516,27 +516,33 @@ public class WebBackend implements FromFrontEnd {
         return times;
     }
 
+    //Tested
     public List<UserGroup> getUserGroupsByRule(String ruleID) throws SQLException {
         return databaseUserGroups.loadGroupsByRule(ruleID);
     }
 
+    //Tested
     public List<Device> getDevicesByRule(String ruleID) throws SQLException {
         return databaseDevices.loadDevicesByRule(ruleID);
     }
 
+    //Tested
     public boolean userHasOutstandingDevices(String userID) throws SQLException {
         List<Device> devices = databaseDevices.loadOutstandingDevicesByUser(userID);
         return !devices.isEmpty();
     }
 
+    //Tested
     public void deleteAssignmentHistoryByUser(String userID) throws SQLException {
         databaseAssignments.deleteFromAssignmentHistoryByUser(userID);
     }
 
+    //Tested
     public boolean deviceIsOut(String deviceID) throws SQLException {
         return databaseDevices.deviceIsOut(deviceID);
     }
 
+    //Tested
     public void deleteAssignmentHistoryByDevice(String deviceID) throws SQLException {
         databaseAssignments.deleteFromAssignmentHistoryByDevice(deviceID);
     }
