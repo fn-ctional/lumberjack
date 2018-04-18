@@ -441,5 +441,62 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(amount, returns.get(8));
     }
 
+
+
+
+    
+
+    @Test
+    public void testDeletePermissions() throws Exception {
+
+        List<GroupPermission> permissions = new List<>;
+        permissions.add(new GroupPermission("ruleSet1","groupOne"));
+
+        List<Integer> returns = webBackend.deletePermissions(9);
+
+        assertNull(webBackend.getGroupPermission("ruleSet1","groupOne"));
+    }
+
+    @Test
+    public void testGroupHasRule() throws Exception {
+        assertTrue(webBackend.groupHasRule("groupOne","ruleSet1"));
+        assertFalse(webBackend.groupHasRule("groupTwo","ruleSet2"));
+    }
+
+    @Test
+    public void testDeletePermissionsByRule() throws Exception {
+        webBackend.deletePermissionsByRule("ruleSet1");
+        assertNull(webBackend.getGroupPermission("ruleSet1","groupOne"));
+        assertNull(webBackend.getGroupPermission("ruleSet1","groupTwo"));
+    }
+
+    @Test
+    public void testDeletePermissionsByGroup() throws Exception {
+        webBackend.deletePermissionsByRule("groupOne");
+        assertNull(webBackend.getGroupPermission("ruleSet1","groupOne"));
+        assertNull(webBackend.getGroupPermission("ruleSet2","groupOne"));
+    }
+
     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

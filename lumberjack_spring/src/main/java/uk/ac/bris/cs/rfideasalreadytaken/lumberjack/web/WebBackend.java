@@ -200,7 +200,7 @@ public class WebBackend implements FromFrontEnd {
     public void deleteUserGroup(String group) throws SQLException {
         databaseUserGroups.deleteFromUserGroups(group);
     }
-    
+
     //Tested
     public void insertUserGroup(UserGroup group) throws SQLException {
         databaseUserGroups.insertIntoUserGroups(group);
@@ -373,6 +373,7 @@ public class WebBackend implements FromFrontEnd {
         }
     }
 
+
     public String getUsersCSV() throws SQLException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("id,");
@@ -544,6 +545,7 @@ public class WebBackend implements FromFrontEnd {
         databaseUsers.removeGroupFromUsers(groupID);
     }
 
+    //Tested
     public void deletePermissionsByGroup(String groupID) throws SQLException {
         databaseUserGroups.deletePermissionsByGroup(groupID);
     }
@@ -552,14 +554,17 @@ public class WebBackend implements FromFrontEnd {
         databaseDevices.removeRuleFromDevices(ruleID);
     }
 
+    //Tested
     public void deletePermissionsByRule(String ruleID) throws SQLException {
         databaseUserGroups.deletePermissionsByRule(ruleID);
     }
 
+    //Tested
     public boolean groupHasRule(String groupID, String ruleID) throws SQLException {
         return databaseRules.groupHasRule(groupID, ruleID);
     }
 
+    //Tested
     public void deletePermissions(List<GroupPermission> permissions) throws SQLException {
         databaseUserGroups.deletePermissions(permissions);
     }
