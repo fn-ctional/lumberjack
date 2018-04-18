@@ -3,6 +3,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -931,7 +932,6 @@ public class WebController extends WebMvcConfigurerAdapter {
     @PostMapping("/profile")
     public String updateProfile(@RequestParam Map<String, String> request, Model model) {
         String id = request.get("id");
-        System.out.println(request);
         try {
             AdminUser adminUser = webBackend.getAdminUser(id);
             adminUser.setEmail(request.get("email"));

@@ -117,3 +117,8 @@ SPECIFIC ELEMENTS
 #instruction {
     margin-bottom: 6%;
 }
+
+#trash {
+    padding-left: 0.88em;
+    padding-right: 0.88em;
+}

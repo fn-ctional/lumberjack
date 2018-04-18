@@ -17,14 +17,11 @@
             </a>
         </li>
         <li>
-            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}" href="/profile">
-                My Profile
-            </a>
-        </li>
-        <li>
-            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/search' ? 'btn-primary':'btn-outline-primary'}" href="/search">&#x1f50d;</a>
-            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/add' ? 'btn-primary':'btn-outline-primary'}" href="/add">&#65291;</a>
-            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/delete' ? 'btn-primary' : 'btn-outline-primary'}" href="/delete">&#x1f5d1;</a>
+            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'btn-dark':'btn-outline-dark'}" href="/profile" data-toggle="tooltip" title="My Profile">&#128100;</a>
+            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/search' ? 'btn-primary':'btn-outline-primary'}" href="/search" data-toggle="tooltip" title="Search">&#x1f50d;</a>
+            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/delete' ? 'btn-danger' : 'btn-outline-danger'}" href="/delete" id="trash" data-toggle="tooltip" title="Delete">&#x1f5d1;</a>
+            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/incidents' ? 'btn-warning' : 'btn-outline-warning'}" href="/incidents" data-toggle="tooltip" title="Incidents">&#x26a0;</a>
+            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/add' ? 'btn-success':'btn-outline-success'}" href="/add" data-toggle="tooltip" title="Add">&#65291;</a>
         </li>
     </ul>
     <ul class="nav nav-pills flex-column">
@@ -56,11 +53,6 @@
                 Add User Groups
             </a>
         </li>
-        <li>
-            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/incidents/user' ? 'active':''}" href="/incidents/user">
-                Incidents
-            </a>
-        </li>
     </ul>
     <ul class="nav nav-pills flex-column">
         <li class="nav-link">
@@ -74,11 +66,6 @@
         <li>
             <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/device' ? 'active':''}" href="/add/device">
                 Add Devices
-            </a>
-        </li>
-        <li>
-            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/incidents/device' ? 'active':''}" href="/incidents/device">
-                Incidents
             </a>
         </li>
     </ul>
