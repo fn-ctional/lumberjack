@@ -55,4 +55,11 @@ public class DatabaseRules {
         ResultSet rs = stmt.executeQuery();
         return rs.next();
     }
+
+    public void updateRule(Rule rule) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Rules SET MaximumRemovalTime = ? WHERE id = ?");
+        stmt.setInt(1, rule.getMaximumRemovalTime());
+        stmt.setString(2, rule.getId());
+        stmt.execute();
+    }
 }

@@ -747,6 +747,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("user", new User());
         model.addAttribute("device", new Device());
         model.addAttribute("group", new UserGroup());
+        model.addAttribute("rule", new Rule());
         try {
             switchOnType(type, model, id);
         } catch (Exception e) {
@@ -788,6 +789,10 @@ public class WebController extends WebMvcConfigurerAdapter {
                 rules = webBackend.getRules();
                 model.addAttribute("rules", rules);
                 break;
+            case "rule" :
+                if (id != null) {
+                    model.addAttribute("rule", webBackend.getRule(id));
+                }
             default:
                 break;
         }
@@ -888,6 +893,27 @@ public class WebController extends WebMvcConfigurerAdapter {
         }
         model.addAttribute("messageType", "Group Updated");
         model.addAttribute("messageString", "The group has been updated!");
+        return "message";
+    }
+
+    @PostMapping("/update/rule")
+    public String updateRule(@RequestParam Map<String, String> request, Model model) {
+        System.out.println(request);
+        // Set rule attributes
+        Rule rule = new Rule();
+        rule.setId(request.get("id"));
+        rule.setMaximumRemovalTime(new Integer(request.get("maximumTime")));
+        // Add rule to the database
+        try {
+            webBackend.updateRule(rule);
+        } catch (Exception e) {
+            System.out.println("SQL Exception");
+            model.addAttribute("messageType", "Rule Updating Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        model.addAttribute("messageType", "Rule Updated");
+        model.addAttribute("messageString", "The rule has been updated!");
         return "message";
     }
 

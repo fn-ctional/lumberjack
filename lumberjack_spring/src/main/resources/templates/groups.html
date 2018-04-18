@@ -73,6 +73,8 @@
                     </table>
                 </div>
 
+                <a th:href="@{'/update/group/' + ${searchTerm}}" class="btn btn-primary">Edit</a>
+
                 <h1></h1>
 
                 <h2 th:if="!${multi} and !${blank}">Group <span th:text="${searchTerm}">123456789</span> Users</h2>
