@@ -68,6 +68,11 @@ SIDEBAR
     width: 100%;
 }
 
+.sidebar .btn {
+    margin-left: 1em;
+    margin-top: 0.2em;
+}
+
 .sidebar .nav-item + .nav-item {
     margin-left: 0;
 }

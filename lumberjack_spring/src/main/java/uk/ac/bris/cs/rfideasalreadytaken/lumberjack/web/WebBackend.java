@@ -5,6 +5,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
@@ -54,6 +55,9 @@ public class WebBackend implements FromFrontEnd {
 
     @Autowired
     private DatabaseAssignments databaseAssignments;
+
+    @Autowired
+    private DatabaseAdminUsers databaseAdminUsers;
 
     //Tested
     public void insertUser(User user) throws SQLException {
@@ -578,9 +582,15 @@ public class WebBackend implements FromFrontEnd {
     }
 
     public void updateRule(Rule rule) throws SQLException {
-        System.out.println(rule.getId());
-        System.out.println(rule.getMaximumRemovalTime());
         databaseRules.updateRule(rule);
+    }
+
+    public void updateAdmin(String email, AdminUser adminUser) throws SQLException {
+        databaseAdminUsers.updateAdminUser(email, adminUser);
+    }
+
+    public AdminUser getAdminUser(String adminID) throws SQLException {
+        return databaseAdminUsers.loadAdminUser(adminID);
     }
 
 }

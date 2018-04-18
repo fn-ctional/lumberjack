@@ -17,14 +17,14 @@
             </a>
         </li>
         <li>
-            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/search' ? 'active':''}" href="/search">
-                Search
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/profile' ? 'active':''}" href="/profile">
+                My Profile
             </a>
         </li>
         <li>
-            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add' ? 'active':''}" href="/add">
-                Add
-            </a>
+            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/search' ? 'btn-primary':'btn-outline-primary'}" href="/search">&#x1f50d;</a>
+            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/add' ? 'btn-primary':'btn-outline-primary'}" href="/add">&#65291;</a>
+            <a class="btn" th:classappend="${#httpServletRequest.getRequestURI() == '/delete' ? 'btn-primary' : 'btn-outline-primary'}" href="/delete">&#x1f5d1;</a>
         </li>
     </ul>
     <ul class="nav nav-pills flex-column">
@@ -56,6 +56,11 @@
                 Add User Groups
             </a>
         </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/incidents/user' ? 'active':''}" href="/incidents/user">
+                Incidents
+            </a>
+        </li>
     </ul>
     <ul class="nav nav-pills flex-column">
         <li class="nav-link">
@@ -69,6 +74,11 @@
         <li>
             <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/add/device' ? 'active':''}" href="/add/device">
                 Add Devices
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI() == '/incidents/device' ? 'active':''}" href="/incidents/device">
+                Incidents
             </a>
         </li>
     </ul>

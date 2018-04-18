@@ -886,7 +886,6 @@ public class WebController extends WebMvcConfigurerAdapter {
             }
 
         } catch (Exception e) {
-            System.out.println("SQL Exception");
             model.addAttribute("messageType", "Group Updating Failed");
             model.addAttribute("messageString", e.getMessage());
             return "message";
@@ -915,6 +914,35 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("messageType", "Rule Updated");
         model.addAttribute("messageString", "The rule has been updated!");
         return "message";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        AdminUser user = authenticationBackend.findByEmail(email);
+        String name = user.getName();
+        // Add attributes
+        model.addAttribute("email", email);
+        model.addAttribute("name", name);
+        return "profile";
+    }
+
+    @PostMapping("/profile")
+    public String updateProfile(@RequestParam Map<String, String> request, Model model) {
+        String id = request.get("id");
+        System.out.println(request);
+        try {
+            AdminUser adminUser = webBackend.getAdminUser(id);
+            adminUser.setEmail(request.get("email"));
+            adminUser.setName(request.get("username"));
+            webBackend.updateAdmin(id, adminUser);
+        } catch (Exception e) {
+            model.addAttribute("messageType", "Profile Updating Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        return "redirect:profile";
     }
 
 }

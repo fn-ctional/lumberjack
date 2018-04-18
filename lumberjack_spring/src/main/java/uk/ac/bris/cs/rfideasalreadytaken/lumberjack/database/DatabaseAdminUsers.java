@@ -26,13 +26,25 @@ public class DatabaseAdminUsers {
     }
 
     public void updateAdminUser(String email, AdminUser adminUser) throws SQLException {
-        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Admins SET Email = ?, Username = ?, Password = ?, Enabled = ? " +
+        // Turn off foreign key checks
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SET foreign_key_checks = 0");
+        stmt.execute();
+        // Update Tokens table
+        stmt = databaseConnection.getConnection().prepareStatement("UPDATE Tokens SET AdminEmail = ? WHERE AdminEmail = ?");
+        stmt.setString(1, adminUser.getEmail());
+        stmt.setString(2, email);
+        stmt.execute();
+        // Update AdminUsers table
+        stmt = databaseConnection.getConnection().prepareStatement("UPDATE Admins SET Email = ?, Username = ?, Password = ?, Enabled = ? " +
                 "WHERE Email = ?");
         stmt.setString(1, adminUser.getEmail());
         stmt.setString(2, adminUser.getName());
         stmt.setString(3, adminUser.getPassword());
         stmt.setBoolean(4, adminUser.isEnabled());
         stmt.setString(5, email);
+        stmt.execute();
+        // Turn on foreign key checks
+        stmt = databaseConnection.getConnection().prepareStatement("SET foreign_key_checks = 1");
         stmt.execute();
     }
 
