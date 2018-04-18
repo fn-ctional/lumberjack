@@ -25,6 +25,7 @@
                 <span th:if="${type} == device">Devices</span>
                 <span th:if="${type} == group">User Groups</span>
                 <span th:if="${type} == rule">Rules</span>
+                <span th:if="${type} == admin">Permitted Admin Email</span>
             </h2>
 
             <span id="type" style="display: none;" th:text="${type}"></span>
@@ -44,6 +45,9 @@
                     </div>
                     <div class="col-sm-auto">
                         <a class="btn btn-primary" href="/add/rule" role="button">Rules</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-secondary" href="/add/admin" role="button" data-toggle="tooltip" title="Someone can create an account if their email is Permitted!">Permitted Email</a>
                     </div>
                 </div>
             </div>
@@ -311,6 +315,62 @@
                                     </div>
 
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adding Permitted Emails -->
+
+            <div th:if="${type} == admin" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Add a permitted email:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/add/admin}" method="post">
+
+                                    <div class="form-group row" >
+                                        <label for="newEmail" class="col-sm-2 col-form-label">Email Address</label>
+                                        <div class="col-sm-10">
+                                            <input type="email" class="form-control" id="newEmail" name="newEmail" placeholder="abc123@mail.org" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <p class="form-text alert alert-warning row" role="alert">
+                                        <em>Warning:</em> Someone can create an account if their email is permitted. This means they will be able to add, delete, and change Users, Devices, etc.
+                                    </p>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg">
+
+                        <h1></h1>
+
+                        <p class="lead">
+                            Current Permitted Emails
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <ul>
+                                    <th:block th:each="emailAddress : ${permittedEmails}">
+                                        <li th:text="${emailAddress}">Email</li>
+                                    </th:block>
+                                </ul>
                             </div>
                         </div>
                     </div>

@@ -59,6 +59,9 @@ public class WebBackend implements FromFrontEnd {
     @Autowired
     private DatabaseAdminUsers databaseAdminUsers;
 
+    @Autowired
+    private DatabaseEmails databaseEmails;
+
     //Tested
     public void insertUser(User user) throws SQLException {
         databaseUsers.insertIntoUsers(user);
@@ -598,4 +601,11 @@ public class WebBackend implements FromFrontEnd {
         return databaseAdminUsers.loadAdminUser(adminID);
     }
 
+    public void insertPermittedEmail(String email) throws SQLException {
+        databaseAdminUsers.insertIntoPermittedEmails(email);
+    }
+
+    public List<String> getPermittedEmails() throws SQLException {
+        return databaseEmails.getPermittedEmails();
+    }
 }

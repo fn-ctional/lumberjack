@@ -75,4 +75,10 @@ public class DatabaseAdminUsers {
         ResultSet rs = stmt.executeQuery();
         return rs.next();
     }
+
+    public void insertIntoPermittedEmails(String email) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("INSERT INTO PermittedEmails SET Email = ?");
+        stmt.setString(1, email);
+        stmt.execute();
+    }
 }

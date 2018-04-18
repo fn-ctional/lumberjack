@@ -278,6 +278,7 @@ public class WebController extends WebMvcConfigurerAdapter {
     @RequestMapping("/add")
     public String add(Model model) {
         model.addAttribute("blank", true);
+        model.addAttribute("permittedEmails", new ArrayList<String>());
         return "add";
     }
 
@@ -399,6 +400,22 @@ public class WebController extends WebMvcConfigurerAdapter {
         }
         model.addAttribute("messageType", "Rule Added");
         model.addAttribute("messageString", "The rule has been added!");
+        return "message";
+    }
+
+    @PostMapping("/add/admin")
+    public String addPermittedEmail(@RequestParam Map<String, String> request, Model model) {
+        List<String> permittedEmails = new ArrayList<>();
+        try {
+            webBackend.insertPermittedEmail(request.get("newEmail"));
+        } catch (Exception e) {
+            model.addAttribute("messageType", "Rule Adding Failed");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        model.addAttribute("permittedEmails", permittedEmails);
+        model.addAttribute("messageType", "Permitted Email Added");
+        model.addAttribute("messageString", "The permitted email has been added!");
         return "message";
     }
 
@@ -794,6 +811,8 @@ public class WebController extends WebMvcConfigurerAdapter {
                 if (id != null) {
                     model.addAttribute("rule", webBackend.getRule(id));
                 }
+            case "admin" :
+                model.addAttribute("permittedEmails", webBackend.getPermittedEmails());
             default:
                 break;
         }
