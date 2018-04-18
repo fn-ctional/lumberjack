@@ -568,7 +568,18 @@ public void testGetOtherCount() throws Exception {
 
 */
 
+@Test
+public void testGetTimes() throws Exception {
+  List<String> times = webBackend.getTimes(3);
+  assertEquals(times.size(),3);
+}
 
+@Test
+public void testUpdateRule() throws Exception {
+  Rule rule = new Rule("ruleSet1", 8);
+  rule = webBackend.getRule("ruleSet1");
+  assertEquals(rule.getMaximumRemovalTime(),8);
+}
 
 
 
