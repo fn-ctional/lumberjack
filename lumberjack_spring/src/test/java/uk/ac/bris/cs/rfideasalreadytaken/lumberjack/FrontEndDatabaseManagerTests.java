@@ -472,8 +472,6 @@ public class FrontEndDatabaseManagerTests {
         assertNull(webBackend.getGroupPermission("ruleSet2","groupOne"));
     }
 
-    */
-
     @Test
     public void testRemoveRuleFromDevices() throws Exception {
         webBackend.removeRuleFromDevices("ruleSet1");
@@ -515,8 +513,8 @@ public class FrontEndDatabaseManagerTests {
 
         @Test
         public void testUserHasOutstandingDevices() throws Exception {
-            assertTrue(webBackend.userHasOutstandingDevices("Callum2468"));
-            assertFalse(webBackend.deviceIsOut("Aidan9876"));
+            assertTrue(webBackend.userHasOutstandingDevices("Betty1248"));
+            assertFalse(webBackend.userHasOutstandingDevices("Aidan9876"));
         }
 
         @Test
@@ -533,7 +531,8 @@ public class FrontEndDatabaseManagerTests {
             assertTrue(obtainedGroups.contains(new UserGroup("groupTwo")));
         }
 
-        /*
+
+        */
 
 
 @Test
@@ -545,7 +544,7 @@ public void testGetGroupUsers() throws Exception {
 
 @Test
 public void testGetGroupRules() throws Exception {
-    List<Rule> rules = webBackend.getGroupUsers("groupOne");
+    List<Rule> obtainedRules = webBackend.getGroupRules("groupOne");
     assertTrue(obtainedRules.contains(new Rule("ruleSet1",20)));
     assertTrue(obtainedRules.contains(new Rule("ruleSet2",22)));
 }
@@ -584,7 +583,7 @@ public void testGetUsersCSV() throws Exception {
   webBackend.deleteUser("Betty1248");
   webBackend.deleteUser("Callum2468");
 
-  assertEquals(csv,"id,scan value,device limit,devices removed,can remove,group id\nDorathy0369,94648329837,0,0,true,groupOne\n");
+  assertEquals(webBackend.getUsersCSV(),"id,scan value,device limit,devices removed,can remove,group id\nDorathy0369,94648329837,0,0,true,groupOne\n");
 }
 
 @Test
@@ -593,10 +592,8 @@ public void testGetDevicesCSV() throws Exception {
   webBackend.deleteDevice("laptop03");
   webBackend.deleteDevice("camera01");
 
-  assertEquals(csv,"id,scan value,type,available,currently assigned,rule id\laptop01,36109839730967812,laptop,true,false,ruleSet1\n");
+  assertEquals(webBackend.getDevicesCSV(),"id,scan value,type,available,currently assigned,rule id\nlaptop01,36109839730967812,laptop,true,false,ruleSet1\n");
 }
-
-*/
 
 
 
