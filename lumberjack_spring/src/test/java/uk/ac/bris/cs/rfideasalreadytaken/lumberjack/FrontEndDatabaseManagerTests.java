@@ -441,18 +441,13 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(amount, returns.get(8));
     }
 
-
-
-
-
-
     @Test
     public void testDeletePermissions() throws Exception {
 
-        List<GroupPermission> permissions = new List<>;
+        List<GroupPermission> permissions = new ArrayList<>();
         permissions.add(new GroupPermission("ruleSet1","groupOne"));
 
-        List<Integer> returns = webBackend.deletePermissions(9);
+       webBackend.deletePermissions(permissions);
 
         assertNull(webBackend.getGroupPermission("ruleSet1","groupOne"));
     }
@@ -472,34 +467,36 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeletePermissionsByGroup() throws Exception {
-        webBackend.deletePermissionsByRule("groupOne");
+        webBackend.deletePermissionsByGroup("groupOne");
         assertNull(webBackend.getGroupPermission("ruleSet1","groupOne"));
         assertNull(webBackend.getGroupPermission("ruleSet2","groupOne"));
     }
 
+    */
+
     @Test
     public void testRemoveRuleFromDevices() throws Exception {
         webBackend.removeRuleFromDevices("ruleSet1");
-        List<Devices> devices = webBackend.getDevicesByRule("ruleSet1");
-        asertEqual(devices.size(),0);
+        List<Device> devices = webBackend.getDevicesByRule("ruleSet1");
+        assertEquals(devices.size(),0);
     }
 
     @Test
     public void testRemoveGroupFromUsers() throws Exception {
         webBackend.removeRuleFromDevices("groupOne");
-        List<Users> users = webBackend.getUsers();
+        List<User> users = webBackend.getUsers();
 
-        for(User users.at(0) : users)
+        for(int i = 0; i < users.size(); i++)
         {
-          asertNotEqual(users.getGroupId,"groupOne");
+          assertNotEquals(users.get(i),"groupOne");
         }
     }
 
     @Test
     public void testDeleteAssignmentHistoryByDevice() throws Exception {
         webBackend.deleteAssignmentHistoryByDevice("laptop01");
-        List<AssignmentHistory> history = webBackend.getDeviceAssignmentHistory();
-        asertEqual(history.size(),0);
+        List<AssignmentHistory> history = webBackend.getDeviceAssignmentHistory("laptop01");
+        assertEquals(history.size(),0);
     }
 
 
@@ -512,8 +509,8 @@ public class FrontEndDatabaseManagerTests {
         @Test
         public void testDeleteAssignmentHistoryByUser() throws Exception {
             webBackend.deleteAssignmentHistoryByUser("Betty1248");
-            List<AssignmentHistory> history = webBackend.getUserAssignmentHistory();
-            asertEqual(history.size(),0);
+            List<AssignmentHistory> history = webBackend.getUserAssignmentHistory("Betty1248");
+            assertEquals(history.size(),0);
         }
 
         @Test
@@ -531,10 +528,12 @@ public class FrontEndDatabaseManagerTests {
 
         @Test
         public void testGetUserGroupsByRule() throws Exception {
-            List<UserGroups> obtainedGroups = webBackend.getUserGroupsByRule("ruleSet1");
+            List<UserGroup> obtainedGroups = webBackend.getUserGroupsByRule("ruleSet1");
             assertTrue(obtainedGroups.contains(new UserGroup("groupOne")));
             assertTrue(obtainedGroups.contains(new UserGroup("groupTwo")));
         }
+
+        /*
 
 
 @Test

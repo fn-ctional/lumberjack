@@ -39,12 +39,6 @@ public class DatabaseUtility {
                 "\nAdminEmail varchar(100) NOT NULL," +
                 "\nExpiryDate DATE," +
                 "\nCONSTRAINT FOREIGN KEY (AdminEmail) REFERENCES Admins(Email), " +
-                //There was once a lot of foriegn key errors,
-                //I commented out this line,
-                //And then it worked fine
-                //I then uncommneted it and it still worked fine
-                //
-                // so maybe this line doesnt work just fyi
                 "\nPRIMARY KEY (Token));");
 
         stmt.execute("CREATE TABLE IF NOT EXISTS UserGroups (" +
