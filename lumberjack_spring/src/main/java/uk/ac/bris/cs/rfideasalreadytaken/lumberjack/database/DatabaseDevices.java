@@ -120,12 +120,10 @@ public class DatabaseDevices {
         stmt.execute();
     }
 
-    //TODO: I don't think this function has correct operation
     public boolean isDeviceCurrentlyOut(Device device) {
         return device.isCurrentlyAssigned();
     }
 
-    //TODO: I don't think this function has correct operation
     public boolean canDeviceBeRemoved(Device device) {
         return device.isAvailable();
     }

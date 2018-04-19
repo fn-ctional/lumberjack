@@ -380,7 +380,7 @@ public class WebBackend implements FromFrontEnd {
         }
     }
 
-
+    //Tested
     public String getUsersCSV() throws SQLException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("id,");
@@ -410,6 +410,7 @@ public class WebBackend implements FromFrontEnd {
         return stringBuilder.toString();
     }
 
+    //Tested
     public String getDevicesCSV() throws SQLException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("id,");
