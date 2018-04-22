@@ -968,14 +968,20 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     @GetMapping("/incidents")
     public String incidents(Model model) {
-        List<Device> devices = new ArrayList<>();
+        List<Device> lateDevices = new ArrayList<>();
+        List<Device> oldLateDevices = new ArrayList<>();
         try {
+            lateDevices = webBackend.getCurrentlyLateDevices();
+            oldLateDevices = webBackend.getPreviouslyLateDevices();
         } catch (Exception e) {
             model.addAttribute("messageType", "Incidents Error");
             model.addAttribute("messageString", e.getMessage());
             return "message";
         }
-        model.addAttribute("devices", devices);
+        model.addAttribute("blankLate", lateDevices.isEmpty());
+        model.addAttribute("blankOldLate", oldLateDevices.isEmpty());
+        model.addAttribute("lateDevices", lateDevices);
+        model.addAttribute("oldLateDevices", oldLateDevices);
         return "incidents";
     }
 

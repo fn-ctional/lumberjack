@@ -19,19 +19,12 @@
         <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
             <h1>Dashboard</h1>
 
-            <h2>Incidents</h2>
+            <h2>Late Devices</h2>
 
-            <h2 th:if="!${multi} and !${blank}">Device <span th:text="${searchTerm}">123456789</span></h2>
+            <p th:if="${blankLate}" class="lead">There are no devices currently late.</p>
 
-            <p th:if="!${found} and !${multi} and !${blank}" class="lead">Device not found.</p>
-
-            <p th:if="!${found} and ${multi}" class="lead">No devices found.</p>
-
-            <p th:if="${blank}" class="lead">
-                No devices are
-            </p>
-
-            <div th:if="!${blank} and ${found}" class="table-responsive">
+            <div th:if="!${blankLate}" class="table-responsive">
+                <p class="lead">These devices are late and have yet to be returned.</p>
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -44,7 +37,39 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <th:block th:each="device : ${deviceList}">
+                    <th:block th:each="device : ${lateDevices}">
+                        <tr>
+                            <td><a th:href="@{'/device/' + ${device.getId()}}"><span th:text="${device.getId()}">ID</span></a></td>
+                            <td th:text="${device.getScanValue()}">Scan Value</td>
+                            <td th:text="${device.getType()}">Type</td>
+                            <td th:text="${device.isAvailable() == true ? '✓' : '✗'}">Available?</td>
+                            <td th:text="${device.isCurrentlyAssigned() == true ? '✓' : '✗'}">Assigned?</td>
+                            <td><a th:href="@{'/rule/' + ${device.getRuleID()}}"><span th:text="${device.getRuleID()}">Rule ID</span></a></td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Late Device History</h2>
+
+            <p th:if="${blankOldLate}" class="lead">There is no history of late devices.</p>
+
+            <div th:if="!${blankOldLate}" class="table-responsive">
+                <p class="lead">These devices have been returned late.</p>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Scan Value</th>
+                        <th>Type</th>
+                        <th>Available</th>
+                        <th>Currently Assigned</th>
+                        <th>Rule ID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="device : ${oldLateDevices}">
                         <tr>
                             <td><a th:href="@{'/device/' + ${device.getId()}}"><span th:text="${device.getId()}">ID</span></a></td>
                             <td th:text="${device.getScanValue()}">Scan Value</td>
