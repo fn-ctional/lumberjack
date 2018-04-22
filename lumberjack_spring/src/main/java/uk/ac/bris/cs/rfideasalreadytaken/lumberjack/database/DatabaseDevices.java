@@ -224,4 +224,26 @@ public class DatabaseDevices {
         }
         return lateDevices;
     }
+
+    public List<Device> getPreviouslyLateDevices() throws SQLException{
+
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM AssignmentHistory");
+        ResultSet rs = stmt.executeQuery();
+        List<AssignmentHistory> histories = databaseAssignments.loadAssignmentHistoriesFromResultSet(rs);
+        List<Device> lateDevices = new ArrayList<>();
+
+        for(int i = 0; i != histories.size(); i++) {
+
+            if(!histories.get(i).isReturnedOnTime()) {
+
+                stmt.clearParameters();
+                stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Devices WHERE id = ?;");
+                stmt.setString(1, histories.get(i).getDeviceID());
+                rs = stmt.executeQuery();
+
+                lateDevices.add(loadDeviceFromResultSet(rs));
+            }
+        }
+        return lateDevices;
+    }
 }

@@ -34,8 +34,6 @@ public class FrontEndDatabaseManagerTests {
         databaseTesting.insertTestCases();
     }
 
-    /*
-
     @Test
     public void testInsertUser() throws Exception {
         User testUser = new User();
@@ -587,11 +585,15 @@ public class FrontEndDatabaseManagerTests {
         assertEquals(webBackend.getDevicesCSV(), "id,scan value,type,available,currently assigned,rule id\nlaptop02,23482364326842334,laptop,true,true,ruleSet2\n");
     }
 
-    */
+    @Test
+    public void testGetCurrentlyLateDevices() throws Exception {
+        List<Device> obtainedDevices = webBackend.getCurrentlyLateDevices();
+        assertEquals(obtainedDevices.size(),0);
+    }
 
     @Test
-    public void testGetDevicesByRule() throws Exception {
-        List<Device> obtainedDevices = webBackend.getCurrentlyLateDevices();
+    public void testGetPreviouslyLateDevices() throws Exception {
+        List<Device> obtainedDevices = webBackend.getPreviouslyLateDevices();
         assertEquals(obtainedDevices.size(),0);
     }
 
