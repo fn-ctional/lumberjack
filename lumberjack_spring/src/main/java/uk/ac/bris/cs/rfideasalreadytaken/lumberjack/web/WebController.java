@@ -217,6 +217,7 @@ public class WebController extends WebMvcConfigurerAdapter {
     public String deviceSpecified(@PathVariable String id, Model model) {
         List<Device> deviceList = new ArrayList<>();
         Boolean found = false;
+        model.addAttribute("isOut", false);
         model.addAttribute("searchTerm", id);
         try {
             Device device = webBackend.getDevice(id);
@@ -233,6 +234,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         if (found){
             try {
                 takeoutList = webBackend.getDeviceAssignmentHistory(id);
+                model.addAttribute("isOut", deviceList.get(0).isCurrentlyAssigned());
                 if (!takeoutList.isEmpty()) {
                     taken = true;
                 }
@@ -962,6 +964,33 @@ public class WebController extends WebMvcConfigurerAdapter {
             return "message";
         }
         return "redirect:profile";
+    }
+
+    @GetMapping("/incidents")
+    public String incidents(Model model) {
+        List<Device> devices = new ArrayList<>();
+        try {
+        } catch (Exception e) {
+            model.addAttribute("messageType", "Incidents Error");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        model.addAttribute("devices", devices);
+        return "incidents";
+    }
+
+    @PostMapping("/return/device/{id}")
+    public String returnDevice(Model model, @PathVariable("id") String id) {
+        try {
+            webBackend.returnDevice(id);
+        } catch (Exception e) {
+            model.addAttribute("messageType", "Return Error");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        model.addAttribute("messageType", "Return Successful");
+        model.addAttribute("messageString", "The device was successfully returned!");
+        return "message";
     }
 
 }

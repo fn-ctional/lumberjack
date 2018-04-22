@@ -556,4 +556,8 @@ public class WebBackend implements FromFrontEnd {
     public List<Device> getPreviouslyLateDevices() throws SQLException {
         return databaseDevices.getPreviouslyLateDevices();
     }
+
+    public void returnDevice(String id) throws SQLException {
+        databaseDevices.returnDevice(id);
+    }
 }

@@ -59,7 +59,21 @@
 
             <div th:if="!${blank} and ${found} and !${multi}">
 
-                <a th:href="@{'/update/device/' + ${searchTerm}}" class="btn btn-primary">Edit</a>
+                <ul class="list-inline">
+                    <li class="list-inline-item">
+                        <a th:href="@{'/update/device/' + ${searchTerm}}" class="btn btn-primary">Edit</a>
+                    </li>
+                    <li class="list-inline-item">
+                        <form th:if="${isOut}" th:action="@{'/return/device/' + ${searchTerm}}" method="POST">
+                            <button type="submit" class="btn btn-warning">Return Device</button>
+                        </form>
+                    </li>
+                    <li class="list-inline-item">
+                        <p th:if="${isOut}" class="alert alert-warning">Warning: Returning a device means a user will not be able to.
+                            Only do this if you know where the device is, it will appear as if the user returned this
+                            device on time.</p>
+                    </li>
+                </ul>
 
                 <h1></h1>
 

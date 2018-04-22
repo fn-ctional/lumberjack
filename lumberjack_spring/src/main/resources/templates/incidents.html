@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="fragments/header :: head (title='lumberjack - Incidents')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+            <h1>Dashboard</h1>
+
+            <h2>Incidents</h2>
+
+            <h2 th:if="!${multi} and !${blank}">Device <span th:text="${searchTerm}">123456789</span></h2>
+
+            <p th:if="!${found} and !${multi} and !${blank}" class="lead">Device not found.</p>
+
+            <p th:if="!${found} and ${multi}" class="lead">No devices found.</p>
+
+            <p th:if="${blank}" class="lead">
+                No devices are
+            </p>
+
+            <div th:if="!${blank} and ${found}" class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Scan Value</th>
+                        <th>Type</th>
+                        <th>Available</th>
+                        <th>Currently Assigned</th>
+                        <th>Rule ID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="device : ${deviceList}">
+                        <tr>
+                            <td><a th:href="@{'/device/' + ${device.getId()}}"><span th:text="${device.getId()}">ID</span></a></td>
+                            <td th:text="${device.getScanValue()}">Scan Value</td>
+                            <td th:text="${device.getType()}">Type</td>
+                            <td th:text="${device.isAvailable() == true ? '✓' : '✗'}">Available?</td>
+                            <td th:text="${device.isCurrentlyAssigned() == true ? '✓' : '✗'}">Assigned?</td>
+                            <td><a th:href="@{'/rule/' + ${device.getRuleID()}}"><span th:text="${device.getRuleID()}">Rule ID</span></a></td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

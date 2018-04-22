@@ -246,4 +246,39 @@ public class DatabaseDevices {
         }
         return lateDevices;
     }
+
+    public void returnDevice(String deviceID) throws SQLException {
+        // Get Assignment
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ?");
+        stmt.setString(1, deviceID);
+        ResultSet rs = stmt.executeQuery();
+        rs.next();
+        Assignment assignment = new Assignment();
+        assignment.setDeviceID(rs.getString("DeviceID"));
+        assignment.setUserID(rs.getString("UserID"));
+        assignment.setTimeAssigned(rs.getTime("TimeAssigned"));
+        assignment.setDateAssigned(rs.getDate("DateAssigned"));
+
+        // Delete from Assignments
+        databaseAssignments.deleteFromAssignments(rs.getInt("id"));
+
+        // Insert into AssignmentHistory
+        databaseAssignments.insertIntoAssignmentHistory(assignment, assignment.getUserID(), true);
+
+        // Decrement User's Assigned Count
+        stmt = databaseConnection.getConnection().prepareStatement("SELECT DevicesRemoved FROM Users WHERE id = ?");
+        stmt.setString(1, assignment.getUserID());
+        rs = stmt.executeQuery();
+        rs.next();
+        Integer devicesRemoved = rs.getInt("DevicesRemoved");
+        stmt = databaseConnection.getConnection().prepareStatement("UPDATE Users SET DevicesRemoved = ? WHERE id = ?");
+        stmt.setInt(1, devicesRemoved - 1);
+        stmt.setString(2, assignment.getUserID());
+        stmt.execute();
+
+        // Set device to not assigned
+        stmt = databaseConnection.getConnection().prepareStatement("UPDATE Devices SET CurrentlyAssigned = FALSE WHERE id = ?");
+        stmt.setString(1, assignment.getDeviceID());
+        stmt.execute();
+    }
 }
