@@ -548,4 +548,9 @@ public class WebBackend implements FromFrontEnd {
     public List<String> getPermittedEmails() throws SQLException {
         return databaseEmails.getPermittedEmails();
     }
+
+    public List<Device> getCurrentlyLateDevices() throws SQLException
+    {
+        return databaseDevices.getCurrentlyLateDevices();
+    }
 }

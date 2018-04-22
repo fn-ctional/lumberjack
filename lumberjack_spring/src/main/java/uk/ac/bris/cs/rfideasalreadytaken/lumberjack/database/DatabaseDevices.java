@@ -6,11 +6,13 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.data.ScanDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.AssignmentHistory;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Device;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.Assignment;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -185,5 +187,41 @@ public class DatabaseDevices {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Devices SET RuleID = NULL WHERE RuleID = ?");
         stmt.setString(1, ruleID);
         stmt.execute();
+    }
+
+    public List<Device> getCurrentlyLateDevices() throws SQLException{
+
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Devices WHERE CurrentlyAssigned = 1");
+        ResultSet rs = stmt.executeQuery();
+        List<Device> devices = loadDevicesFromResultSet(rs);
+        List<Device> lateDevices = new ArrayList<>();
+
+        for(int i = 0; i != devices.size(); i++) {
+
+            stmt.clearParameters();
+            stmt = databaseConnection.getConnection().prepareStatement("SELECT MaximumRemovalTime FROM Rules INNER JOIN Devices ON Rules.id = Devices.RuleID WHERE Devices.id = ?;");
+            stmt.setString(1, devices.get(i).getId());
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                int removalTime = rs.getInt("MaximumRemovalTime");
+
+                stmt.clearParameters();
+                stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ?;");
+                stmt.setString(1, devices.get(i).getId());
+                rs = stmt.executeQuery();
+
+                Assignment assignment = databaseAssignments.loadAssignmentFromResultSet(rs);
+
+                long timeOut = Calendar.getInstance().getTime().getTime() - assignment.getDateAssigned().getTime() - assignment.getTimeAssigned().getTime() - 3600000;
+
+                if(timeOut > removalTime*3600000)
+                {
+                    lateDevices.add(devices.get(i));
+                }
+            }
+        }
+        return lateDevices;
     }
 }
