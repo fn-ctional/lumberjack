@@ -191,6 +191,9 @@ public class DatabaseDevices {
 
     public List<Device> getCurrentlyLateDevices() throws SQLException{
 
+        // TEST CASE I USED
+        // INSERT INTO Assignments VALUES (42, "laptop02", "Aidan9876", CAST('2018-03-24' AS DATE), CAST('14:02:14' AS TIME));
+
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Devices WHERE CurrentlyAssigned = 1");
         ResultSet rs = stmt.executeQuery();
         List<Device> devices = loadDevicesFromResultSet(rs);
