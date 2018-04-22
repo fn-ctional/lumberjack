@@ -39,12 +39,12 @@ public class CardReaderBackend implements FromCardReader {
 
         if (databaseUsers.isValidUser(scanDTO)) {
 
-            result = userScanned(scanDTO);
+            result = handleUser(scanDTO);
             if (result == ScanReturn.SUCCESSUSERLOADED) {
 
                 if (databaseDevices.isValidDevice(scanDTO)) {
 
-                    result = deviceScanned(scanDTO);
+                    result = handleDevice(scanDTO);
                     return result;
                 } else {
                     return ScanReturn.FAILDEVICENOTRECOGNISED;
@@ -57,7 +57,7 @@ public class CardReaderBackend implements FromCardReader {
         }
     }
 
-    private ScanReturn userScanned(ScanDTO scanDTO) throws SQLException {
+    private ScanReturn handleUser(ScanDTO scanDTO) throws SQLException {
 
         try {
             currentUser = databaseUsers.loadUser(scanDTO);
@@ -67,7 +67,7 @@ public class CardReaderBackend implements FromCardReader {
         }
     }
 
-    private ScanReturn deviceScanned(ScanDTO scanDTO) throws SQLException {
+    private ScanReturn handleDevice(ScanDTO scanDTO) throws SQLException {
 
         Device loadedDevice;
 
