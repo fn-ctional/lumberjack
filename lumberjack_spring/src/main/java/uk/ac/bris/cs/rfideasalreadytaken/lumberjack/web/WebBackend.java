@@ -564,4 +564,12 @@ public class WebBackend implements FromFrontEnd {
     public void deletePermittedEmail(String email) throws SQLException {
         databaseEmails.deletePermittedEmail(email);
     }
+
+    public List<Assignment> getUserAssignments(String userID) throws SQLException {
+        return databaseAssignments.loadAssignmentsByUser(userID);
+    }
+
+    public List<Assignment> getDeviceAssignments(String deviceID) throws SQLException {
+        return databaseAssignments.loadAssignmentsByDevice(deviceID);
+    }
 }

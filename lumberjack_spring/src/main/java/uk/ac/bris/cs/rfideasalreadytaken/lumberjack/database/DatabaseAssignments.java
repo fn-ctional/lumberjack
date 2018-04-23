@@ -217,4 +217,18 @@ public class DatabaseAssignments {
         stmt.execute();
     }
 
+    public List<Assignment> loadAssignmentsByUser(String userID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Assignments WHERE UserID = ?");
+        stmt.setString(1, userID);
+        ResultSet rs = stmt.executeQuery();
+        return loadAssignmentsFromResultSet(rs);
+    }
+
+    public List<Assignment> loadAssignmentsByDevice(String deviceID) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Assignments WHERE DeviceID = ?");
+        stmt.setString(1, deviceID);
+        ResultSet rs = stmt.executeQuery();
+        return loadAssignmentsFromResultSet(rs);
+    }
+
 }

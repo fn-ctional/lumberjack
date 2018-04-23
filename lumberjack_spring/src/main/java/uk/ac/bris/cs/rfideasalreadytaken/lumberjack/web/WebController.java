@@ -140,36 +140,36 @@ public class WebController extends WebMvcConfigurerAdapter {
      */
     @GetMapping("/user/{id}")
     public String userSpecified(@PathVariable String id, Model model) {
-        // Get the user details
         List<User> userList = new ArrayList<>();
-        Boolean found = false;
+        List<AssignmentHistory> takeoutList = new ArrayList<>();
+        List<Assignment> assignmentList = new ArrayList<>();
+        boolean found = false;
+        boolean taken = false;
+        boolean assignments = false;
         model.addAttribute("searchTerm", id);
         try {
             User user = webBackend.getUser(id);
             if (user.getId().equals(id)) {
                 userList.add(user);
                 found = true;
+                takeoutList = webBackend.getUserAssignmentHistory(id);
+                assignmentList = webBackend.getUserAssignments(id);
+                if (!takeoutList.isEmpty()) {
+                    taken = true;
+                }
+                if (!assignmentList.isEmpty()) {
+                    assignments = true;
+                }
             }
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
-        // Get the assignment history
-        List<AssignmentHistory> takeoutList = new ArrayList<>();
-        boolean taken = false;
-        if (found){
-            try {
-                takeoutList = webBackend.getUserAssignmentHistory(id);
-                if (!takeoutList.isEmpty()) {
-                    taken = true;
-                }
-            } catch (Exception e) {
-                System.out.println("SQL Error");
-            }
-        }
         model.addAttribute("taken", taken);
         model.addAttribute("found", found);
+        model.addAttribute("assignments", assignments);
         model.addAttribute("userList", userList);
         model.addAttribute("takeoutList", takeoutList);
+        model.addAttribute("assignmentList", assignmentList);
         return "users";
     }
 
@@ -216,7 +216,10 @@ public class WebController extends WebMvcConfigurerAdapter {
     @GetMapping("/device/{id}")
     public String deviceSpecified(@PathVariable String id, Model model) {
         List<Device> deviceList = new ArrayList<>();
+        List<AssignmentHistory> takeoutList = new ArrayList<>();
+        List<Assignment> assignmentList = new ArrayList<>();
         Boolean found = false;
+        boolean taken = false;
         model.addAttribute("isOut", false);
         model.addAttribute("searchTerm", id);
         try {
@@ -224,28 +227,19 @@ public class WebController extends WebMvcConfigurerAdapter {
             if (device.getId().equals(id)) {
                 deviceList.add(device);
                 found = true;
+                takeoutList = webBackend.getDeviceAssignmentHistory(id);
+                model.addAttribute("isOut", deviceList.get(0).isCurrentlyAssigned());
+                taken = true;
+                assignmentList = webBackend.getDeviceAssignments(id);
             }
         } catch (Exception e) {
             System.out.println("SQL Error");
-        }
-        // Get the assignment history
-        List<AssignmentHistory> takeoutList = new ArrayList<>();
-        boolean taken = false;
-        if (found){
-            try {
-                takeoutList = webBackend.getDeviceAssignmentHistory(id);
-                model.addAttribute("isOut", deviceList.get(0).isCurrentlyAssigned());
-                if (!takeoutList.isEmpty()) {
-                    taken = true;
-                }
-            } catch (Exception e) {
-                System.out.println("SQL Error");
-            }
         }
         model.addAttribute("found", found);
         model.addAttribute("taken", taken);
         model.addAttribute("takeoutList", takeoutList);
         model.addAttribute("deviceList", deviceList);
+        model.addAttribute("assignmentList", assignmentList);
         return "devices";
     }
 
@@ -407,7 +401,6 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     @PostMapping("/add/admin")
     public String addPermittedEmail(@RequestParam Map<String, String> request, Model model) {
-        List<String> permittedEmails = new ArrayList<>();
         try {
             webBackend.insertPermittedEmail(request.get("newEmail"));
         } catch (Exception e) {
@@ -415,10 +408,7 @@ public class WebController extends WebMvcConfigurerAdapter {
             model.addAttribute("messageString", e.getMessage());
             return "message";
         }
-        model.addAttribute("permittedEmails", permittedEmails);
-        model.addAttribute("messageType", "Permitted Email Added");
-        model.addAttribute("messageString", "The permitted email has been added!");
-        return "message";
+        return "redirect:../add/admin";
     }
 
     /**
