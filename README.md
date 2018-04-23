@@ -1,6 +1,6 @@
 # Lumberjack
 
-### A device library and logging system using RFID technology.
+## A device library and logging system using RFID technology.
 
 This system is being developed as part of a project with The University of Bristol Department of Computer Science, for a second year project. The team is comprised of 6 students with varying areas of expertise and interest.
 
@@ -15,3 +15,31 @@ Currently lumberjack:
 * Allows you to download all users and devices in CSV format
 
 Please check the git wiki pages https://github.com/fn-ctional/lumberjack/wiki for instructions on how to download, run and use lumberjack!
+
+## Screenshots
+
+### Dashboard
+<img src="/screenshots/Dashboard.png"></img>
+<img src="/screenshots/Profile.png"></img>
+<img src="/screenshots/Search.png"></img>
+<img src="/screenshots/Incidents.png"></img>
+<img src="/screenshots/Add.png"></img>
+<img src="/screenshots/Permitted.png"></img>
+
+### Users
+<img src="/screenshots/Users.png"></img>
+<img src="/screenshots/Users1.png"></img>
+<img src="/screenshots/Add1.png"></img>
+
+### Devices
+<img src="/screenshots/Devices.png"></img>
+<img src="/screenshots/Devices1.png"></img>
+<img src="/screenshots/Add3.png"></img>
+
+### Groups
+<img src="/screenshots/Groups.png"></img>
+<img src="/screenshots/Add2.png"></img>
+
+### Rules
+<img src="/screenshots/Rules.png"></img>
+<img src="/screenshots/Add4.png"></img>
