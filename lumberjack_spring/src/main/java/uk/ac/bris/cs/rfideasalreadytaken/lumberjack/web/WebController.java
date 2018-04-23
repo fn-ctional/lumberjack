@@ -71,9 +71,9 @@ public class WebController extends WebMvcConfigurerAdapter {
         } catch (Exception e) {
             System.out.println("SQL Error");
         }
-//        // Spoof Values
-//        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
-//        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
+        // Spoof Values
+        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
+        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
         // Add list model attributes separately
         for (int i = 0; i < times.size(); i++) {
             String timeI    = "time"   + Integer.toString(i);
