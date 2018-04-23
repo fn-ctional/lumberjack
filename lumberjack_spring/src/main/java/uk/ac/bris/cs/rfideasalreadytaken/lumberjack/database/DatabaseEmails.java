@@ -33,10 +33,15 @@ public class DatabaseEmails {
         ResultSet rs = stmt.executeQuery();
         while (rs.next()) {
             String email = rs.getString("Email");
-            System.out.println(email);
             emails.add(email);
         }
         return emails;
+    }
+
+    public void deletePermittedEmail(String email) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("DELETE FROM PermittedEmails WHERE Email = ?");
+        stmt.setString(1, email);
+        stmt.execute();
     }
 
 }

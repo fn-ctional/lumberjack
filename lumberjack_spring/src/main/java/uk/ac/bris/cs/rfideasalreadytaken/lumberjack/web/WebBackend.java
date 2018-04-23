@@ -560,4 +560,8 @@ public class WebBackend implements FromFrontEnd {
     public void returnDevice(String id) throws SQLException {
         databaseDevices.returnDevice(id);
     }
+
+    public void deletePermittedEmail(String email) throws SQLException {
+        databaseEmails.deletePermittedEmail(email);
+    }
 }

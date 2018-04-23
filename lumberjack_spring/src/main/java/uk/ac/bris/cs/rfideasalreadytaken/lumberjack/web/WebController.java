@@ -822,7 +822,6 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     @PostMapping("/update/user")
     public String updateUser(@RequestParam Map<String, String> request, Model model) {
-        System.out.println(request);
         // Set user attributes
         User user = new User();
         user.setId(request.get("id"));
@@ -835,7 +834,6 @@ public class WebController extends WebMvcConfigurerAdapter {
         try {
             webBackend.editUser(user.getId(), user);
         } catch (Exception e) {
-            System.out.println("SQL Exception");
             model.addAttribute("messageType", "User Updating Failed");
             model.addAttribute("messageString", e.getMessage());
             return "message";
@@ -859,7 +857,6 @@ public class WebController extends WebMvcConfigurerAdapter {
         try {
             webBackend.editDevice(device.getId(), device);
         } catch (Exception e) {
-            System.out.println("SQL Exception");
             model.addAttribute("messageType", "Device Updating Failed");
             model.addAttribute("messageString", e.getMessage());
             return "message";
@@ -896,7 +893,6 @@ public class WebController extends WebMvcConfigurerAdapter {
             List<GroupPermission> deletedPermissions = new ArrayList<>();
             for (Rule r : deletedRules) {
                 deletedPermissions.add(new GroupPermission(r.getId(), id));
-                System.out.println("deleting " + r.getId());
             }
             webBackend.deletePermissions(deletedPermissions);
             // Insert all selected permissions
@@ -919,7 +915,6 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     @PostMapping("/update/rule")
     public String updateRule(@RequestParam Map<String, String> request, Model model) {
-        System.out.println(request);
         // Set rule attributes
         Rule rule = new Rule();
         rule.setId(request.get("id"));
@@ -928,7 +923,6 @@ public class WebController extends WebMvcConfigurerAdapter {
         try {
             webBackend.updateRule(rule);
         } catch (Exception e) {
-            System.out.println("SQL Exception");
             model.addAttribute("messageType", "Rule Updating Failed");
             model.addAttribute("messageString", e.getMessage());
             return "message";
@@ -997,6 +991,21 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("messageType", "Return Successful");
         model.addAttribute("messageString", "The device was successfully returned!");
         return "message";
+    }
+
+    @PostMapping("/delete/admin")
+    public String deletePermittedEmail(@RequestParam Map<String, String> request, Model model) {
+        List<String> toDelete = new ArrayList<>(request.keySet());
+        try {
+            for (String email : toDelete) {
+                webBackend.deletePermittedEmail(email);
+            }
+        } catch (Exception e) {
+            model.addAttribute("messageType", "Deletion Error");
+            model.addAttribute("messageString", e.getMessage());
+            return "message";
+        }
+        return "redirect:../add/admin";
     }
 
 }
