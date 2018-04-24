@@ -6,6 +6,7 @@ public class User {
 
     private String id;
     private String scanValue;
+    private String username;
     private int deviceLimit;
     private int devicesRemoved;
     private Boolean canRemove;
@@ -14,9 +15,10 @@ public class User {
     public User(){
     }
 
-    public User(String id, String scanValue, int deviceLimit, int devicesRemoved, boolean canRemove, String groupID){
+    public User(String id, String scanValue, String username, int deviceLimit, int devicesRemoved, boolean canRemove, String groupID){
         this.id = id;
         this.scanValue = scanValue;
+        this.username = username;
         this.deviceLimit = deviceLimit;
         this.devicesRemoved = devicesRemoved;
         this.canRemove = canRemove;
@@ -29,6 +31,10 @@ public class User {
 
     public String getScanValue() {
         return scanValue;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public int getDeviceLimit() {
@@ -53,6 +59,10 @@ public class User {
         this.scanValue = scanValue;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public void setDeviceLimit(int deviceLimit) {
         this.deviceLimit = deviceLimit;
     }
@@ -73,6 +83,7 @@ public class User {
         User u = (User) o;
         return Objects.equals(id, u.id) &&
                 Objects.equals(scanValue, u.scanValue) &&
+                Objects.equals(username, u.username) &&
                 deviceLimit == u.deviceLimit &&
                 devicesRemoved == u.devicesRemoved &&
                 Objects.equals(groupID, u.groupID) &&

@@ -86,17 +86,17 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetUser() throws Exception {
-        User testUser = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
+        User testUser = new User("Aidan9876", "1314831486", "ab98765", 2, 0, true, "groupOne");
         assertEquals(webBackend.getUser(testUser.getId()), testUser);
     }
 
     @Test
     public void testGetUsers() throws Exception {
         List<User> users = webBackend.getUsers();
-        assertTrue(users.contains(new User("Aidan9876", "1314831486", 2, 0, true, "groupOne")));
-        assertTrue(users.contains(new User("Betty1248", "457436545", 3, 1, true, "groupTwo")));
-        assertTrue(users.contains(new User("Callum2468", "845584644", 3, 0, false, "groupTwo")));
-        assertTrue(users.contains(new User("Dorathy0369", "94648329837", 0, 0, true, "groupOne")));
+        assertTrue(users.contains(new User("Aidan9876", "1314831486", "ab98765", 2, 0, true, "groupOne")));
+        assertTrue(users.contains(new User("Betty1248", "457436545","bc12480", 3, 1, true, "groupTwo")));
+        assertTrue(users.contains(new User("Callum2468", "845584644", "cd24680",3, 0, false, "groupTwo")));
+        assertTrue(users.contains(new User("Dorathy0369", "94648329837", "de03690", 0, 0, true, "groupOne")));
     }
 
     @Test
@@ -177,7 +177,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeleteUser() throws Exception {
-        User testUser = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
+        User testUser = new User("Aidan9876", "1314831486", "ab98765",2, 0, true, "groupOne");
         webBackend.deleteUser(testUser.getId());
         assertNull(webBackend.getUser(testUser.getId()));
     }
@@ -185,7 +185,7 @@ public class FrontEndDatabaseManagerTests {
     @Test
     public void testResetUsers() throws Exception {
         List<User> users = new ArrayList<>();
-        users.add(new User("Betty1248", "457436545", 3, 1, true, "groupTwo"));
+        users.add(new User("Betty1248", "457436545", "bc12480",3, 1, true, "groupTwo"));
         webBackend.resetUsers();
         assertEquals(webBackend.getUsers(), users);
     }
@@ -528,8 +528,8 @@ public class FrontEndDatabaseManagerTests {
     @Test
     public void testGetGroupUsers() throws Exception {
         List<User> users = webBackend.getGroupUsers("groupOne");
-        assertTrue(users.contains(new User("Aidan9876", "1314831486", 2, 0, true, "groupOne")));
-        assertTrue(users.contains(new User("Dorathy0369", "94648329837", 0, 0, true, "groupOne")));
+        assertTrue(users.contains(new User("Aidan9876", "1314831486", "ab98765",2, 0, true, "groupOne")));
+        assertTrue(users.contains(new User("Dorathy0369", "94648329837", "de03690",0, 0, true, "groupOne")));
     }
 
     @Test

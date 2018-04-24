@@ -31,7 +31,7 @@ public class CardReaderBackend implements FromCardReader {
     @Autowired
     private DatabaseUserGroups databaseUserGroups;
 
-    private User currentUser = new User("", "", 0, 0, false, "");
+    private User currentUser = new User("", "","", 0, 0, false, "");
 
     public ScanReturn scanReceived(ScanDTO scanDTO) throws SQLException {
 

@@ -50,13 +50,13 @@ public class DatabaseTesting {
         permission = new GroupPermission("ruleSet2", "groupOne");
         databaseUserGroups.insertIntoGroupPermissions(permission);
 
-        User user = new User("Aidan9876", "1314831486", 2, 0, true, "groupOne");
+        User user = new User("Aidan9876", "1314831486", "ab98765", 2, 0, true, "groupOne");
         databaseUsers.insertIntoUsers(user);
-        user = new User("Betty1248", "457436545", 3, 1, true, "groupTwo");
+        user = new User("Betty1248", "457436545", "bc12480",3, 1, true, "groupTwo");
         databaseUsers.insertIntoUsers(user);
-        user = new User("Callum2468", "845584644", 3, 0, false, "groupTwo");
+        user = new User("Callum2468", "845584644", "cd24680",3, 0, false, "groupTwo");
         databaseUsers.insertIntoUsers(user);
-        user = new User("Dorathy0369", "94648329837", 0, 0, true, "groupOne");
+        user = new User("Dorathy0369", "94648329837", "de03690",0, 0, true, "groupOne");
         databaseUsers.insertIntoUsers(user);
 
         Device device = new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1");
