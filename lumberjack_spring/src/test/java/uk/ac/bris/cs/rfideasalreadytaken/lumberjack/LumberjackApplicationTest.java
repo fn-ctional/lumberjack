@@ -15,7 +15,7 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "file:${user.dir}/config/testdatabase.properties")
 @SpringBootTest
-public class LumberjackApplicationTests {
+public class LumberjackApplicationTest {
 
     @Autowired
     private AuthenticationController testController;

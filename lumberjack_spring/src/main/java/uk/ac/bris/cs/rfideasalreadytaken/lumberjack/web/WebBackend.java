@@ -113,19 +113,13 @@ public class WebBackend implements FromFrontEnd {
     }
 
     public void deleteUser(String userID) throws Exception {
-        try {
-            databaseUsers.deleteFromUsers(userID);
-        } catch (SQLException e) {
-        }
+        databaseUsers.deleteFromUsers(userID);
     }
 
     public void resetUsers() throws SQLException {
         List<User> users = getUsers();
         for (User user : users) {
-            try {
-                databaseUsers.deleteFromUsers(user.getId());
-            } catch (SQLException e) {
-            }
+            databaseUsers.deleteFromUsers(user.getId());
         }
     }
 

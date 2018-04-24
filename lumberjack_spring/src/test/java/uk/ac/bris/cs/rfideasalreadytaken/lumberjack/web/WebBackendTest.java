@@ -1,4 +1,4 @@
-package uk.ac.bris.cs.rfideasalreadytaken.lumberjack;
+package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,21 +21,21 @@ import static org.junit.Assert.*;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @TestPropertySource(locations = "file:${user.dir}/config/testdatabase.properties")
-public class FrontEndDatabaseManagerTests {
+public class WebBackendTest {
 
     @Autowired
     private DatabaseTesting databaseTesting;
 
     @Autowired
-    private WebBackend webBackend;
+    private DatabaseUtility databaseUtility;
 
-    @Before
-    public void setupDatabase() throws Exception {
-        databaseTesting.insertTestCases();
-    }
+    @Autowired
+    private WebBackend webBackend;
 
     @Test
     public void testInsertUser() throws Exception {
+        databaseUtility.resetUsers();
+
         User testUser = new User();
         testUser.setCanRemove(true);
         testUser.setDeviceLimit(1);
@@ -51,6 +51,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testInsertUsers() throws Exception {
+        databaseUtility.resetUsers();
 
         User testUser = new User();
         testUser.setCanRemove(true);
@@ -79,6 +80,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetUserNotInDatabase() throws Exception {
+        databaseUtility.resetUsers();
+
         User testUser = new User();
         testUser.setId("definitely_not_in_there_test_user");
         assertNull(webBackend.getUser(testUser.getId()));
@@ -86,12 +89,16 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetUser() throws Exception {
+        databaseTesting.addTestUsers();
+
         User testUser = new User("Aidan9876", "1314831486", "ab98765", 2, 0, true, "groupOne");
         assertEquals(webBackend.getUser(testUser.getId()), testUser);
     }
 
     @Test
     public void testGetUsers() throws Exception {
+        databaseTesting.addTestUsers();
+
         List<User> users = webBackend.getUsers();
         assertTrue(users.contains(new User("Aidan9876", "1314831486", "ab98765", 2, 0, true, "groupOne")));
         assertTrue(users.contains(new User("Betty1248", "457436545","bc12480", 3, 1, true, "groupTwo")));
@@ -101,6 +108,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testEditUser() throws Exception {
+        databaseTesting.addTestUsers();
+
         User testUser = new User();
         testUser.setCanRemove(true);
         testUser.setDeviceLimit(1);
@@ -116,6 +125,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testChangeUserGroup() throws Exception {
+        databaseTesting.addTestUsers();
+
         User testUser = new User();
         testUser.setCanRemove(true);
         testUser.setDeviceLimit(1);
@@ -132,6 +143,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testSetUserMaxDevices() throws Exception {
+        databaseTesting.addTestUsers();
+
         User testUser = new User();
         testUser.setCanRemove(true);
         testUser.setDeviceLimit(1);
@@ -148,6 +161,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testChangeUsersGroup() throws Exception {
+        databaseTesting.addTestUsers();
+
         User testUser = new User();
         testUser.setCanRemove(true);
         testUser.setDeviceLimit(1);
@@ -177,6 +192,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeleteUser() throws Exception {
+        databaseTesting.addTestUsers();
+
         User testUser = new User("Aidan9876", "1314831486", "ab98765",2, 0, true, "groupOne");
         webBackend.deleteUser(testUser.getId());
         assertNull(webBackend.getUser(testUser.getId()));
@@ -184,6 +201,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testResetUsers() throws Exception {
+        databaseTesting.addTestUsers();
+
         List<User> users = new ArrayList<>();
         users.add(new User("Betty1248", "457436545", "bc12480",3, 1, true, "groupTwo"));
         webBackend.resetUsers();
@@ -192,6 +211,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testInsertDevice() throws Exception {
+        databaseUtility.resetDevices();
+
         Device testDevice = new Device();
         testDevice.setType("laptop");
         testDevice.setAvailable(true);
@@ -207,6 +228,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testInsertDevices() throws Exception {
+        databaseUtility.resetDevices();
 
         Device testDevice = new Device();
         testDevice.setType("laptop");
@@ -235,6 +257,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetDeviceNotInDatabase() throws Exception {
+        databaseUtility.resetDevices();
+
         Device testDevice = new Device();
         testDevice.setId("definitely_not_in_there_test_device");
         assertNull(webBackend.getDevice(testDevice.getId()));
@@ -242,12 +266,16 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetDevice() throws Exception {
+        databaseTesting.addTestDevices();
+
         Device testDevice = new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1");
         assertEquals(webBackend.getDevice(testDevice.getId()), testDevice);
     }
 
     @Test
     public void testGetDevices() throws Exception {
+        databaseTesting.addTestDevices();
+
         List<Device> obtainedDevices = webBackend.getDevices();
         assertTrue(obtainedDevices.contains(new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1")));
         assertTrue(obtainedDevices.contains(new Device("laptop02", "23482364326842334", "laptop", true, true, "ruleSet2")));
@@ -257,6 +285,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeleteDevice() throws Exception {
+        databaseTesting.addTestDevices();
+
         Device testDevice = new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1");
         webBackend.deleteDevice(testDevice.getId());
         assertNull(webBackend.getDevice(testDevice.getId()));
@@ -264,6 +294,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testResetDevices() throws Exception {
+        databaseTesting.addTestDevices();
+
         List<Device> devices = new ArrayList<>();
         devices.add(new Device("laptop02", "23482364326842334", "laptop", true, true, "ruleSet2"));
         webBackend.resetDevices();
@@ -272,6 +304,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testEditDevice() throws Exception {
+        databaseTesting.addTestDevices();
+
         Device testDevice = new Device();
         testDevice.setType("laptop");
         testDevice.setAvailable(true);
@@ -287,6 +321,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testSetDeviceType() throws Exception {
+        databaseTesting.addTestDevices();
+
         Device testDevice = new Device();
         testDevice.setType("laptop");
         testDevice.setAvailable(true);
@@ -303,12 +339,16 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetUserGroup() throws Exception {
+        databaseTesting.addTestUserGroups();
+
         UserGroup testUserGroup = new UserGroup("groupOne");
         assertEquals(webBackend.getUserGroup(testUserGroup.getId()), testUserGroup);
     }
 
     @Test
     public void testGetUserGroups() throws Exception {
+        databaseTesting.addTestUserGroups();
+
         List<UserGroup> obtainedUserGroups = webBackend.getUserGroups();
         assertTrue(obtainedUserGroups.contains(new UserGroup("groupOne")));
         assertTrue(obtainedUserGroups.contains(new UserGroup("groupTwo")));
@@ -316,6 +356,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeleteUserGroup() throws Exception {
+        databaseTesting.addTestUserGroups();
+
         UserGroup testUserGroup = new UserGroup("test_group_1");
         webBackend.insertUserGroup(testUserGroup);
         webBackend.deleteUserGroup(testUserGroup.getId());
@@ -324,6 +366,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testInsertUserGroup() throws Exception {
+        databaseUtility.resetUserGroups();
+
         UserGroup testUserGroup = new UserGroup("test_group_1");
         webBackend.insertUserGroup(testUserGroup);
         assertEquals(webBackend.getUserGroup(testUserGroup.getId()), testUserGroup);
@@ -331,12 +375,16 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetRule() throws Exception {
+        databaseTesting.addTestRules();
+
         Rule testRule = new Rule("ruleSet1", 20);
         assertEquals(webBackend.getRule(testRule.getId()), testRule);
     }
 
     @Test
     public void testGetRules() throws Exception {
+        databaseTesting.addTestRules();
+
         List<Rule> obtainedRules = webBackend.getRules();
         assertTrue(obtainedRules.contains(new Rule("ruleSet1", 20)));
         assertTrue(obtainedRules.contains(new Rule("ruleSet2", 22)));
@@ -344,6 +392,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeleteRule() throws Exception {
+        databaseTesting.addTestRules();
+
         Rule testRule = new Rule("test_rule_1", 10);
         webBackend.insertRule(testRule);
         webBackend.deleteRule(testRule.getId());
@@ -352,6 +402,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testInsertRule() throws Exception {
+        databaseUtility.resetRules();
+
         Rule testRule = new Rule("test_rule_1", 10);
         webBackend.insertRule(testRule);
         assertEquals(webBackend.getRule(testRule.getId()), testRule);
@@ -359,12 +411,16 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetGroupPermissionFromRuleAndGroup() throws Exception {
+        databaseTesting.addTestGroupPermissions();
+
         GroupPermission testGroupPermission = new GroupPermission("ruleSet1", "groupOne");
         assertEquals(webBackend.getGroupPermission(testGroupPermission.getRuleID(), testGroupPermission.getUserGroupID()), testGroupPermission);
     }
 
     @Test
     public void testGetGroupPermission() throws Exception {
+        databaseTesting.addTestGroupPermissions();
+
         GroupPermission testGroupPermission = new GroupPermission("ruleSet1", "groupOne");
         testGroupPermission = webBackend.getGroupPermission(testGroupPermission.getRuleID(), testGroupPermission.getUserGroupID());
         assertEquals(webBackend.getGroupPermission(testGroupPermission.getId()), testGroupPermission);
@@ -372,6 +428,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetGroupPermissions() throws Exception {
+        databaseTesting.addTestGroupPermissions();
+
         List<GroupPermission> obtainedGroupPermissions = webBackend.getGroupPermissions();
         assertTrue(obtainedGroupPermissions.contains(new GroupPermission("ruleSet1", "groupOne")));
         assertTrue(obtainedGroupPermissions.contains(new GroupPermission("ruleSet1", "groupTwo")));
@@ -380,6 +438,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeleteGroupPermission() throws Exception {
+        databaseTesting.addTestGroupPermissions();
+
         GroupPermission testGroupPermission = new GroupPermission("ruleSet1", "groupTwo");
         testGroupPermission = webBackend.getGroupPermission(testGroupPermission.getRuleID(), testGroupPermission.getUserGroupID());
         webBackend.deleteGroupPermission(testGroupPermission.getId());
@@ -388,6 +448,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testInsertGroupPermission() throws Exception {
+        databaseUtility.resetGroupPermissions();
+
         GroupPermission testGroupPermission = new GroupPermission("ruleSet2", "groupTwo");
         webBackend.insertGroupPermission(testGroupPermission);
         assertEquals(webBackend.getGroupPermission(testGroupPermission.getRuleID(), testGroupPermission.getUserGroupID()), testGroupPermission);
@@ -395,6 +457,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testLoadAssignmentHistoryFromUserID() throws Exception {
+        databaseTesting.insertTestCases();
         List<AssignmentHistory> history = webBackend.getUserAssignmentHistory("Callum2468");
 
         assertEquals(history.get(0).getUserID(), "Callum2468");
@@ -404,6 +467,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testLoadAssignmentHistoryFromDeviceID() throws Exception {
+        databaseTesting.insertTestCases();
         List<AssignmentHistory> history = webBackend.getDeviceAssignmentHistory("laptop01");
 
         assertEquals(history.get(0).getUserID(), "Callum2468");
@@ -413,6 +477,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetRecentTakeouts() throws Exception {
+        databaseTesting.insertTestCases();
         List<Integer> takeouts = webBackend.getRecentTakeouts(9);
         Integer amount = 0;
 
@@ -426,6 +491,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetRecentReturns() throws Exception {
+        databaseTesting.insertTestCases();
         List<Integer> returns = webBackend.getRecentReturns(9);
         Integer amount = 0;
 
@@ -439,6 +505,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeletePermissions() throws Exception {
+        databaseTesting.insertTestCases();
 
         List<GroupPermission> permissions = new ArrayList<>();
         permissions.add(new GroupPermission("ruleSet1", "groupOne"));
@@ -450,12 +517,14 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGroupHasRule() throws Exception {
+        databaseTesting.insertTestCases();
         assertTrue(webBackend.groupHasRule("groupOne", "ruleSet1"));
         assertFalse(webBackend.groupHasRule("groupTwo", "ruleSet2"));
     }
 
     @Test
     public void testDeletePermissionsByRule() throws Exception {
+        databaseTesting.insertTestCases();
         webBackend.deletePermissionsByRule("ruleSet1");
         assertNull(webBackend.getGroupPermission("ruleSet1", "groupOne"));
         assertNull(webBackend.getGroupPermission("ruleSet1", "groupTwo"));
@@ -463,6 +532,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeletePermissionsByGroup() throws Exception {
+        databaseTesting.insertTestCases();
         webBackend.deletePermissionsByGroup("groupOne");
         assertNull(webBackend.getGroupPermission("ruleSet1", "groupOne"));
         assertNull(webBackend.getGroupPermission("ruleSet2", "groupOne"));
@@ -470,6 +540,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testRemoveRuleFromDevices() throws Exception {
+        databaseTesting.insertTestCases();
         webBackend.removeRuleFromDevices("ruleSet1");
         List<Device> devices = webBackend.getDevicesByRule("ruleSet1");
         assertEquals(devices.size(), 0);
@@ -477,6 +548,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testRemoveGroupFromUsers() throws Exception {
+        databaseTesting.insertTestCases();
         webBackend.removeRuleFromDevices("groupOne");
         List<User> users = webBackend.getUsers();
 
@@ -487,6 +559,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeleteAssignmentHistoryByDevice() throws Exception {
+        databaseTesting.insertTestCases();
         webBackend.deleteAssignmentHistoryByDevice("laptop01");
         List<AssignmentHistory> history = webBackend.getDeviceAssignmentHistory("laptop01");
         assertEquals(history.size(), 0);
@@ -494,12 +567,14 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testDeviceIsOut() throws Exception {
+        databaseTesting.insertTestCases();
         assertTrue(webBackend.deviceIsOut("laptop02"));
         assertFalse(webBackend.deviceIsOut("laptop01"));
     }
 
     @Test
     public void testDeleteAssignmentHistoryByUser() throws Exception {
+        databaseTesting.insertTestCases();
         webBackend.deleteAssignmentHistoryByUser("Betty1248");
         List<AssignmentHistory> history = webBackend.getUserAssignmentHistory("Betty1248");
         assertEquals(history.size(), 0);
@@ -507,12 +582,14 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testUserHasOutstandingDevices() throws Exception {
+        databaseTesting.insertTestCases();
         assertTrue(webBackend.userHasOutstandingDevices("Betty1248"));
         assertFalse(webBackend.userHasOutstandingDevices("Aidan9876"));
     }
 
     @Test
     public void testGetDevicesByRule() throws Exception {
+        databaseTesting.insertTestCases();
         List<Device> obtainedDevices = webBackend.getDevicesByRule("ruleSet1");
         assertTrue(obtainedDevices.contains(new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1")));
         assertTrue(obtainedDevices.contains(new Device("laptop03", "93482364723648725", "laptop", false, false, "ruleSet1")));
@@ -520,6 +597,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetUserGroupsByRule() throws Exception {
+        databaseTesting.insertTestCases();
         List<UserGroup> obtainedGroups = webBackend.getUserGroupsByRule("ruleSet1");
         assertTrue(obtainedGroups.contains(new UserGroup("groupOne")));
         assertTrue(obtainedGroups.contains(new UserGroup("groupTwo")));
@@ -527,6 +605,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetGroupUsers() throws Exception {
+        databaseTesting.insertTestCases();
         List<User> users = webBackend.getGroupUsers("groupOne");
         assertTrue(users.contains(new User("Aidan9876", "1314831486", "ab98765",2, 0, true, "groupOne")));
         assertTrue(users.contains(new User("Dorathy0369", "94648329837", "de03690",0, 0, true, "groupOne")));
@@ -534,6 +613,7 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetGroupRules() throws Exception {
+        databaseTesting.insertTestCases();
         List<Rule> obtainedRules = webBackend.getGroupRules("groupOne");
         assertTrue(obtainedRules.contains(new Rule("ruleSet1", 20)));
         assertTrue(obtainedRules.contains(new Rule("ruleSet2", 22)));
@@ -541,27 +621,32 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetAvailableCount() throws Exception {
+        databaseTesting.insertTestCases();
         assertEquals(webBackend.getAvailableCount(), 2);
     }
 
     @Test
     public void testGetTakenCount() throws Exception {
+        databaseTesting.insertTestCases();
         assertEquals(webBackend.getTakenCount(), 1);
     }
 
     @Test
     public void testGetOtherCount() throws Exception {
+        databaseTesting.insertTestCases();
         assertEquals(webBackend.getOtherCount(), 1);
     }
 
     @Test
-    public void testGetTimes() {
+    public void testGetTimes() throws Exception {
+        databaseTesting.insertTestCases();
         List<String> times = webBackend.getTimes(3);
         assertEquals(times.size(), 3);
     }
 
     @Test
     public void testUpdateRule() throws Exception {
+        databaseTesting.insertTestCases();
         Rule rule = new Rule("ruleSet1", 8);
         webBackend.updateRule(rule);
         assertEquals(rule.getMaximumRemovalTime(), 8);
@@ -569,6 +654,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetUsersCSV() throws Exception {
+        databaseTesting.addTestUsers();
+
         webBackend.deleteUser("Aidan9876");
         webBackend.deleteUser("Dorathy0369");
         webBackend.deleteUser("Callum2468");
@@ -578,6 +665,8 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetDevicesCSV() throws Exception {
+        databaseTesting.addTestDevices();
+
         webBackend.deleteDevice("laptop01");
         webBackend.deleteDevice("laptop03");
         webBackend.deleteDevice("camera01");
@@ -587,12 +676,14 @@ public class FrontEndDatabaseManagerTests {
 
     @Test
     public void testGetCurrentlyLateDevices() throws Exception {
+        databaseTesting.insertTestCases();
         List<Device> obtainedDevices = webBackend.getCurrentlyLateDevices();
         assertEquals(obtainedDevices.size(),0);
     }
 
     @Test
     public void testGetPreviouslyLateDevices() throws Exception {
+        databaseTesting.insertTestCases();
         List<Device> obtainedDevices = webBackend.getPreviouslyLateDevices();
         assertEquals(obtainedDevices.size(),0);
     }
