@@ -61,6 +61,7 @@ public class DatabaseUtility {
         stmt.execute("CREATE TABLE IF NOT EXISTS Users (" +
                 "\nid varchar(100)," +
                 "\nScanValue varchar(100) NOT NULL UNIQUE," +
+                "\nUsername varchar(100)," +
                 "\nDeviceLimit int," +
                 "\nDevicesRemoved int," +
                 "\nCanRemove bit," +

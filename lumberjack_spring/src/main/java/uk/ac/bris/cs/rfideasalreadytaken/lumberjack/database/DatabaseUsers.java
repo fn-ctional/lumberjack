@@ -64,6 +64,7 @@ public class DatabaseUsers {
             user.setId(rs.getString("id"));
             user.setScanValue(rs.getString("ScanValue"));
             user.setGroupId(rs.getString("GroupID"));
+            user.setUsername(rs.getString("Username"));
             return user;
         }
         return null;
@@ -79,6 +80,7 @@ public class DatabaseUsers {
             user.setId(rs.getString("id"));
             user.setScanValue(rs.getString("ScanValue"));
             user.setGroupId(rs.getString("GroupID"));
+            user.setUsername(rs.getString("Username"));
             users.add(user);
         }
         return users;
@@ -92,27 +94,29 @@ public class DatabaseUsers {
     }
 
     public void insertIntoUsers(User user) throws SQLException {
-        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("INSERT INTO Users (id, ScanValue, DeviceLimit, DevicesRemoved, CanRemove, GroupID)" +
-                "VALUES (?,?,?,?,?,?)");
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("INSERT INTO Users (id, ScanValue, Username, DeviceLimit, DevicesRemoved, CanRemove, GroupID)" +
+                "VALUES (?,?,?,?,?,?,?)");
         stmt.setString(1, user.getId());
         stmt.setString(2, user.getScanValue());
-        stmt.setInt(3, user.getDeviceLimit());
-        stmt.setInt(4, user.getDevicesRemoved());
-        stmt.setBoolean(5, user.canRemove());
-        stmt.setString(6, user.getGroupId());
+        stmt.setString(3, user.getUsername());
+        stmt.setInt(4, user.getDeviceLimit());
+        stmt.setInt(5, user.getDevicesRemoved());
+        stmt.setBoolean(6, user.canRemove());
+        stmt.setString(7, user.getGroupId());
         stmt.execute();
     }
 
     public void updateUser(String userID, User user) throws SQLException {
-        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Users SET id = ?, ScanValue = ?, DeviceLimit = ?, DevicesRemoved = ?, CanRemove = ?, GroupID = ? " +
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Users SET id = ?, ScanValue = ?, Username = ?, DeviceLimit = ?, DevicesRemoved = ?, CanRemove = ?, GroupID = ? " +
                 "WHERE id = ?");
         stmt.setString(1, user.getId());
         stmt.setString(2, user.getScanValue());
-        stmt.setInt(3, user.getDeviceLimit());
-        stmt.setInt(4, user.getDevicesRemoved());
-        stmt.setBoolean(5, user.canRemove());
-        stmt.setString(6, user.getGroupId());
-        stmt.setString(7, userID);
+        stmt.setString(3, user.getUsername());
+        stmt.setInt(4, user.getDeviceLimit());
+        stmt.setInt(5, user.getDevicesRemoved());
+        stmt.setBoolean(6, user.canRemove());
+        stmt.setString(7, user.getGroupId());
+        stmt.setString(8, userID);
         stmt.execute();
     }
 
@@ -136,7 +140,7 @@ public class DatabaseUsers {
 
     //TODO: I don't think this function has correct operation
     public boolean isUserAtDeviceLimit(User user){
-        return user.getDeviceLimit() == user.getDevicesRemoved();
+        return user.getDeviceLimit() <= user.getDevicesRemoved();
     }
 
     public void removeGroupFromUsers(String groupID) throws SQLException {
