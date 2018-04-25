@@ -68,22 +68,22 @@ public class CSVController {
     }
 
     @GetMapping(value = "/csv/users", produces = "text/csv")
-    public void getUsersCSV(HttpServletResponse response) throws FileDownloadException {
+    public void getUsersCSV(HttpServletResponse response) throws FileDownloadException, SQLException {
         try {
             String csv = csvBackend.getUsersCSV();
             response.getWriter().append(csv);
-        } catch (IOException | SQLException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             throw new FileDownloadException();
         }
     }
 
     @GetMapping(value = "/csv/devices", produces = "text/csv")
-    public void getDevicesCSV(HttpServletResponse response) throws FileDownloadException {
+    public void getDevicesCSV(HttpServletResponse response) throws FileDownloadException, SQLException {
         try {
             String csv = csvBackend.getDevicesCSV();
             response.getWriter().append(csv);
-        } catch (IOException | SQLException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             throw new FileDownloadException();
         }

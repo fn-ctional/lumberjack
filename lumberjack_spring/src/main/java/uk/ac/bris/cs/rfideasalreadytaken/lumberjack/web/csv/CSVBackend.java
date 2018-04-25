@@ -10,10 +10,7 @@ import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.User;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.WebBackend;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +45,7 @@ public class CSVBackend {
             newUser.setCanRemove(Boolean.parseBoolean(record.get("can remove")));
             newUser.setGroupId(record.get("group id"));
             newUser.setId(UUID.randomUUID().toString());
+            newUser.setUsername(record.get("username"));
 
             newUsers.add(newUser);
         }
@@ -78,9 +76,8 @@ public class CSVBackend {
 
     private Iterable<CSVRecord> multipartFileToRecords(MultipartFile csv) throws FileUploadException {
         try {
-            File file = new File(csv.getOriginalFilename());
-            csv.transferTo(file);
-            Reader in = new FileReader(file);
+            Reader in = new InputStreamReader(csv.getInputStream());
+
             Iterable<CSVRecord> records = CSVFormat.DEFAULT
                     .withHeader(HEADERS)
                     .withFirstRecordAsHeader()
