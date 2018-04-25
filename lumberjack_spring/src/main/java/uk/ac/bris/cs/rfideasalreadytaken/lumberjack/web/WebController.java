@@ -52,7 +52,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @return dashboard.html.
      */
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
+    public String dashboard(Model model) throws SQLException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         AdminUser user = authenticationBackend.findByEmail(email);
@@ -62,15 +62,11 @@ public class WebController extends WebMvcConfigurerAdapter {
         List<Integer> returns  = new ArrayList<>();
         List<String>  times    = webBackend.getTimes(6);
         int available = 0, taken = 0, other = 0;
-        try {
-            available = webBackend.getAvailableCount();
-            taken     = webBackend.getTakenCount();
-            other     = webBackend.getOtherCount();
-            takeouts  = webBackend.getRecentTakeouts(6);
-            returns   = webBackend.getRecentReturns(6);
-        } catch (Exception e) {
-            System.out.println("SQL Error");
-        }
+        available = webBackend.getAvailableCount();
+        taken     = webBackend.getTakenCount();
+        other     = webBackend.getOtherCount();
+        takeouts  = webBackend.getRecentTakeouts(6);
+        returns   = webBackend.getRecentReturns(6);
         // Spoof Values
         takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
         returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
@@ -115,17 +111,13 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @return users.html.
      */
     @GetMapping("/users")
-    public String allUsers(Model model) {
+    public String allUsers(Model model) throws SQLException {
         model.addAttribute("multi", true);
         Boolean found = false;
         List<User> userList = new ArrayList<>();
-        try {
-            userList = webBackend.getUsers();
-            if (!userList.isEmpty()) {
-                found = true;
-            }
-        } catch (Exception e) {
-            System.out.println("SQL Error");
+        userList = webBackend.getUsers();
+        if (!userList.isEmpty()) {
+            found = true;
         }
         model.addAttribute("found", found);
         model.addAttribute(userList);
@@ -139,7 +131,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @return users.html.
      */
     @GetMapping("/user/{id}")
-    public String userSpecified(@PathVariable String id, Model model) {
+    public String userSpecified(@PathVariable String id, Model model) throws SQLException {
         List<User> userList = new ArrayList<>();
         List<AssignmentHistory> takeoutList = new ArrayList<>();
         List<Assignment> assignmentList = new ArrayList<>();
@@ -147,22 +139,19 @@ public class WebController extends WebMvcConfigurerAdapter {
         boolean taken = false;
         boolean assignments = false;
         model.addAttribute("searchTerm", id);
-        try {
-            User user = webBackend.getUser(id);
-            if (user.getId().equals(id)) {
-                userList.add(user);
-                found = true;
-                takeoutList = webBackend.getUserAssignmentHistory(id);
-                assignmentList = webBackend.getUserAssignments(id);
-                if (!takeoutList.isEmpty()) {
-                    taken = true;
-                }
-                if (!assignmentList.isEmpty()) {
-                    assignments = true;
-                }
+
+        User user = webBackend.getUser(id);
+        if (user.getId().equals(id)) {
+            userList.add(user);
+            found = true;
+            takeoutList = webBackend.getUserAssignmentHistory(id);
+            assignmentList = webBackend.getUserAssignments(id);
+            if (!takeoutList.isEmpty()) {
+                taken = true;
             }
-        } catch (Exception e) {
-            System.out.println("SQL Error");
+            if (!assignmentList.isEmpty()) {
+                assignments = true;
+            }
         }
         model.addAttribute("taken", taken);
         model.addAttribute("found", found);
@@ -190,17 +179,13 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @return devices.html.
      */
     @GetMapping("/devices")
-    public String allDevices(Model model) {
+    public String allDevices(Model model) throws SQLException {
         model.addAttribute("multi", true);
         Boolean found = false;
         List<Device> deviceList = new ArrayList<>();
-        try {
-            deviceList = webBackend.getDevices();
-            if (!deviceList.isEmpty()) {
-                found = true;
-            }
-        } catch (Exception e) {
-            System.out.println("SQL Error");
+        deviceList = webBackend.getDevices();
+        if (!deviceList.isEmpty()) {
+            found = true;
         }
         model.addAttribute("found", found);
         model.addAttribute(deviceList);
@@ -214,7 +199,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @return devices.html.
      */
     @GetMapping("/device/{id}")
-    public String deviceSpecified(@PathVariable String id, Model model) {
+    public String deviceSpecified(@PathVariable String id, Model model) throws SQLException {
         List<Device> deviceList = new ArrayList<>();
         List<AssignmentHistory> takeoutList = new ArrayList<>();
         List<Assignment> assignmentList = new ArrayList<>();
@@ -222,18 +207,14 @@ public class WebController extends WebMvcConfigurerAdapter {
         boolean taken = false;
         model.addAttribute("isOut", false);
         model.addAttribute("searchTerm", id);
-        try {
-            Device device = webBackend.getDevice(id);
-            if (device.getId().equals(id)) {
-                deviceList.add(device);
-                found = true;
-                takeoutList = webBackend.getDeviceAssignmentHistory(id);
-                model.addAttribute("isOut", deviceList.get(0).isCurrentlyAssigned());
-                taken = true;
-                assignmentList = webBackend.getDeviceAssignments(id);
-            }
-        } catch (Exception e) {
-            System.out.println("SQL Error");
+        Device device = webBackend.getDevice(id);
+        if (device.getId().equals(id)) {
+            deviceList.add(device);
+            found = true;
+            takeoutList = webBackend.getDeviceAssignmentHistory(id);
+            model.addAttribute("isOut", deviceList.get(0).isCurrentlyAssigned());
+            taken = true;
+            assignmentList = webBackend.getDeviceAssignments(id);
         }
         model.addAttribute("found", found);
         model.addAttribute("taken", taken);
@@ -291,6 +272,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         try {
             switchOnType(type, model, null);
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("SQL Error");
             model.addAttribute("messageType", "Error");
             model.addAttribute("messageString", e.getMessage());
@@ -411,84 +393,6 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "redirect:../add/admin";
     }
 
-    /**
-     * CSV file upload POST mapping. CSV must include headers that match user object.
-     * Any missing columns will be filled in with default values.
-     * @param file CSV file including headers that match the user object.
-     *            Headers are non-capitalised and separated by spaces.
-     * @param model The session/page model.
-     * @return The message page detailing the success or error of the upload.
-     */
-    @PostMapping(value = "/add/user/CSV")
-    public String addUsersCSV(@RequestParam("file") MultipartFile file, Model model) throws FileUploadException, SQLException {
-        List<User> newUsers = webBackend.parseUserCSV(file);
-
-        webBackend.insertUsers(newUsers);
-        model.addAttribute("messageType", "Successful Upload");
-        model.addAttribute("messageString", "New users successfully added!");
-
-        return "message";
-    }
-
-    /**
-     * CSV file upload POST mapping. CSV must include headers that match device object.
-     * Any missing columns will be filled in with default values.
-     * @param file CSV file including headers that match the user object.
-     *            Headers are non-capitalised and separated by spaces.
-     * @param model The session/page model.
-     * @return The message page detailing the success or error of the upload.
-     */
-    @PostMapping(value = "/add/device/CSV")
-    public String addDevicesCSV(@RequestParam("file") MultipartFile file, Model model) throws FileUploadException, SQLException {
-            List<Device> newDevices = webBackend.parseDeviceCSV(file);
-
-            webBackend.insertDevices(newDevices);
-            model.addAttribute("messageType", "Successful Upload");
-            model.addAttribute("messageString", "New devices successfully added!");
-
-        return "message";
-    }
-
-    @GetMapping(value = "/csv/users", produces = "text/csv")
-    public void getUsersCSV(HttpServletResponse response) throws FileDownloadException {
-        try {
-            String csv = webBackend.getUsersCSV();
-            response.getWriter().append(csv);
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            throw new FileDownloadException();
-        }
-    }
-
-    @GetMapping(value = "/csv/devices", produces = "text/csv")
-    public void getDevicesCSV(HttpServletResponse response) throws FileDownloadException {
-        try {
-            String csv = webBackend.getDevicesCSV();
-            response.getWriter().append(csv);
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
-            throw new FileDownloadException();
-        }
-    }
-
-    @ExceptionHandler(FileUploadException.class)
-    public ModelAndView handleUploadError() {
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("message");
-        mav.addObject("messageType", "Failed Upload");
-        mav.addObject("messageString","Unknown CSV upload error, please try again!");
-        return mav;
-    }
-
-    @ExceptionHandler(FileDownloadException.class)
-    public ModelAndView handleDownloadError() {
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("message");
-        mav.addObject("messageType", "Failed Download");
-        mav.addObject("messageString","Unknown CSV download error, please try again!");
-        return mav;
-    }
-
     @GetMapping("/group")
     public String group(Model model) {
         model.addAttribute("blank", true);
@@ -496,17 +400,13 @@ public class WebController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/groups")
-    public String allGroups(Model model) {
+    public String allGroups(Model model) throws SQLException {
         model.addAttribute("multi", true);
         Boolean found = false;
         List<UserGroup> userGroupList = new ArrayList<>();
-        try {
-            userGroupList = webBackend.getUserGroups();
-            if (!userGroupList.isEmpty()) {
-                found = true;
-            }
-        } catch (Exception e) {
-            System.out.println("SQL Error");
+        userGroupList = webBackend.getUserGroups();
+        if (!userGroupList.isEmpty()) {
+            found = true;
         }
         model.addAttribute("found", found);
         model.addAttribute(userGroupList);
@@ -514,17 +414,13 @@ public class WebController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/group/{id}")
-    public String groupSpecified(@PathVariable String id, Model model) {
+    public String groupSpecified(@PathVariable String id, Model model) throws SQLException {
         // Make sure group exists
         Boolean found = false;
         model.addAttribute("searchTerm", id);
-        try {
-            UserGroup userGroup = webBackend.getUserGroup(id);
-            if (userGroup.getId().equals(id)) {
-                found = true;
-            }
-        } catch (Exception e) {
-            System.out.println("SQL Error");
+        UserGroup userGroup = webBackend.getUserGroup(id);
+        if (userGroup.getId().equals(id)) {
+            found = true;
         }
         List<User> userList = new ArrayList<>();
         List<Rule> ruleList = new ArrayList<>();
@@ -532,22 +428,14 @@ public class WebController extends WebMvcConfigurerAdapter {
         boolean gotRules = false;
         if (found) {
             // Get group users
-            try {
-                userList = webBackend.getGroupUsers(id);
-                if (!userList.isEmpty()) {
-                    gotUsers = true;
-                }
-            } catch (Exception e) {
-                System.out.println("SQL Error");
+            userList = webBackend.getGroupUsers(id);
+            if (!userList.isEmpty()) {
+                gotUsers = true;
             }
             // Get group rules
-            try {
-                ruleList = webBackend.getGroupRules(id);
-                if (!ruleList.isEmpty()) {
-                    gotRules = true;
-                }
-            } catch (Exception e) {
-                System.out.println("SQL Error");
+            ruleList = webBackend.getGroupRules(id);
+            if (!ruleList.isEmpty()) {
+                gotRules = true;
             }
         }
         model.addAttribute("found", found);
@@ -565,17 +453,13 @@ public class WebController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/rules")
-    public String allRules(Model model) {
+    public String allRules(Model model) throws SQLException {
         model.addAttribute("multi", true);
         Boolean found = false;
         List<Rule> ruleList = new ArrayList<>();
-        try {
-            ruleList = webBackend.getRules();
-            if (!ruleList.isEmpty()) {
-                found = true;
-            }
-        } catch (Exception e) {
-            System.out.println("SQL Error");
+        ruleList = webBackend.getRules();
+        if (!ruleList.isEmpty()) {
+            found = true;
         }
         model.addAttribute("found", found);
         model.addAttribute(ruleList);
@@ -583,18 +467,14 @@ public class WebController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping("/rule/{id}")
-    public String ruleSpecified(@PathVariable String id, Model model) {
+    public String ruleSpecified(@PathVariable String id, Model model) throws SQLException {
         // Make sure rule exists
         Boolean found = false;
         model.addAttribute("searchTerm", id);
-        try {
-            Rule rule = webBackend.getRule(id);
-            if (rule.getId().equals(id)) {
-                found = true;
-                model.addAttribute("thisRule", rule);
-            }
-        } catch (Exception e) {
-            System.out.println("SQL Error");
+        Rule rule = webBackend.getRule(id);
+        if (rule.getId().equals(id)) {
+            found = true;
+            model.addAttribute("thisRule", rule);
         }
         List<UserGroup> groupList = new ArrayList<>();
         List<Device> deviceList = new ArrayList<>();
@@ -602,22 +482,14 @@ public class WebController extends WebMvcConfigurerAdapter {
         boolean gotDevices = false;
         if (found) {
             // Get groups with this rule
-            try {
-                groupList = webBackend.getUserGroupsByRule(id);
-                if (!groupList.isEmpty()) {
-                    gotGroups = true;
-                }
-            } catch (Exception e) {
-                System.out.println("SQL Error");
+            groupList = webBackend.getUserGroupsByRule(id);
+            if (!groupList.isEmpty()) {
+                gotGroups = true;
             }
             // Get devices with this rule
-            try {
-                deviceList = webBackend.getDevicesByRule(id);
-                if (!deviceList.isEmpty()) {
-                    gotDevices = true;
-                }
-            } catch (Exception e) {
-                System.out.println("SQL Error");
+            deviceList = webBackend.getDevicesByRule(id);
+            if (!deviceList.isEmpty()) {
+                gotDevices = true;
             }
         }
         model.addAttribute("found", found);
@@ -761,6 +633,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         try {
             switchOnType(type, model, id);
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("SQL Error");
             model.addAttribute("messageType", "Error");
             model.addAttribute("messageString", e.getMessage());
@@ -998,4 +871,13 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "redirect:../add/admin";
     }
 
+    @ExceptionHandler(SQLException.class)
+    public ModelAndView handleUnknownSQLException(Exception e) {
+        e.printStackTrace();
+        ModelAndView mav = new ModelAndView();
+        mav.setViewName("message");
+        mav.addObject("messageType", "Server Error");
+        mav.addObject("messageString","Unknown server error, please try again!");
+        return mav;
+    }
 }
