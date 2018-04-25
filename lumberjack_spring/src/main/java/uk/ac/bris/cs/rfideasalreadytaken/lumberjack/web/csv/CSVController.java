@@ -36,6 +36,8 @@ public class CSVController {
      *            Headers are non-capitalised and separated by spaces.
      * @param model The session/page model.
      * @return The message page detailing the success or error of the upload.
+     * @throws FileUploadException Thrown in case of a parsing error.
+     * @throws SQLException Thrown in case of a database error.
      */
     @PostMapping(value = "/add/user/CSV")
     public String addUsersCSV(@RequestParam("file") MultipartFile file, Model model) throws FileUploadException, SQLException {
@@ -55,6 +57,8 @@ public class CSVController {
      *            Headers are non-capitalised and separated by spaces.
      * @param model The session/page model.
      * @return The message page detailing the success or error of the upload.
+     * @throws FileUploadException Thrown in case of a parsing error.
+     * @throws SQLException Thrown in case of a database error.
      */
     @PostMapping(value = "/add/device/CSV")
     public String addDevicesCSV(@RequestParam("file") MultipartFile file, Model model) throws FileUploadException, SQLException {
@@ -67,28 +71,43 @@ public class CSVController {
         return "message";
     }
 
+    /**
+     * Returns a CSV file containing all users.
+     * @param response The http response.
+     * @throws FileDownloadException Thrown in case of a parsing error.
+     * @throws SQLException Thrown in case of a database error.
+     */
     @GetMapping(value = "/csv/users", produces = "text/csv")
     public void getUsersCSV(HttpServletResponse response) throws FileDownloadException, SQLException {
         try {
             String csv = csvBackend.getUsersCSV();
             response.getWriter().append(csv);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new FileDownloadException();
         }
     }
 
+    /**
+     * Returns a CSV file containing all devices.
+     * @param response The http response.
+     * @throws FileDownloadException Thrown in case of a parsing error.
+     * @throws SQLException Thrown in case of a database error.
+     */
     @GetMapping(value = "/csv/devices", produces = "text/csv")
     public void getDevicesCSV(HttpServletResponse response) throws FileDownloadException, SQLException {
         try {
             String csv = csvBackend.getDevicesCSV();
             response.getWriter().append(csv);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new FileDownloadException();
         }
     }
 
+    /**
+     * Returns generic error message for any SQLException.
+     * @param e Exception that was thrown.
+     * @return Generic error page asking user to try again.
+     */
     @ExceptionHandler(SQLException.class)
     public ModelAndView handleUnknownSQLException(Exception e) {
         e.printStackTrace();
@@ -99,15 +118,23 @@ public class CSVController {
         return mav;
     }
 
+    /**
+     * Exception handler that catches FileUploadException and returns file upload error page.
+     * @return An error page asking user to check formatting and try again.
+     */
     @ExceptionHandler(FileUploadException.class)
     public ModelAndView handleUploadError() {
         ModelAndView mav = new ModelAndView();
         mav.setViewName("message");
         mav.addObject("messageType", "Failed Upload");
-        mav.addObject("messageString","Unknown CSV upload error, please try again!");
+        mav.addObject("messageString","Unknown CSV upload error. Please try again and check the CSV is correctly formatted!");
         return mav;
     }
 
+    /**
+     * Exception handler that catches FileDownloadException and returns file download error page.
+     * @return An error page asking user to try again.
+     */
     @ExceptionHandler(FileDownloadException.class)
     public ModelAndView handleDownloadError() {
         ModelAndView mav = new ModelAndView();
