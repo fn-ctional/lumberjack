@@ -1,12 +1,19 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.csv;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.DatabaseTesting;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.WebBackend;
 
 import static org.junit.Assert.*;
 
+@RunWith(SpringRunner.class)
+@TestPropertySource(locations = "file:${user.dir}/config/testdatabase.properties")
+@SpringBootTest
 public class CSVBackendTest {
 
     @Autowired
