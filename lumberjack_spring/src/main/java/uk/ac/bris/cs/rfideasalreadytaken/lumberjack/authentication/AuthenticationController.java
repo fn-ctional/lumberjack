@@ -28,10 +28,7 @@ import javax.servlet.GenericServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 public class AuthenticationController extends WebMvcConfigurerAdapter {
@@ -235,54 +232,26 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping(value = "/user/changePassword")
-    public ModelAndView showChangePasswordPage(@RequestParam("id") String id, @RequestParam("token") String token, Model model) {
-
+    public String showChangePasswordPage(@RequestParam("id") String id, @RequestParam("token") String token, Model model) throws SQLException {
         String result = authenticationBackend.validatePasswordResetToken(id, token);
         if (result != null) {
             model.addAttribute("messageType", "Not permitted to change this password!");
             model.addAttribute("messageString", "Please try again!");
-            return new ModelAndView("message", "user", hashCode());
+            return "message";
         }
-        model.addAttribute("messageType", "Password successfully changed!");
-        model.addAttribute("messageString", "You can now log in with the new password!");
-        return new ModelAndView("message", "user", hashCode());
+        AdminUser adminUser = userService.getUser(token);
+        model.addAttribute("token", token);
+        model.addAttribute("email", adminUser.getEmail());
+        return "changePassword";
     }
 
     @PostMapping(value = "/user/savePassword")
-    @ResponseBody
-    public ModelAndView savePassword(PasswordDTO passwordDto, Model model) {
-        AdminUser adminUser =
-                (AdminUser) SecurityContextHolder.getContext()
-                        .getAuthentication().getPrincipal();
-
-        try {
-            userService.changeUserPassword(adminUser, passwordDto.getNewPassword());
-        } catch (SQLException e) {
-            model.addAttribute("messageType", "Database Error!");
-            model.addAttribute("messageString", "Please try again!");
-            return new ModelAndView("message", "user", hashCode());
-        }
-        //String what?
-        model.addAttribute("messageType", "Reset email sent!");
-        model.addAttribute("messageString", "Please check your inbox!");
-        return new ModelAndView("message", "user", hashCode());
-    }
-
-
-    @PostMapping(value = "/user/changePassword")
-    @ResponseBody
-    public ModelAndView manualChangePassword(PasswordDTO passwordDto, Model model) {
-        AdminUser adminUser = authenticationBackend.findByEmail(passwordDto.getEmail());
-        try {
-            userService.changeUserPassword(adminUser, passwordDto.getNewPassword());
-        } catch (SQLException e) {
-            model.addAttribute("messageType", "Database Error!");
-            model.addAttribute("messageString", "Please try again!");
-            return new ModelAndView("message", "user", hashCode());
-        }
-        model.addAttribute("messageType", "Reset email sent!");
-        model.addAttribute("messageString", "Please check your inbox!");
-        return new ModelAndView("message", "user", hashCode());
+    public String savePassword(@RequestParam Map<String, String> request, Model model) throws SQLException {
+        AdminUser adminUser = userService.getUser(request.get("token"));
+        userService.changeUserPassword(adminUser, request.get("password"));
+        model.addAttribute("messageType", "Password Changed");
+        model.addAttribute("messageString", "Log in with your new password.");
+        return "message";
     }
 
 }

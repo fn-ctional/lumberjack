@@ -78,8 +78,8 @@ public class UserService implements IUserService {
 
     @Override
     public void changeUserPassword(AdminUser adminUser, String password) throws SQLException {
-        adminUser.setPassword(passwordEncoder.encode(password));
-        authenticationBackend.addAdminUser(adminUser);
+        String encodedPassword = passwordEncoder.encode(password);
+        authenticationBackend.updateAdminUser(adminUser, encodedPassword);
     }
 
 

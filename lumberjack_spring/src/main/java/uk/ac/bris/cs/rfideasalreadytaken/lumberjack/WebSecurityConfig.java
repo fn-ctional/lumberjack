@@ -44,7 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         final String[] unlocked = {"/", "/about", "/download", "/register", "/registration", "/css/**", "/js/**",
-                "/images/**", "/registrationConfirm*", "/test"};
+                "/images/**", "/registrationConfirm*", "/forgotPassword", "/message", "/user/resetPassword",
+                "/user/changePassword", "/user/savePassword"};
 
         http
                     .authorizeRequests()
@@ -59,12 +60,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .authorizeRequests()
                     .antMatchers("/*").hasRole("ADMINISTRATOR")
                     .anyRequest().authenticated()
-                .and()
-                    .authorizeRequests()
-                    .antMatchers("/user/updatePassword*",
-                            "/user/savePassword*",
-                            "/updatePassword*")
-                    .hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
+//                .and()
+//                    .authorizeRequests()
+//                    .antMatchers("/user/updatePassword*",
+//                            "/user/savePassword*",
+//                            "/updatePassword*")
+//                    .hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
                 .and()
                     .logout()
                     .logoutSuccessUrl("/login")

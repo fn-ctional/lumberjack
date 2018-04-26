@@ -42,6 +42,7 @@ public class WebController extends WebMvcConfigurerAdapter {
         registry.addViewController("/download");
         registry.addViewController("/login");
         registry.addViewController("/help");
+        registry.addViewController("/forgotPassword");
     }
 
     /**
@@ -1062,4 +1063,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         mav.addObject("messageString","Unknown server error, please try again!");
         return mav;
     }
+
+//    @PostMapping("/resetPassword")
+//    public String resetPassword(Model model) {
+//        model.addAttribute("messageType", "Password Reset");
+//        model.addAttribute("messageString", "Please check your emails!");
+//        return "message";
+//    }
+
 }

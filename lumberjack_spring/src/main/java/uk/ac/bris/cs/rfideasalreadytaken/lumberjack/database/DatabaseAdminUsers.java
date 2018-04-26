@@ -81,4 +81,11 @@ public class DatabaseAdminUsers {
         stmt.setString(1, email);
         stmt.execute();
     }
+
+    public void updatePassword(String email, String password) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Admins SET Password = ? WHERE Email = ?");
+        stmt.setString(1, password);
+        stmt.setString(2, email);
+        stmt.execute();
+    }
 }
