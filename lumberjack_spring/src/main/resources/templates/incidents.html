@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="fragments/header :: head (title='lumberjack - Incidents')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+
+            <h2>Late Devices</h2>
+
+            <p th:if="${blankLate}" class="lead">There are no devices currently late.</p>
+
+            <div th:if="!${blankLate}" class="table-responsive">
+                <p class="lead">These devices are late and have yet to be returned.</p>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Scan Value</th>
+                        <th>Type</th>
+                        <th>Available</th>
+                        <th>Currently Assigned</th>
+                        <th>Rule ID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="device : ${lateDevices}">
+                        <tr>
+                            <td><a th:href="@{'/device/' + ${device.getId()}}"><span th:text="${device.getId()}">ID</span></a></td>
+                            <td th:text="${device.getScanValue()}">Scan Value</td>
+                            <td th:text="${device.getType()}">Type</td>
+                            <td th:text="${device.isAvailable() == true ? '✓' : '✗'}">Available?</td>
+                            <td th:text="${device.isCurrentlyAssigned() == true ? '✓' : '✗'}">Assigned?</td>
+                            <td><a th:href="@{'/rule/' + ${device.getRuleID()}}"><span th:text="${device.getRuleID()}">Rule ID</span></a></td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+            <h2>Late Device History</h2>
+
+            <p th:if="${blankOldLate}" class="lead">There is no history of late devices.</p>
+
+            <div th:if="!${blankOldLate}" class="table-responsive">
+                <p class="lead">These devices have been returned late.</p>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Scan Value</th>
+                        <th>Type</th>
+                        <th>Available</th>
+                        <th>Currently Assigned</th>
+                        <th>Rule ID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="device : ${oldLateDevices}">
+                        <tr>
+                            <td><a th:href="@{'/device/' + ${device.getId()}}"><span th:text="${device.getId()}">ID</span></a></td>
+                            <td th:text="${device.getScanValue()}">Scan Value</td>
+                            <td th:text="${device.getType()}">Type</td>
+                            <td th:text="${device.isAvailable() == true ? '✓' : '✗'}">Available?</td>
+                            <td th:text="${device.isCurrentlyAssigned() == true ? '✓' : '✗'}">Assigned?</td>
+                            <td><a th:href="@{'/rule/' + ${device.getRuleID()}}"><span th:text="${device.getRuleID()}">Rule ID</span></a></td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="fragments/header :: head (title='lumberjack - Users')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+
+            <h2 th:if="${multi} or ${blank}">Users</h2>
+            <h2 th:if="!${multi} and !${blank}">User <span th:text="${searchTerm}">123456789</span></h2>
+
+            <p th:if="!${found} and !${multi} and !${blank}" class="lead">User not found.</p>
+
+            <p th:if="!${found} and ${multi}" class="lead">No users found.</p>
+
+            <p th:if="${blank}" class="lead">
+                View <a href="/users">all users</a> or <a href="/search/user">search</a> for one.
+            </p>
+
+            <div th:if="!${blank} and ${found}" class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>ID</th>
+                        <th>Scan Value</th>
+                        <th>Devices Removed</th>
+                        <th>Device Limit</th>
+                        <th>Can Remove?</th>
+                        <th>Group</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="user : ${userList}">
+                        <tr>
+                            <td th:text="${user.getUsername()}">Username</td>
+                            <td><a th:href="@{'/user/' + ${user.getId()}}"><span th:text="${user.getId()}">ID</span></a></td>
+                            <td th:text="${user.getScanValue()}">Scan Value</td>
+                            <td th:text="${user.getDevicesRemoved()}">Devices Removed</td>
+                            <td th:text="${user.getDeviceLimit()}">Device Limit</td>
+                            <td th:text="${user.canRemove() == true ? '✓' : '✗'}">Can Remove?</td>
+                            <td><a th:href="@{'/group/' + ${user.getGroupId()}}"><span th:text="${user.getGroupId()}">Group ID</span></a></td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div th:if="!${blank} and ${found} and !${multi}">
+
+                <a th:href="@{'/update/user/' + ${searchTerm}}" class="btn btn-primary">Edit</a>
+
+                <h1></h1>
+
+                <h2>Current Device Assignments</h2>
+
+                <p th:if="!${assignments}" class="lead">This user currently has no devices.</p>
+
+                <div th:if="${assignments}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Device ID</th>
+                            <th>Time Assigned</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="assignment : ${assignmentList}">
+                            <tr>
+                                <td><a th:href="@{'/device/' + ${assignment.getDeviceID()}}"><span th:text="${assignment.getDeviceID()}">Device ID</span></a></td>
+                                <td th:text="|${assignment.getDateAssigned()}   ${assignment.getTimeAssigned()}|">Date Time</td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h1></h1>
+
+                <h2>Assignment History</h2>
+
+                <p th:if="!${taken}" class="lead">This user has no assignment history.</p>
+
+                <div th:if="${taken}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Device ID</th>
+                            <th>Taken Out</th>
+                            <th>Returned</th>
+                            <th>Returned on Time?</th>
+                            <th>Returned By</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="takeout : ${takeoutList}">
+                            <tr>
+                                <td th:text="${takeout.getAssignmentHistoryID()}">ID</td>
+                                <td><a th:href="@{'/device/' + ${takeout.getDeviceID()}}"><span th:text="${takeout.getDeviceID()}">Device ID</span></a></td>
+                                <td th:text="|${takeout.getDateAssigned()}   ${takeout.getTimeAssigned()}|">Date Time</td>
+                                <td th:text="|${takeout.getDateReturned()}   ${takeout.getTimeReturned()}|">Date Time</td>
+                                <td th:text="${takeout.isReturnedOnTime() == true ? '✓' : '✗'}">On Time?</td>
+                                <td><a th:href="@{'/user/' + ${takeout.getReturnedByID()}}"><span th:text="${takeout.getReturnedByID()}">Returned By</span></a></td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Delete User -->
+
+                <h1></h1>
+
+                <h2>Delete User</h2>
+
+                <div class="container-fluid">
+                    <form action="#" th:action="@{/delete/user/}" method="post">
+
+                        <div class="form-group row">
+                            <div class="col-sm-4">
+                                <input type="checkbox" name="deleteHistory" id="deleteHistory" value="true" />
+                                <label for="deleteHistory" class="form-label">Delete user assignment history?</label>
+                            </div>
+                        </div>
+
+                        <label for="userID" hidden="hidden"></label>
+                        <th:block th:each="user : ${userList}">
+                            <input type="text" th:value="${user.getId()}" name="userID" hidden="hidden" id="userID"/>
+                        </th:block>
+
+                        <p class="form-text text-muted row">
+                            You cannot delete a user with outstanding device assignments. They must first return the device.
+                            This can be done by finding the outstanding device on the user's page and returning it, or manually
+                            by setting Currently Assigned on the device's page.
+                        </p>
+
+                        <div class="form-group row">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

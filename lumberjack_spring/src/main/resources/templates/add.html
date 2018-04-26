@@ -1,0 +1,412 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="fragments/header :: head (title='lumberjack - Add')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+
+            <h2>
+                Add
+                <span th:if="${type} == user">Users</span>
+                <span th:if="${type} == device">Devices</span>
+                <span th:if="${type} == group">User Groups</span>
+                <span th:if="${type} == rule">Rules</span>
+                <span th:if="${type} == admin">Permitted Admin Email</span>
+            </h2>
+
+            <span id="type" style="display: none;" th:text="${type}"></span>
+
+            <div th:if="${blank}">
+                <p class="lead">What do you want to add?</p>
+
+                <div class="row">
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/add/user" role="button">Users</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/add/group" role="button">User Groups</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/add/device" role="button">Devices</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/add/rule" role="button">Rules</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-secondary" href="/add/admin" role="button" data-toggle="tooltip" title="Someone can create an account if their email is Permitted!">Permitted Email</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adding Users -->
+
+            <div th:if="${type} == user" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Add a single user:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/add/user}" method="post">
+
+                                    <div class="form-group row" >
+                                        <label for="username" class="col-lg col-form-label">Username <span class="text-muted">(optional)</span></label>
+                                        <div class="col-lg">
+                                            <input type="text" class="form-control" id="username" name="username" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" >
+                                        <label for="scanValue" class="col-lg col-form-label">Scan Value</label>
+                                        <div class="col-lg">
+                                            <input type="text" class="form-control" id="scanValue" name="scanValue" placeholder="123456789" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="deviceLimit" class="col-lg col-form-label">Device Limit</label>
+                                        <div class="col-lg">
+                                            <input type="number" min="0" step="1" placeholder="0" value="0" class="form-control" id="deviceLimit" name="deviceLimit" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="canRemove" class="col-lg col-form-label">Can Remove Devices?</label>
+                                        <div class="col-lg">
+                                            <input type="checkbox" name="canRemove" id="canRemove" value="true" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="groupID" class="col-lg col-form-label">Group</label>
+                                        <div class="col-lg">
+                                            <select class="form-control" id="groupID" name="groupID" required="required">
+                                                <option value="" selected="selected" disabled="disabled" hidden="hidden">Choose group</option>
+                                                <th:block th:each="group : ${groups}">
+                                                    <option th:value="${group.getId()}" th:text="${group.getId()}">Group ID</option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <p class="form-text text-muted row">
+                                        If a user does not have a group, they will not be able to take out devices. You can add the user to a group later.
+                                    </p>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Or upload a CSV file:
+                        </p>
+
+                        <div class="container-fluid">
+                            <form action="/add/user/CSV" method="post" class="col-lg" enctype="multipart/form-data">
+
+                                <div class="form-group row">
+                                    <input type="file" class="form-control" name="file"/>
+                                </div>
+
+                                <div class="form-group row">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adding Devices -->
+
+            <div th:if="${type} == device" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Add a single device:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/add/device}" method="post">
+
+                                    <div class="form-group row" >
+                                        <label for="scanValue2" class="col-lg col-form-label">Scan Value</label>
+                                        <div class="col-lg">
+                                            <input type="text" class="form-control" id="scanValue2" name="scanValue" placeholder="123456789" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" >
+                                        <label for="deviceType" class="col-lg col-form-label">Device Type</label>
+                                        <div class="col-lg">
+                                            <input type="text" class="form-control" id="deviceType" name="deviceType" placeholder="laptop" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="available" class="col-lg col-form-label">Available to be taken out?</label>
+                                        <div class="col-lg">
+                                            <input type="checkbox" name="available" id="available" value="true" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="ruleID" class="col-lg col-form-label">Rule Set</label>
+                                        <div class="col-lg">
+                                            <select class="form-control" id="ruleID" name="ruleID" required="required">
+                                                <option value="" selected="selected" disabled="disabled" hidden="hidden">Choose rule</option>
+                                                <th:block th:each="rule : ${rules}">
+                                                    <option th:value="${rule.getId()}" th:text="${rule.getId()}">Rule ID</option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <p class="form-text text-muted row">
+                                        If a device does not have a rule, nobody will be able to take it out. You can add a rule later.
+                                    </p>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Or upload a CSV file:
+                        </p>
+
+                        <div class="container-fluid">
+                            <form action="/add/device/CSV" method="post" class="col-lg" enctype="multipart/form-data">
+
+                                <div class="form-group row">
+                                    <input type="file" class="form-control" name="file"/>
+                                </div>
+
+                                <div class="form-group row">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adding Groups -->
+
+            <div th:if="${type} == group" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Add a group:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/add/group}" method="post">
+
+                                    <div class="form-group row" >
+                                        <label for="groupName" class="col-sm-2 col-form-label">Group ID</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" id="groupName" name="groupName" placeholder="Yr 1 CompSci" required="required" />
+                                            <p id="nameHelp" class="form-text text-muted">
+                                                Must be unique.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <fieldset class="form-group row">
+                                        <p class="col-form-legend col-sm-2">Rules</p>
+                                        <div class="col-sm-10">
+
+                                            <th:block th:each="rule : ${rules}">
+                                                <div class="form-check">
+                                                    <label th:for="'rule' + ${rule.getId()}" class="col-check-label">
+                                                        <input th:id="'rule' + ${rule.getId()}" type="checkbox" class="form-check-input" th:name="'rule' + ${rule.getId()}" th:value="${rule.getId()}" />
+                                                        <span th:text="${rule.getId()}">ID</span> - <span th:text="${rule.getMaximumRemovalTime()}">2</span> hours
+                                                    </label>
+                                                </div>
+                                            </th:block>
+
+                                        </div>
+                                    </fieldset>
+                                    <p id="ruleHelp" class="form-text text-muted row">
+                                        Devices have rules, and if a group and device share a rule, that group's users can take out the device.
+                                        (You can select no rules).
+                                    </p>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adding Rules -->
+
+            <div th:if="${type} == rule" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Add a rule:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/add/rule}" method="post">
+
+                                    <div class="form-group row" >
+                                        <label for="ruleName" class="col-sm-4 col-form-label">Rule ID</label>
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" id="ruleName" name="ruleName" placeholder="Room 3b" required="required" />
+                                            <p id="ruleNameHelp" class="form-text text-muted">
+                                                Must be unique.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="maximumTime" class="col-sm-4 col-form-label">Maximum Removal Time</label>
+                                        <div class="col-sm-4">
+                                            <input type="number" min="1" step="1" placeholder="0" value="1" class="form-control" id="maximumTime" name="maximumTime" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <p class="form-text text-muted row">
+                                        A rule is like a group for devices. It specifies which user groups can take out the device, and for how long.
+                                    </p>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adding Permitted Emails -->
+
+            <div th:if="${type} == admin" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Add a permitted email:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/add/admin}" method="post">
+
+                                    <div class="form-group row" >
+                                        <label for="newEmail" class="col-sm-2 col-form-label">Email Address</label>
+                                        <div class="col-sm-10">
+                                            <input type="email" class="form-control" id="newEmail" name="newEmail" placeholder="abc123@mail.org" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <p class="form-text alert alert-warning row" role="alert">
+                                        <em>Warning:</em> someone can create an account if their email is permitted. This means they will be able to add, delete, and change Users, Devices, etc.
+                                    </p>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg">
+
+                        <h1></h1>
+
+                        <p class="lead">
+                            Current Permitted Emails
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="/delete/admin" method="post">
+
+                                    <th:block th:each="emailAddress : ${permittedEmails}">
+                                        <div class="row form-check">
+                                            <label class="form-check-label">
+                                                <input type="checkbox" class="form-check-input" th:name="${emailAddress}" th:value="${emailAddress}" />
+                                                <span th:text="${emailAddress}">email@email.com</span>
+                                            </label>
+                                        </div>
+                                    </th:block>
+
+                                    <p class="form-text alert alert-warning row" role="alert">
+                                        <em>Warning:</em> if someone has created an account already, removing their email address
+                                            from the permitted list will not delete their account.
+                                    </p>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Delete Selected</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/sidebar :: sidebar"></div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

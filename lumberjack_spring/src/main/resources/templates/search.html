@@ -1,0 +1,71 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="fragments/header :: head (title='lumberjack - Search')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+
+            <h2>
+                Search
+                <span th:if="${type} == user">Users</span>
+                <span th:if="${type} == device">Devices</span>
+                <span th:if="${type} == group">User Groups</span>
+                <span th:if="${type} == rule">Rules</span>
+            </h2>
+
+            <span id="type" style="display: none;" th:text="${type}"></span>
+
+            <div th:if="${blank}">
+                <p class="lead">What do you want to search for?</p>
+
+                <div class="row">
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/search/user" role="button">Users</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/search/group" role="button">User Groups</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/search/device" role="button">Devices</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/search/rule" role="button">Rules</a>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="!${blank}">
+                <p class="lead">Enter an ID:</p>
+
+                <form onsubmit="location.href='/' + document.getElementById('type').innerHTML + '/' + document.getElementById('searchBar').value; return false;">
+                    <div class="input-group mb-3">
+                        <input id="searchBar" type="search" class="form-control" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2"/>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default btn-sm">&#x1f50d;</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

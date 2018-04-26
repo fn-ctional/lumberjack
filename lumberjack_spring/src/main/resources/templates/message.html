@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:include ="fragments/header :: head (title='lumberjack - ' + ${messageType})">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div sec:authorize="isAuthenticated()">
+            <div th:replace="fragments/sidebar :: sidebar"></div>
+        </div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+            <h1 th:text="${messageType}">
+                Message Type
+            </h1>
+
+            <p class="lead" th:text="${messageString}">
+                Message
+            </p>
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

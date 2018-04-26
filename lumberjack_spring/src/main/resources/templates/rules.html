@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="fragments/header :: head (title='lumberjack - Rules')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+
+            <h2 th:if="${multi} or ${blank}">Rules</h2>
+
+            <p th:if="!${found} and !${multi} and !${blank}" class="lead">Rule not found.</p>
+
+            <p th:if="!${found} and ${multi}" class="lead">No rules found.</p>
+
+            <p th:if="${blank}" class="lead">
+                View <a href="/rules">all rules</a> or <a href="/search/rule">search</a> for one.
+            </p>
+
+            <!-- Block for showing multiple rules -->
+            <div th:if="!${blank} and ${found} and ${multi}" class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Rule ID</th>
+                        <th>Maximum Removal Time</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="rule : ${ruleList}">
+                        <tr>
+                            <td><a th:href="@{'/rule/' + ${rule.getId()}}"><span th:text="${rule.getId()}">ID</span></a></td>
+                            <td th:text="${rule.getMaximumRemovalTime()}">Time</td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Block for showing one rule in detail -->
+            <div th:if="!${blank} and ${found} and !${multi}">
+
+                <h2>Rule <span th:text="${thisRule.getId()}">123456789</span></h2>
+
+                <p class="lead">Maximum removal time: <code th:text="${thisRule.getMaximumRemovalTime()}">8</code> hours.</p>
+
+                <a th:href="@{'/update/rule/' + ${searchTerm}}" class="btn btn-primary">Edit</a>
+
+                <h1></h1>
+
+                <h2>Groups with this rule</h2>
+
+                <p th:if="!${gotGroups}" class="lead">There are no groups with this rule.</p>
+
+                <div th:if="${gotGroups}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="group : ${groupList}">
+                            <tr>
+                                <td><a th:href="@{'/group/' + ${group.getId()}}"><span th:text="${group.getId()}">ID</span></a></td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h1></h1>
+
+                <h2>Devices with this rule</h2>
+
+                <p th:if="!${gotDevices}" class="lead">There are no devices with this rule.</p>
+
+                <div th:if="${gotDevices}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Scan Value</th>
+                            <th>Type</th>
+                            <th>Available</th>
+                            <th>Currently Assigned</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="device : ${deviceList}">
+                            <tr>
+                                <td><a th:href="@{'/device/' + ${device.getId()}}"><span th:text="${device.getId()}">ID</span></a></td>
+                                <td th:text="${device.getScanValue()}">Scan Value</td>
+                                <td th:text="${device.getType()}">Type</td>
+                                <td th:text="${device.isAvailable() == true ? '✓' : '✗'}">Available?</td>
+                                <td th:text="${device.isCurrentlyAssigned() == true ? '✓' : '✗'}">Assigned?</td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Delete Rule -->
+
+                <h1></h1>
+
+                <h2>Delete Rule</h2>
+
+                <div class="container-fluid">
+                    <form action="#" th:action="@{/delete/rule/}" method="post">
+
+                        <label for="ruleID" hidden="hidden"></label>
+                        <input type="text" th:value="${searchTerm}" name="ruleID" hidden="hidden" id="ruleID"/>
+
+                        <p class="form-text text-muted row">
+                            Deleting a rule will mean all the devices from the rule set will not be able to be taken out.
+                            Also, if a group only has this rule, that group's users will not be able to take any devices
+                            out.
+                        </p>
+
+                        <div class="form-group row">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

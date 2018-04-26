@@ -1,0 +1,302 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="fragments/header :: head (title='lumberjack - Update')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+
+            <h2>
+                Update
+                <span th:if="${type} == user">Users</span>
+                <span th:if="${type} == device">Devices</span>
+                <span th:if="${type} == group">User Groups</span>
+                <span th:if="${type} == rule">Rules</span>
+            </h2>
+
+            <span id="type" style="display: none;" th:text="${type}"></span>
+
+            <div th:if="${blank}">
+                <p class="lead">What do you want to update?</p>
+
+                <div class="row">
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/update/user" role="button">Users</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/update/group" role="button">User Groups</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/update/device" role="button">Devices</a>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a class="btn btn-primary" href="/update/rule" role="button">Rules</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Updating Users -->
+
+            <div th:if="${type} == user" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Update a user:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/update/user}" method="post">
+
+                                    <label for="userID" hidden="hidden"></label>
+                                    <input type="text" th:value="${user.getId()}" name="id" hidden="hidden" id="userID"/>
+
+                                    <label for="removed" hidden="hidden"></label>
+                                    <input type="text" th:value="${user.getDevicesRemoved()}" name="removed" hidden="hidden" id="removed"/>
+
+                                    <div class="form-group row" >
+                                        <label for="username" class="col-lg col-form-label">Username <span class="text-muted">(optional)</span></label>
+                                        <div class="col-lg">
+                                            <input type="text" class="form-control" id="username" name="username" th:value="${user.getUsername()}" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" >
+                                        <label for="scanValue" class="col-lg col-form-label">Scan Value</label>
+                                        <div class="col-lg">
+                                            <input th:value="${user.getScanValue()}" type="text" class="form-control" id="scanValue" name="scanValue" placeholder="123456789" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="deviceLimit" class="col-lg col-form-label">Device Limit</label>
+                                        <div class="col-lg">
+                                            <input th:value="${user.getDeviceLimit()}" type="number" min="0" step="1" placeholder="0" value="0" class="form-control" id="deviceLimit" name="deviceLimit" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="canRemove" class="col-lg col-form-label">Can Remove Devices?</label>
+                                        <div class="col-lg">
+                                            <input type="checkbox" name="canRemove" id="canRemove" value="true" th:attr="checked=${user.canRemove() ? 'checked' : null}"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="groupID" class="col-lg col-form-label">Group</label>
+                                        <div class="col-lg">
+                                            <select class="form-control" id="groupID" name="groupID" required="required">
+                                                <option th:value="${user.getGroupId()}" th:text="${user.getGroupId()}">Group ID</option>
+                                                <th:block th:each="group : ${groups}">
+                                                    <option th:if="${group.getId() != user.getGroupId()}" th:value="${group.getId()}" th:text="${group.getId()}">Group ID</option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Updating Devices -->
+
+            <div th:if="${type} == device" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Update a device:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/update/device}" method="post">
+
+                                    <label for="deviceID" hidden="hidden"></label>
+                                    <input type="text" th:value="${device.getId()}" name="id" hidden="hidden" id="deviceID"/>
+
+                                    <label for="assigned" hidden="hidden"></label>
+                                    <input type="text" th:value="${device.isCurrentlyAssigned()}" name="assigned" hidden="hidden" id="assigned"/>
+
+                                    <div class="form-group row" >
+                                        <label for="scanValue2" class="col-lg col-form-label">Scan Value</label>
+                                        <div class="col-lg">
+                                            <input type="text" th:value="${device.getScanValue()}" class="form-control" id="scanValue2" name="scanValue" placeholder="123456789" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" >
+                                        <label for="deviceType" class="col-lg col-form-label">Device Type</label>
+                                        <div class="col-lg">
+                                            <input type="text" th:value="${device.getType()}" class="form-control" id="deviceType" name="deviceType" placeholder="laptop" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="available" class="col-lg col-form-label">Available to be taken out?</label>
+                                        <div class="col-lg">
+                                            <input type="checkbox" name="available" id="available" th:attr="checked=${device.isAvailable() ? 'checked' : null}" value="true" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="ruleID" class="col-lg col-form-label">Rule Set</label>
+                                        <div class="col-lg">
+                                            <select class="form-control" id="ruleID" name="ruleID" required="required">
+                                                <option th:value="${device.getRuleID()}" th:text="${device.getRuleID()}">Rule ID</option>
+                                                <th:block th:each="rule : ${rules}">
+                                                    <option th:if="${rule.getId() != device.getRuleID()}" th:value="${rule.getId()}" th:text="${rule.getId()}">Rule ID</option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adding Groups -->
+
+            <div th:if="${type} == group" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Update a group:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/update/group}" method="post">
+
+                                    <label for="groupIDF" hidden="hidden"></label>
+                                    <input type="text" th:value="${group.getId()}" name="id" hidden="hidden" id="groupIDF"/>
+
+                                    <div class="form-group row" >
+                                        <label for="groupName" class="col-sm-2 col-form-label">Group ID</label>
+                                        <div class="col-sm-4">
+                                            <input th:value="${group.getId()}" disabled="disabled" type="text" class="form-control" id="groupName" name="groupName" placeholder="Yr 1 CompSci" />
+                                            <p id="nameHelp" class="form-text text-muted">
+                                                You cannot change a group name. You can delete a group and add a new one with the amended name.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <fieldset class="form-group row">
+                                        <p class="col-form-legend col-sm-2">Rules</p>
+                                        <div class="col-sm-10">
+
+                                            <th:block th:each="rule : ${rules}">
+                                                <div class="form-check">
+                                                    <label th:for="'rule' + ${rule.getId()}" class="col-check-label">
+                                                        <input th:attr="checked=${groupRules.containsKey(rule.getId()) ? 'checked' : null}" th:id="'rule' + ${rule.getId()}" type="checkbox" class="form-check-input" th:name="${rule.getId()}" th:value="${rule.getId()}" />
+                                                        <span th:name="${rule.getId()}" th:text="${rule.getId()}">ID</span> - <span th:text="${rule.getMaximumRemovalTime()}">2</span> hours
+                                                    </label>
+                                                </div>
+                                            </th:block>
+
+                                        </div>
+                                    </fieldset>
+                                    <p id="ruleHelp" class="form-text text-muted row">
+                                        Devices have rules, and if a group and device share a rule, that group's users can take out the device.
+                                        (You can select no rules).
+                                    </p>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Updating Rules -->
+
+            <div th:if="${type} == rule" class="container-fluid">
+                <div class="row">
+                    <div class="col-lg">
+
+                        <p class="lead">
+                            Update a rule:
+                        </p>
+
+                        <div class="container-fluid">
+                            <div class="row">
+                                <form action="#" th:action="@{/update/rule}" method="post">
+
+                                    <label for="ruleIDF" hidden="hidden"></label>
+                                    <input type="text" th:value="${rule.getId()}" name="id" hidden="hidden" id="ruleIDF"/>
+
+                                    <div class="form-group row" >
+                                        <label for="ruleName" class="col-sm-4 col-form-label">Rule ID</label>
+                                        <div class="col-sm-4">
+                                            <input th:value="${rule.getId()}" type="text" disabled='disabled' class="form-control" id="ruleName" name="ruleName" />
+                                            <p id="ruleNameHelp" class="form-text text-muted">
+                                                You cannot change a rule name. You can delete a rule and add a new one with the amended name.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label for="maximumTime" class="col-sm-4 col-form-label">Maximum Removal Time</label>
+                                        <div class="col-sm-4">
+                                            <input th:value="${rule.getMaximumRemovalTime()}" type="number" min="1" step="1" placeholder="0" value="1" class="form-control" id="maximumTime" name="maximumTime" required="required" />
+                                        </div>
+                                    </div>
+
+                                    <p class="form-text text-muted row">
+                                        A rule is like a group for devices. It specifies which user groups can take out the device, and for how long.
+                                    </p>
+
+                                    <div class="form-group row">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

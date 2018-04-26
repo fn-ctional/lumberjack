@@ -1,0 +1,144 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="fragments/header :: head (title='lumberjack - Groups')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+
+            <h2 th:if="${multi} or ${blank}">User Groups</h2>
+
+            <p th:if="!${found} and !${multi} and !${blank}" class="lead">Group not found.</p>
+
+            <p th:if="!${found} and ${multi}" class="lead">No groups found.</p>
+
+            <p th:if="${blank}" class="lead">
+                View <a href="/groups">all groups</a> or <a href="/search/group">search</a> for one.
+            </p>
+
+            <!-- Block for showing multiple groups -->
+            <div th:if="!${blank} and ${found} and ${multi}" class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Group ID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <th:block th:each="group : ${userGroupList}">
+                        <tr>
+                            <td><a th:href="@{'/group/' + ${group.getId()}}"><span th:text="${group.getId()}">ID</span></a></td>
+                        </tr>
+                    </th:block>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Block for showing one group in detail -->
+            <div th:if="!${blank} and ${found} and !${multi}">
+
+                <h2>Group Rules</h2>
+
+                <p th:if="!${gotRules}" class="lead">This group has no rules.</p>
+
+                <div th:if="${gotRules}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Maximum Removal Time</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="rule : ${ruleList}">
+                            <tr>
+                                <td><a th:href="@{'/rule/' + ${rule.getId()}}"><span th:text="${rule.getId()}">ID</span></a></td>
+                                <td th:text="${rule.getMaximumRemovalTime()}">Time</td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+                <a th:href="@{'/update/group/' + ${searchTerm}}" class="btn btn-primary">Edit</a>
+
+                <h1></h1>
+
+                <h2 th:if="!${multi} and !${blank}">Group <span th:text="${searchTerm}">123456789</span> Users</h2>
+
+                <p th:if="!${gotUsers}" class="lead">This group has no users.</p>
+
+                <div th:if="${gotUsers}" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>ID</th>
+                            <th>Scan Value</th>
+                            <th>Devices Removed</th>
+                            <th>Device Limit</th>
+                            <th>Can Remove?</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="user : ${userList}">
+                            <tr>
+                                <td th:text="${user.getUsername()}">Username</td>
+                                <td><a th:href="@{'/user/' + ${user.getId()}}"><span th:text="${user.getId()}">ID</span></a></td>
+                                <td th:text="${user.getScanValue()}">Scan Value</td>
+                                <td th:text="${user.getDevicesRemoved()}">Devices Removed</td>
+                                <td th:text="${user.getDeviceLimit()}">Device Limit</td>
+                                <td th:text="${user.canRemove() == true ? '✓' : '✗'}">Can Remove?</td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Delete Group -->
+
+                <h1></h1>
+
+                <h2>Delete Group</h2>
+
+                <div class="container-fluid">
+                    <form action="#" th:action="@{/delete/group/}" method="post">
+
+                        <label for="groupID" hidden="hidden"></label>
+                        <input type="text" th:value="${searchTerm}" name="groupID" hidden="hidden" id="groupID"/>
+
+                        <p class="form-text text-muted row">
+                            Deleting a group will mean all the group's users cannot take out any devices until they are
+                            allocated to a new group.
+                        </p>
+
+                        <div class="form-group row">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

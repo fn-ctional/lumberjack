@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include ="fragments/header :: head (title='lumberjack - Help')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+
+            <h2>Help</h2>
+
+            <p class="lead">
+                Wiki
+            </p>
+
+            <p>
+                The <a href="https://github.com/fn-ctional/lumberjack/wiki">wiki</a> for the lumberjack project is a
+                good place to get help. For help using the web portal, see the
+                <a href="https://github.com/fn-ctional/lumberjack/wiki/Front-End">Front End</a> section of the wiki.
+            </p>
+        </main>
+
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>

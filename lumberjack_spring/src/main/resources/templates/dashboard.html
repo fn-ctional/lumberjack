@@ -1,0 +1,133 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head th:include ="fragments/header :: head (title='lumberjack - Dashboard')">
+</head>
+
+<body>
+
+<div th:replace="fragments/header :: navbar"></div>
+
+<!-- Page Content -->
+
+<div class="container-fluid">
+    <div class="row">
+
+        <div th:replace="fragments/sidebar :: sidebar"></div>
+
+        <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+
+            <h1>Dashboard</h1>
+
+            <h3>
+                Hello <span th:text="${name}">email@email.com</span>!
+            </h3>
+
+            <p class="lead" id="instruction">
+                Select one of options on the navigation bar to the left, or <a href="/logout">logout</a>.
+            </p>
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm">
+                        <canvas id="takeouts"></canvas>
+                    </div>
+                    <div class="col-sm">
+                        <canvas id="device-status"></canvas>
+                    </div>
+                    <!--<div class="col-sm">-->
+                        <!--<canvas id="doughnut-chart3"></canvas>-->
+                    <!--</div>-->
+                </div>
+            </div>
+
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                var available = /*[[${available}]]*/ '0';
+                var taken     = /*[[${taken}]]*/'0';
+                var other     = /*[[${other}]]*/'0';
+                var times     = [];
+                var takeouts  = [];
+                var returns   = [];
+                // Time Labels
+                times[0] = /*[[${time0}]]*/'0';
+                times[1] = /*[[${time1}]]*/'0';
+                times[2] = /*[[${time2}]]*/'0';
+                times[3] = /*[[${time3}]]*/'0';
+                times[4] = /*[[${time4}]]*/'0';
+                times[5] = /*[[${time5}]]*/'0';
+                // Takeouts
+                takeouts[0] = /*[[${take0}]]*/'0';
+                takeouts[1] = /*[[${take1}]]*/'0';
+                takeouts[2] = /*[[${take2}]]*/'0';
+                takeouts[3] = /*[[${take3}]]*/'0';
+                takeouts[4] = /*[[${take4}]]*/'0';
+                takeouts[5] = /*[[${take5}]]*/'0';
+                // Returns
+                returns[0] = /*[[${return0}]]*/'0';
+                returns[1] = /*[[${return1}]]*/'0';
+                returns[2] = /*[[${return2}]]*/'0';
+                returns[3] = /*[[${return3}]]*/'0';
+                returns[4] = /*[[${return4}]]*/'0';
+                returns[5] = /*[[${return5}]]*/'0';
+                /*]]>*/
+            </script>
+
+            <script>
+                new Chart(document.getElementById("takeouts"), {
+                    type: 'line',
+                    data: {
+                        labels: times,
+                        datasets: [{
+                            data: takeouts,
+                            label: "Takeouts",
+                            borderColor: "#7fb658",
+                            fill: false
+                        }, {
+                            data: returns,
+                            label: "Returns",
+                            borderColor: "#e16f00",
+                            fill: false
+                        }
+                        ]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Takeout and Return Log'
+                        }
+                    }
+                });
+
+                // Devices Status
+                vals = [available, taken, other];
+                new Chart(document.getElementById("device-status"), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ["Available", "Taken", "Other"],
+                        datasets: [
+                            {
+                                backgroundColor: ["#7fb658", "#e16f00","#a40b00"],
+                                data: vals
+                            }
+                        ]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: 'Status of Devices'
+                        }
+                    }
+                });
+
+            </script>
+
+        </main>
+    </div>
+</div>
+
+<div th:replace="fragments/footer :: footer"></div>
+
+</body>
+</html>
