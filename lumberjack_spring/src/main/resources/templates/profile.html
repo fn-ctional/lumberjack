@@ -30,31 +30,39 @@
                             <div class="row">
                                 <form action="#" th:action="@{/profile}" method="post">
 
+                                    <p class="form-text alert alert-danger row" role="alert">
+                                        Your browser or password manager might autocomplete this form, so check the information before saving.
+                                    </p>
+
                                     <label for="id" hidden="hidden"></label>
-                                    <input type="text" th:value="${email}" name="id" hidden="hidden" id="id"/>
+                                    <input type="text" th:value="${email}" name="id" hidden="hidden" id="id" autocomplete="off"/>
 
                                     <div class="form-group row" >
                                         <label for="email" class="col-lg-2 col-form-label">Email Address</label>
                                         <div class="col-lg-10">
-                                            <input th:value="${email}" type="text" class="form-control" id="email" name="email" required="required" />
+                                            <input th:value="${email}" type="text" class="form-control" id="email" name="email" required="required" autocomplete="off" />
                                         </div>
                                     </div>
 
                                     <div class="form-group row" >
                                         <label for="username" class="col-lg-2 col-form-label">Username</label>
                                         <div class="col-lg-10">
-                                            <input th:value="${name}" type="text" class="form-control" id="username" name="username" required="required" />
+                                            <input th:value="${name}" type="text" class="form-control" id="username" name="username" required="required" autocomplete="off" />
                                         </div>
                                     </div>
 
                                     <div class="form-group row" >
                                         <label for="password" class="col-lg-2 col-form-label">Password</label>
                                         <div class="col-lg-10">
-                                            <input type="password" class="form-control" id="password" name="username" disabled="disabled" />
+                                            <input type="text" class="form-control" id="password" name="password" autocomplete="off" />
                                         </div>
                                     </div>
 
-                                    <p id="nameHelp" class="form-text text-muted">
+                                    <p class="form-text text-muted">
+                                        Leave blank if you don't want to change your password.
+                                    </p>
+
+                                    <p class="form-text alert alert-warning row" role="alert">
                                         After changing your email address or password you will be required to log in again
                                         with your new credentials.
                                     </p>

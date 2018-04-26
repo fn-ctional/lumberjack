@@ -3,6 +3,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,9 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     @Autowired
     private AuthenticationBackend authenticationBackend;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private boolean isDatabaseInitialised = false;
 
@@ -976,6 +980,11 @@ public class WebController extends WebMvcConfigurerAdapter {
             adminUser.setEmail(request.get("email"));
             adminUser.setName(request.get("username"));
             webBackend.updateAdmin(id, adminUser);
+            if (!request.get("password").equals("")) {
+                String encodedPassword = passwordEncoder.encode(request.get("password"));
+                webBackend.updateAdminPassword(adminUser.getEmail(), encodedPassword);
+                return "redirect:logout";
+            }
         } catch (Exception e) {
             model.addAttribute("messageType", "Profile Updating Failed");
             model.addAttribute("messageString", e.getMessage());

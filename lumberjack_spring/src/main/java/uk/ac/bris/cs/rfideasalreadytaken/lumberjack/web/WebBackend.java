@@ -441,4 +441,8 @@ public class WebBackend implements FromFrontEnd {
     public List<Assignment> getDeviceAssignments(String deviceID) throws SQLException {
         return databaseAssignments.loadAssignmentsByDevice(deviceID);
     }
+
+    public void updateAdminPassword(String email, String password) throws SQLException {
+        databaseAdminUsers.updatePassword(email, password);
+    }
 }
