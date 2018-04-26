@@ -108,12 +108,6 @@ public class AuthenticationBackend {
             return "expired";
         }
 
-//        AdminUser adminUser = passToken.getAdminUser();
-//        Authentication auth = new UsernamePasswordAuthenticationToken(
-//                adminUser, null, Arrays.asList(
-//                new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
-//        SecurityContextHolder.getContext().setAuthentication(auth);
-        // TODO Uncomment & make secure
         return null;
     }
 
