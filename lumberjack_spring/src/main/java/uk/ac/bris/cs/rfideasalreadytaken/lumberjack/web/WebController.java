@@ -130,6 +130,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * GET request handler for returning the page populated with all the users in the database.
      * @param model The session/page model.
      * @return users.html.
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
      */
     @GetMapping("/users")
     public String allUsers(Model model) throws SQLException {
@@ -150,6 +151,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @param id The target user ID.
      * @param model The session/page model.
      * @return users.html.
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
      */
     @GetMapping("/user/{id}")
     public String userSpecified(@PathVariable String id, Model model) throws SQLException {
@@ -198,6 +200,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * GET request handler for returning the page populated with all the devices in the database.
      * @param model The session/page model.
      * @return devices.html.
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
      */
     @GetMapping("/devices")
     public String allDevices(Model model) throws SQLException {
@@ -218,6 +221,7 @@ public class WebController extends WebMvcConfigurerAdapter {
      * @param id The target device ID.
      * @param model The session/page model.
      * @return devices.html.
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
      */
     @GetMapping("/device/{id}")
     public String deviceSpecified(@PathVariable String id, Model model) throws SQLException {
