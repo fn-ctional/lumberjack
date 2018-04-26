@@ -6,7 +6,9 @@
 [[noreturn]] Config::Error&& throw_on_config_error( Config::Error );
 
 int main() {
-  const auto config = Config::load("/home/fred/.lumberjack")
+  using namespace std::string_literals;
+  
+  const auto config = Config::load( std::getenv("HOME") + "/.lumberjack"s )
                       .map_err( throw_on_config_error )
                       .get_ok();
 

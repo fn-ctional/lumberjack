@@ -5,19 +5,6 @@
 void source_f(const std::string&, Channel::Write<Event::Code>);
 char toChar(Event::Code);
 
-
-// This is just a map function similar to those found in functional languages
-//  (e.g. map :: Functor f => (a -> b) -> f a -> f b)
-// The implementation of std::optional does not include a map method
-template<class F, class T>
-std::optional<typename std::invoke_result<F,T>::type> map(F fn, std::optional<T> opt) {
-  if ( opt.has_value() ) {
-    return std::optional(fn(opt.value()));
-  } else {
-    return std::nullopt;
-  }
-}
-
 auto now() {
   return std::chrono::steady_clock::now();
 }
@@ -33,7 +20,13 @@ Event::Source::Source(const std::string &path)
 , source(source_f, path, channel.get_write().value()) {}
 
 std::optional<char> Event::Source::read(bool block) {
-  return map( toChar, read_raw(block) );
+  auto opt = read_raw(block);
+
+  if ( opt.has_value() ) {
+    return std::optional( toChar( opt.value() ) );
+  } else {
+    return std::nullopt;
+  }
 }
 
 std::optional<std::string> Event::Source::readline(int timeout) {
