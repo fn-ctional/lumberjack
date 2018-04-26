@@ -3,11 +3,12 @@
 #include "Network.hpp"
 #include "Config.hpp"
 
-[[noreturn]] Config::Config&& handle_config_error( Config::Error );
+[[noreturn]] Config::Error&& throw_on_config_error( Config::Error );
 
 int main() {
   const auto config = Config::load("/home/fred/.lumberjack")
-                      .get_ok_or( handle_config_error );
+                      .map_err( throw_on_config_error )
+                      .get_ok();
 
   auto source = Event::Source(config.source);
 
@@ -58,7 +59,7 @@ int main() {
   }
 }
 
-[[noreturn]] Config::Config&& handle_config_error( Config::Error error ) {
+[[noreturn]] Config::Error&& throw_on_config_error( Config::Error error ) {
   switch ( error ) {
     case Config::FileNotFound:
       throw std::logic_error( "Configuration file not found" );
