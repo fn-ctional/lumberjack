@@ -25,6 +25,6 @@ public interface IUserService {
 
     void createPasswordResetTokenForUser(AdminUser adminUser, String token);
 
-    void changeUserPassword(AdminUser adminUser, String password);
+    void changeUserPassword(AdminUser adminUser, String password) throws SQLException;
 
 }

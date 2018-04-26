@@ -204,27 +204,28 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
 
     @PostMapping(value = "/user/resetPassword")
     @ResponseBody
-    public String resetPassword(
-            HttpServletRequest request, @RequestParam("email") String userEmail) throws NotFoundException {
+    public ModelAndView resetPassword(@RequestParam("email") String userEmail, Model model) {
         AdminUser adminUser = authenticationBackend.findByEmail(userEmail);
         if (adminUser == null) {
-            throw new NotFoundException();
+            model.addAttribute("messageType", "Email not found!");
+            model.addAttribute("messageString", "The administrator you are trying to change the password of was not found!");
+            return new ModelAndView("message", "user", hashCode());
         }
         String token = UUID.randomUUID().toString();
         userService.createPasswordResetTokenForUser(adminUser, token);
         mailSender.send(constructResetTokenEmail(token, adminUser));
-        return "success";
+        model.addAttribute("messageType", "Reset email sent!");
+        model.addAttribute("messageString", "Please check your inbox!");
+        return new ModelAndView("message", "user", hashCode());
     }
 
     private SimpleMailMessage constructResetTokenEmail(String token, AdminUser adminUser) {
         String url = "/user/changePassword?id=" + adminUser.getEmail() + "&token=" + token;
-        //String message = messages.getMessage("message.resetPassword",
-                //null, locale);
-        return constructEmail("Reset Password", "hi" + " \r\n" + url, adminUser);
+        String body = "Please click the following link to reset your password!";
+        return constructEmail("Reset Password", body + " \r\n" + url, adminUser);
     }
 
-    private SimpleMailMessage constructEmail(String subject, String body,
-                                             AdminUser adminUser) {
+    private SimpleMailMessage constructEmail(String subject, String body, AdminUser adminUser) {
         SimpleMailMessage email = new SimpleMailMessage();
         email.setSubject(subject);
         email.setText(body);
@@ -234,27 +235,54 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
     }
 
     @GetMapping(value = "/user/changePassword")
-    public String showChangePasswordPage(Locale locale, @RequestParam("id") String id, @RequestParam("token") String token) {
+    public ModelAndView showChangePasswordPage(@RequestParam("id") String id, @RequestParam("token") String token, Model model) {
+
         String result = authenticationBackend.validatePasswordResetToken(id, token);
         if (result != null) {
-            //model.addAttribute("message",
-                    //messages.getMessage("auth.message." + result, null, locale));
-            return "redirect:/login?lang=" + locale.getLanguage();
+            model.addAttribute("messageType", "Not permitted to change this password!");
+            model.addAttribute("messageString", "Please try again!");
+            return new ModelAndView("message", "user", hashCode());
         }
-        return "redirect:/updatePassword.html?lang=" + locale.getLanguage();
+        model.addAttribute("messageType", "Password successfully changed!");
+        model.addAttribute("messageString", "You can now log in with the new password!");
+        return new ModelAndView("message", "user", hashCode());
     }
 
     @PostMapping(value = "/user/savePassword")
     @ResponseBody
-    public String savePassword(PasswordDTO passwordDto) {
+    public ModelAndView savePassword(PasswordDTO passwordDto, Model model) {
         AdminUser adminUser =
                 (AdminUser) SecurityContextHolder.getContext()
                         .getAuthentication().getPrincipal();
 
-        userService.changeUserPassword(adminUser, passwordDto.getNewPassword());
+        try {
+            userService.changeUserPassword(adminUser, passwordDto.getNewPassword());
+        } catch (SQLException e) {
+            model.addAttribute("messageType", "Database Error!");
+            model.addAttribute("messageString", "Please try again!");
+            return new ModelAndView("message", "user", hashCode());
+        }
         //String what?
-        return "error";
+        model.addAttribute("messageType", "Reset email sent!");
+        model.addAttribute("messageString", "Please check your inbox!");
+        return new ModelAndView("message", "user", hashCode());
     }
 
+
+    @PostMapping(value = "/user/changePassword")
+    @ResponseBody
+    public ModelAndView manualChangePassword(PasswordDTO passwordDto, Model model) {
+        AdminUser adminUser = authenticationBackend.findByEmail(passwordDto.getEmail());
+        try {
+            userService.changeUserPassword(adminUser, passwordDto.getNewPassword());
+        } catch (SQLException e) {
+            model.addAttribute("messageType", "Database Error!");
+            model.addAttribute("messageString", "Please try again!");
+            return new ModelAndView("message", "user", hashCode());
+        }
+        model.addAttribute("messageType", "Reset email sent!");
+        model.addAttribute("messageString", "Please check your inbox!");
+        return new ModelAndView("message", "user", hashCode());
+    }
 
 }

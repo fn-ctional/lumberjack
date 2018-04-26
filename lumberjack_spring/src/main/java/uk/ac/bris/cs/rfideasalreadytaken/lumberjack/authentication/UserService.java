@@ -73,14 +73,13 @@ public class UserService implements IUserService {
     @Override
     public void createPasswordResetTokenForUser(AdminUser adminUser, String token) {
         PasswordResetToken myToken = new PasswordResetToken(token, adminUser);
-        //passwordTokenRepository.save(myToken);
+        authenticationBackend.addToken(myToken);
     }
 
     @Override
-    public void changeUserPassword(AdminUser adminUser, String password) {
+    public void changeUserPassword(AdminUser adminUser, String password) throws SQLException {
         adminUser.setPassword(passwordEncoder.encode(password));
-        //TODO: this and above
-        //repository.save(user);
+        authenticationBackend.addAdminUser(adminUser);
     }
 
 
