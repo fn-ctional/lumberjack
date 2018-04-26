@@ -50,4 +50,14 @@ public class AdminUser {
         this.enabled = enabled;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!o.getClass().equals(AdminUser.class)) return false;
+        AdminUser adminUser = (AdminUser) o;
+        if (!adminUser.getEmail().equals(this.getEmail())) return false;
+        if (!adminUser.getName().equals(this.getName())) return false;
+        if (!adminUser.getPassword().equals(this.getPassword())) return false;
+        return true;
+    }
+
 }

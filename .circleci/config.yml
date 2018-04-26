@@ -8,7 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
-      - image: circleci/mysql:latest-ram
+      - image: circleci/mysql
      
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -39,6 +39,7 @@ jobs:
       - run: mkdir lumberjack_spring/src/main/resources/config/
           && mv circleci.properties lumberjack_spring/src/main/resources/config/database.properties 
           && cp lumberjack_spring/src/main/resources/config/database.properties lumberjack_spring/src/main/resources/config/testdatabase.properties
+          && wc /home/circleci/repo/lumberjack_spring/config/testdatabase.properties
           && cd lumberjack_spring/ 
           && mvn test
 

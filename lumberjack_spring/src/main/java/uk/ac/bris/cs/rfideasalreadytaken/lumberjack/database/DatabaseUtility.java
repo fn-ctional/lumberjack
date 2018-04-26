@@ -159,6 +159,22 @@ public class DatabaseUtility {
     }
 
     /**
+     * Resets Tokens table, also resets Admins table
+      * @throws SQLException
+     */
+    public void resetTokens() throws SQLException {
+        Statement stmt = databaseConnection.getConnection().createStatement();
+
+        stmt.addBatch("DROP TABLE IF EXISTS Tokens");
+        stmt.addBatch("DROP TABLE IF EXISTS Admins");
+
+        createAdminsTable(stmt);
+        createTokensTable(stmt);
+
+        stmt.executeBatch();
+    }
+
+    /**
      * Resets Admins table
      * @throws SQLException
      */

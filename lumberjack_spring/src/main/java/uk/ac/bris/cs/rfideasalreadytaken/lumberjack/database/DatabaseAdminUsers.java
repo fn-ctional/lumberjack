@@ -76,12 +76,6 @@ public class DatabaseAdminUsers {
         return rs.next();
     }
 
-    public void insertIntoPermittedEmails(String email) throws SQLException {
-        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("INSERT INTO PermittedEmails SET Email = ?");
-        stmt.setString(1, email);
-        stmt.execute();
-    }
-
     public void updatePassword(String email, String password) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Admins SET Password = ? WHERE Email = ?");
         stmt.setString(1, password);

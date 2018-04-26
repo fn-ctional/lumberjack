@@ -411,7 +411,7 @@ public class WebBackend implements FromFrontEnd {
     }
 
     public void insertPermittedEmail(String email) throws SQLException {
-        databaseAdminUsers.insertIntoPermittedEmails(email);
+        databaseEmails.insertIntoPermittedEmails(email);
     }
 
     public List<String> getPermittedEmails() throws SQLException {

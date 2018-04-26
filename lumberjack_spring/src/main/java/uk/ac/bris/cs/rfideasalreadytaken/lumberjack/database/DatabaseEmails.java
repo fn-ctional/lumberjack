@@ -15,6 +15,12 @@ public class DatabaseEmails {
     @Autowired
     private DatabaseConnection databaseConnection;
 
+    public void insertIntoPermittedEmails(String email) throws SQLException {
+        PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("INSERT INTO PermittedEmails SET Email = ?");
+        stmt.setString(1, email);
+        stmt.execute();
+    }
+
     public boolean isEmailPermitted(String email) throws SQLException {
         PreparedStatement stmt1 = databaseConnection.getConnection().prepareStatement("SELECT * FROM PermittedEmails ");
         ResultSet rs1 = stmt1.executeQuery();
@@ -25,7 +31,6 @@ public class DatabaseEmails {
         ResultSet rs2 = stmt2.executeQuery();
         return rs2.next();
     }
-
 
     public List<String> getPermittedEmails() throws SQLException {
         List<String> emails = new ArrayList<>();
