@@ -84,6 +84,7 @@
                     <table class="table table-striped">
                         <thead>
                         <tr>
+                            <th>Username</th>
                             <th>ID</th>
                             <th>Scan Value</th>
                             <th>Devices Removed</th>
@@ -94,6 +95,7 @@
                         <tbody>
                         <th:block th:each="user : ${userList}">
                             <tr>
+                                <td th:text="${user.getUsername()}">Username</td>
                                 <td><a th:href="@{'/user/' + ${user.getId()}}"><span th:text="${user.getId()}">ID</span></a></td>
                                 <td th:text="${user.getScanValue()}">Scan Value</td>
                                 <td th:text="${user.getDevicesRemoved()}">Devices Removed</td>

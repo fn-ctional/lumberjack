@@ -66,6 +66,13 @@
                                 <form action="#" th:action="@{/add/user}" method="post">
 
                                     <div class="form-group row" >
+                                        <label for="username" class="col-lg col-form-label">Username <span class="text-muted">(optional)</span></label>
+                                        <div class="col-lg">
+                                            <input type="text" class="form-control" id="username" name="username" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row" >
                                         <label for="scanValue" class="col-lg col-form-label">Scan Value</label>
                                         <div class="col-lg">
                                             <input type="text" class="form-control" id="scanValue" name="scanValue" placeholder="123456789" required="required" />
@@ -342,7 +349,7 @@
                                     </div>
 
                                     <p class="form-text alert alert-warning row" role="alert">
-                                        <em>Warning:</em> Someone can create an account if their email is permitted. This means they will be able to add, delete, and change Users, Devices, etc.
+                                        <em>Warning:</em> someone can create an account if their email is permitted. This means they will be able to add, delete, and change Users, Devices, etc.
                                     </p>
 
                                     <div class="form-group row">
@@ -377,8 +384,8 @@
                                     </th:block>
 
                                     <p class="form-text alert alert-warning row" role="alert">
-                                        <em>Warning: if someone has created an account already, removing their email address
-                                            from the permitted list will not delete their account.</em>
+                                        <em>Warning:</em> if someone has created an account already, removing their email address
+                                            from the permitted list will not delete their account.
                                     </p>
 
                                     <div class="form-group row">

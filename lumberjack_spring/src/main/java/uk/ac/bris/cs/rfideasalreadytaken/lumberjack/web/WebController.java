@@ -3,26 +3,19 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.AuthenticationBackend;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.DatabaseUtility;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileDownloadException;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadException;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.security.Permission;
 import java.sql.SQLException;
-import java.time.Period;
 import java.util.*;
 
 @Controller
@@ -79,18 +72,15 @@ public class WebController extends WebMvcConfigurerAdapter {
         AdminUser user = authenticationBackend.findByEmail(email);
         String name = user.getName();
         // Get stats for the graphs
-        List<Integer> takeouts = new ArrayList<>();
-        List<Integer> returns  = new ArrayList<>();
+        int available = webBackend.getAvailableCount();
+        int taken = webBackend.getTakenCount();
+        int other = webBackend.getOtherCount();
         List<String>  times    = webBackend.getTimes(6);
-        int available = 0, taken = 0, other = 0;
-        available = webBackend.getAvailableCount();
-        taken     = webBackend.getTakenCount();
-        other     = webBackend.getOtherCount();
-        takeouts  = webBackend.getRecentTakeouts(6);
-        returns   = webBackend.getRecentReturns(6);
-        // Spoof Values
-        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
-        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
+        List<Integer> takeouts = webBackend.getRecentTakeouts(6);
+        List<Integer> returns = webBackend.getRecentReturns(6);
+//        // Spoof Values
+//        takeouts = Arrays.asList(4, 8, 12, 2, 6, 0);
+//        returns  = Arrays.asList(0, 2, 4, 10, 2, 2);
         // Add list model attributes separately
         for (int i = 0; i < times.size(); i++) {
             String timeI    = "time"   + Integer.toString(i);
@@ -106,13 +96,6 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("other", other);
         model.addAttribute("name", name);
         return "dashboard";
-    }
-
-    @RequestMapping("/test")
-    public String test(Model model) {
-        model.addAttribute("messageType", "Test");
-        model.addAttribute("messageString", "test");
-        return "message";
     }
 
     /**
@@ -136,8 +119,7 @@ public class WebController extends WebMvcConfigurerAdapter {
     public String allUsers(Model model) throws SQLException {
         model.addAttribute("multi", true);
         Boolean found = false;
-        List<User> userList = new ArrayList<>();
-        userList = webBackend.getUsers();
+        List<User> userList = webBackend.getUsers();
         if (!userList.isEmpty()) {
             found = true;
         }
@@ -206,8 +188,7 @@ public class WebController extends WebMvcConfigurerAdapter {
     public String allDevices(Model model) throws SQLException {
         model.addAttribute("multi", true);
         Boolean found = false;
-        List<Device> deviceList = new ArrayList<>();
-        deviceList = webBackend.getDevices();
+        List<Device> deviceList = webBackend.getDevices();
         if (!deviceList.isEmpty()) {
             found = true;
         }
@@ -297,20 +278,31 @@ public class WebController extends WebMvcConfigurerAdapter {
         try {
             switchOnType(type, model, null);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("SQL Error");
-            model.addAttribute("messageType", "Error");
-            model.addAttribute("messageString", e.getMessage());
-            return "message";
+            return updateError(model, e);
         }
         return "add";
     }
 
+    private String updateError(Model model, Exception e) {
+        e.printStackTrace();
+        System.out.println("SQL Error");
+        model.addAttribute("messageType", "Error");
+        model.addAttribute("messageString", e.getMessage());
+        return "message";
+    }
+
+    /**
+     * POST request handler for adding a single user.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/add/user")
     public String addUser(@RequestParam Map<String, String> request, Model model) {
         // Set user attributes
         User newUser = new User();
         newUser.setId(UUID.randomUUID().toString());
+        newUser.setUsername(request.get("username"));
         newUser.setScanValue(request.get("scanValue"));
         newUser.setDeviceLimit(new Integer(request.get("deviceLimit")));
         newUser.setDevicesRemoved(0);
@@ -330,6 +322,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for adding a single device.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/add/device")
     public String addDevice(@RequestParam Map<String, String> request, Model model) {
         // Set device attributes
@@ -354,6 +352,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for adding a single group.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/add/group")
     public String addGroup(@RequestParam Map<String, String> request, Model model) {
         // Set group and permission(s) attributes
@@ -386,6 +390,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for adding a single rule.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/add/rule")
     public String addRule(@RequestParam Map<String, String> request, Model model) {
         // Set rule attributes
@@ -406,6 +416,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for adding an email to PermittedEmails.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return A redirect to the add admin page (updated to include the new email).
+     */
     @PostMapping("/add/admin")
     public String addPermittedEmail(@RequestParam Map<String, String> request, Model model) {
         try {
@@ -418,18 +434,28 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "redirect:../add/admin";
     }
 
+    /**
+     * Basic request handler for serving the group page when no group is specified.
+     * @param model The session/page model.
+     * @return groups.html
+     */
     @GetMapping("/group")
     public String group(Model model) {
         model.addAttribute("blank", true);
         return "groups";
     }
 
+    /**
+     * GET request handler for returning the page populated with all the groups in the database.
+     * @param model The session/page model.
+     * @return groups.html
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
+     */
     @GetMapping("/groups")
     public String allGroups(Model model) throws SQLException {
         model.addAttribute("multi", true);
         Boolean found = false;
-        List<UserGroup> userGroupList = new ArrayList<>();
-        userGroupList = webBackend.getUserGroups();
+        List<UserGroup> userGroupList = webBackend.getUserGroups();
         if (!userGroupList.isEmpty()) {
             found = true;
         }
@@ -438,6 +464,13 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "groups";
     }
 
+    /**
+     * GET request handler for serving the groups page populated with a specified (id) group from the database.
+     * @param id The target group ID.
+     * @param model The session/page model.
+     * @return groups.html
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
+     */
     @GetMapping("/group/{id}")
     public String groupSpecified(@PathVariable String id, Model model) throws SQLException {
         // Make sure group exists
@@ -471,17 +504,28 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "groups";
     }
 
+    /**
+     * Basic request handler for serving the rules page when no specific rule is specified.
+     * @param model The session/page model.
+     * @return rules.html
+     */
     @GetMapping("/rule")
     public String rule(Model model) {
         model.addAttribute("blank", true);
         return "rules";
     }
 
+    /**
+     * GET request handler for returning the page populated with all the rules in the database.
+     * @param model The session/page model.
+     * @return rules.html
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
+     */
     @GetMapping("/rules")
     public String allRules(Model model) throws SQLException {
         model.addAttribute("multi", true);
         Boolean found = false;
-        List<Rule> ruleList = new ArrayList<>();
+        List<Rule> ruleList;
         ruleList = webBackend.getRules();
         if (!ruleList.isEmpty()) {
             found = true;
@@ -491,6 +535,13 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "rules";
     }
 
+    /**
+     * GET request handler for serving the rules page populated with a specified (id) rule from the database.
+     * @param id The target rule ID.
+     * @param model The session/page model.
+     * @return rules.html
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
+     */
     @GetMapping("/rule/{id}")
     public String ruleSpecified(@PathVariable String id, Model model) throws SQLException {
         // Make sure rule exists
@@ -525,6 +576,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "rules";
     }
 
+    /**
+     * POST request handler for deleting a user.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/delete/user")
     public String deleteUser(@RequestParam Map<String, String> request, Model model) {
         String id = request.get("userID");
@@ -555,6 +612,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for deleting a device.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/delete/device")
     public String deleteDevice(@RequestParam Map<String, String> request, Model model) {
         String id = request.get("deviceID");
@@ -584,6 +647,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for deleting a group.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/delete/group")
     public String deleteGroup(@RequestParam Map<String, String> request, Model model) {
         String id = request.get("groupID");
@@ -603,6 +672,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for deleting a rule.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/delete/rule")
     public String deleteRule(@RequestParam Map<String, String> request, Model model) {
         String id = request.get("ruleID");
@@ -622,6 +697,11 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * Basic request handler for the delete page when no entity is specified.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @GetMapping("/delete")
     public String delete(Model model) {
         model.addAttribute("messageType", "Delete");
@@ -630,12 +710,23 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * Basic request handler for the update page when no entity is specified.
+     * @param model The session/page model.
+     * @return update.html
+     */
     @RequestMapping("/update")
     public String update(Model model) {
         model.addAttribute("blank", true);
         return "update";
     }
 
+    /**
+     * GET request handler for editing a type of entity e.g. user or device.
+     * @param model The session/page model.
+     * @param type The target type to edit.
+     * @return message.html
+     */
     @GetMapping("/update/{type}")
     public String updateType(Model model, @PathVariable String type) {
         model.addAttribute("messageType", "Update");
@@ -644,6 +735,13 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * GET request handler for editing a type of entity e.g. user or device, specified by its id.
+     * @param type The target type to edit.
+     * @param id The target entity ID.
+     * @param model The session/page model.
+     * @return update.html
+     */
     @GetMapping("/update/{type}/{id}")
     public String updateTypeID(@PathVariable String type, @PathVariable String id, Model model) {
         model.addAttribute("type", type);
@@ -658,20 +756,23 @@ public class WebController extends WebMvcConfigurerAdapter {
         try {
             switchOnType(type, model, id);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("SQL Error");
-            model.addAttribute("messageType", "Error");
-            model.addAttribute("messageString", e.getMessage());
-            return "message";
+            return updateError(model, e);
         }
         return "update";
     }
 
+    /**
+     * Depending on the type, add different attributes to the page.
+     * @param type The target type.
+     * @param model The session/page model.
+     * @param id The target entity ID.
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
+     */
     private void switchOnType(@PathVariable String type, Model model, String id) throws SQLException {
         List<Rule> rules;
         switch (type) {
             case "user":
-                List<UserGroup> groups = new ArrayList<>();
+                List<UserGroup> groups;
                 if (id != null) {
                     model.addAttribute("user", webBackend.getUser(id));
                 }
@@ -679,7 +780,6 @@ public class WebController extends WebMvcConfigurerAdapter {
                 model.addAttribute("groups", groups);
                 break;
             case "group":
-                rules = new ArrayList<>();
                 rules = webBackend.getRules();
                 model.addAttribute("rules", rules);
                 model.addAttribute("group", webBackend.getUserGroup(id));
@@ -693,7 +793,6 @@ public class WebController extends WebMvcConfigurerAdapter {
                 if (id != null) {
                     model.addAttribute("device", webBackend.getDevice(id));
                 }
-                rules = new ArrayList<>();
                 rules = webBackend.getRules();
                 model.addAttribute("rules", rules);
                 break;
@@ -708,11 +807,18 @@ public class WebController extends WebMvcConfigurerAdapter {
         }
     }
 
+    /**
+     * POST request handler for editing a user.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/update/user")
     public String updateUser(@RequestParam Map<String, String> request, Model model) {
         // Set user attributes
         User user = new User();
         user.setId(request.get("id"));
+        user.setUsername(request.get("username"));
         user.setScanValue(request.get("scanValue"));
         user.setDeviceLimit(new Integer(request.get("deviceLimit")));
         user.setDevicesRemoved(new Integer(request.get("removed")));
@@ -731,6 +837,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for editing a device.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/update/device")
     public String updateDevice(@RequestParam Map<String, String> request, Model model) {
         // Set device attributes
@@ -754,6 +866,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for editing a group.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/update/group")
     public String updateGroup(@RequestParam Map<String, String> request, Model model) {
         String id = request.get("id");
@@ -801,6 +919,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for editing a rule.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return message.html
+     */
     @PostMapping("/update/rule")
     public String updateRule(@RequestParam Map<String, String> request, Model model) {
         // Set rule attributes
@@ -820,6 +944,11 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * GET request handler for viewing the profile information of the logged in user.
+     * @param model The session/page model.
+     * @return profile.html
+     */
     @GetMapping("/profile")
     public String profile(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -832,6 +961,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "profile";
     }
 
+    /**
+     * POST request handler for updating the profile information of the logged in user.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return A redirect to the profile page (with updated info).
+     */
     @PostMapping("/profile")
     public String updateProfile(@RequestParam Map<String, String> request, Model model) {
         String id = request.get("id");
@@ -848,10 +983,15 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "redirect:profile";
     }
 
+    /**
+     * GET request handler for viewing the page of late or missing devices.
+     * @param model The session/page model.
+     * @return incidents.html
+     */
     @GetMapping("/incidents")
     public String incidents(Model model) {
-        List<Device> lateDevices = new ArrayList<>();
-        List<Device> oldLateDevices = new ArrayList<>();
+        List<Device> lateDevices;
+        List<Device> oldLateDevices;
         try {
             lateDevices = webBackend.getCurrentlyLateDevices();
             oldLateDevices = webBackend.getPreviouslyLateDevices();
@@ -867,6 +1007,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "incidents";
     }
 
+    /**
+     * POST request handler for returning the device specified by id.
+     * @param model The session/page model.
+     * @param id The target device ID.
+     * @return message.html
+     */
     @PostMapping("/return/device/{id}")
     public String returnDevice(Model model, @PathVariable("id") String id) {
         try {
@@ -881,6 +1027,12 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "message";
     }
 
+    /**
+     * POST request handler for deleting an email address from PermittedEmails.
+     * @param request The request and form body.
+     * @param model The session/page model.
+     * @return A redirect to the add admin page (updated to not include the deleted email).
+     */
     @PostMapping("/delete/admin")
     public String deletePermittedEmail(@RequestParam Map<String, String> request, Model model) {
         List<String> toDelete = new ArrayList<>(request.keySet());
@@ -896,6 +1048,11 @@ public class WebController extends WebMvcConfigurerAdapter {
         return "redirect:../add/admin";
     }
 
+    /**
+     * An exception handler for SQLExceptions.
+     * @param e The thrown SQLException.
+     * @return The Model and View which will show the message page.
+     */
     @ExceptionHandler(SQLException.class)
     public ModelAndView handleUnknownSQLException(Exception e) {
         e.printStackTrace();
