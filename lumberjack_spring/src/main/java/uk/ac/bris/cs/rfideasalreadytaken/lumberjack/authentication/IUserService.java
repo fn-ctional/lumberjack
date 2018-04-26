@@ -2,6 +2,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.Token;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.VerificationToken;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailExistsException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailNotPermittedException;
@@ -18,8 +19,12 @@ public interface IUserService {
 
     void createVerificationToken(AdminUser user, String token);
 
-    VerificationToken getVerificationToken(String VerificationToken);
+    Token getVerificationToken(String VerificationToken);
 
-    VerificationToken generateNewVerificationToken(String token) throws Exception;
+    Token generateNewVerificationToken(String token) throws Exception;
+
+    void createPasswordResetTokenForUser(AdminUser adminUser, String token);
+
+    void changeUserPassword(AdminUser adminUser, String password);
 
 }

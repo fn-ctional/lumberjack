@@ -6,6 +6,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
@@ -14,18 +18,20 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.ui.Model;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.VerificationToken;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailExistsException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailNotPermittedException;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.NotFoundException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.web.WebBackend;
 
+import javax.servlet.GenericServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.UUID;
 
 @Controller
 public class AuthenticationController extends WebMvcConfigurerAdapter {
@@ -45,11 +51,18 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
     @Autowired
     private JavaMailSender mailSender;
 
+    /**
+     * Registration confirmation from the email link.
+     * @param request
+     * @param model
+     * @param token
+     * @return
+     */
     @GetMapping(value = "/registrationConfirm")
     public String confirmRegistration
             (WebRequest request, Model model, @RequestParam("token") String token) {
 
-        VerificationToken verificationToken = userService.getVerificationToken(token);
+        Token verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
             model.addAttribute("messageType", "Bad Verification Link");
             model.addAttribute("messageString", "Try and register again.");
@@ -90,6 +103,12 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
+    /**
+     * GET mapping for the registration page.
+     * @param request
+     * @param model
+     * @return
+     */
     @GetMapping(value = "/registration")
     public String showRegistrationForm(WebRequest request, Model model) {
         AdminUserDTO userDto = new AdminUserDTO();
@@ -97,6 +116,15 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
         return "registration";
     }
 
+    /**
+     * POST mapping for the registration form.
+     * @param accountDTO An accountDTO object containing the new user information. (Password plaintext at this stage).
+     * @param result
+     * @param request
+     * @param errors
+     * @param model
+     * @return
+     */
     @PostMapping("/registration")
     public ModelAndView registerUserAccount(
             @ModelAttribute("user") @Valid AdminUserDTO accountDTO,
@@ -133,20 +161,19 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
     }
 
 
-
     @GetMapping(value = "/user/resendRegistrationToken")
     @ResponseBody
     public ModelAndView resendRegistrationToken(
             HttpServletRequest request, @RequestParam("token") String existingToken, Model model) {
         try {
-            VerificationToken newToken = userService.generateNewVerificationToken(existingToken);
+            Token newToken = userService.generateNewVerificationToken(existingToken);
             AdminUser user = userService.getUser(newToken.getToken());
             String appUrl =
                 "http://" + request.getServerName() +
                         ":" + request.getServerPort() +
                         request.getContextPath();
             SimpleMailMessage email =
-                constructResendVerificationTokenEmail(appUrl, request.getLocale(), newToken, user);
+                constructResendVerificationTokenEmail(appUrl, newToken, user);
             mailSender.send(email);
             model.addAttribute("messageType", "Successfully resent!");
             model.addAttribute("messageString", "Please check your inbox!");
@@ -163,7 +190,7 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
     }
 
     private SimpleMailMessage constructResendVerificationTokenEmail
-            (String contextPath, Locale locale, VerificationToken newToken, AdminUser adminUser) {
+            (String contextPath, Token newToken, AdminUser adminUser) {
         String confirmationUrl =
                 contextPath + "/regitrationConfirm.html?token=" + newToken.getToken();
         String message = "please resend please";
@@ -174,5 +201,60 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
         email.setTo(adminUser.getEmail());
         return email;
     }
+
+    @PostMapping(value = "/user/resetPassword")
+    @ResponseBody
+    public String resetPassword(
+            HttpServletRequest request, @RequestParam("email") String userEmail) throws NotFoundException {
+        AdminUser adminUser = authenticationBackend.findByEmail(userEmail);
+        if (adminUser == null) {
+            throw new NotFoundException();
+        }
+        String token = UUID.randomUUID().toString();
+        userService.createPasswordResetTokenForUser(adminUser, token);
+        mailSender.send(constructResetTokenEmail(token, adminUser));
+        return "success";
+    }
+
+    private SimpleMailMessage constructResetTokenEmail(String token, AdminUser adminUser) {
+        String url = "/user/changePassword?id=" + adminUser.getEmail() + "&token=" + token;
+        //String message = messages.getMessage("message.resetPassword",
+                //null, locale);
+        return constructEmail("Reset Password", "hi" + " \r\n" + url, adminUser);
+    }
+
+    private SimpleMailMessage constructEmail(String subject, String body,
+                                             AdminUser adminUser) {
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setSubject(subject);
+        email.setText(body);
+        email.setTo(adminUser.getEmail());
+        email.setFrom(environment.getProperty("support.email"));
+        return email;
+    }
+
+    @GetMapping(value = "/user/changePassword")
+    public String showChangePasswordPage(Locale locale, @RequestParam("id") String id, @RequestParam("token") String token) {
+        String result = authenticationBackend.validatePasswordResetToken(id, token);
+        if (result != null) {
+            //model.addAttribute("message",
+                    //messages.getMessage("auth.message." + result, null, locale));
+            return "redirect:/login?lang=" + locale.getLanguage();
+        }
+        return "redirect:/updatePassword.html?lang=" + locale.getLanguage();
+    }
+
+    @PostMapping(value = "/user/savePassword")
+    @ResponseBody
+    public String savePassword(PasswordDTO passwordDto) {
+        AdminUser adminUser =
+                (AdminUser) SecurityContextHolder.getContext()
+                        .getAuthentication().getPrincipal();
+
+        userService.changeUserPassword(adminUser, passwordDto.getNewPassword());
+        //String what?
+        return "error";
+    }
+
 
 }

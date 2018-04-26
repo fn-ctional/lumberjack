@@ -1,13 +1,20 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.Token;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.VerificationToken;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Calendar;
 
 @Service
 public class AuthenticationBackend {
@@ -48,7 +55,7 @@ public class AuthenticationBackend {
     }
 
     //Because of spring, this cannot throw the appropriate exception
-    public VerificationToken findByToken(String verificationToken) {
+    public Token findByToken(String verificationToken) {
         try {
             return databaseTokens.loadToken(verificationToken);
 
@@ -59,7 +66,7 @@ public class AuthenticationBackend {
     }
 
     //Because of spring, this cannot throw the appropriate exception
-    public void addToken(VerificationToken verificationToken) {
+    public void addToken(Token verificationToken) {
         try {
             databaseTokens.insertIntoTokens(verificationToken);
 
@@ -72,7 +79,7 @@ public class AuthenticationBackend {
         databaseAdminUsers.updateAdminUser(adminUser.getEmail(), adminUser);
     }
 
-    public VerificationToken save(VerificationToken verificationToken) throws SQLException {
+    public Token save(Token verificationToken) throws SQLException {
         databaseTokens.updateToken(verificationToken.getToken(), verificationToken);
         return verificationToken;
     }
@@ -86,5 +93,26 @@ public class AuthenticationBackend {
      */
     public boolean emailPermitted(String email) throws SQLException {
         return databaseEmails.isEmailPermitted(email);
+    }
+
+    public String validatePasswordResetToken(String id, String token) {
+        Token passToken = findByToken(token);
+        if ((passToken == null) || !passToken.getAdminUser().getEmail().equals(id)) {
+            return "invalidToken";
+        }
+
+        Calendar cal = Calendar.getInstance();
+        if ((passToken.getExpiryDate()
+                .getTime() - cal.getTime()
+                .getTime()) <= 0) {
+            return "expired";
+        }
+
+        AdminUser adminUser = passToken.getAdminUser();
+        Authentication auth = new UsernamePasswordAuthenticationToken(
+                adminUser, null, Arrays.asList(
+                new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        return null;
     }
 }

@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUserDTO;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.VerificationToken;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailExistsException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.EmailNotPermittedException;
 
@@ -44,8 +42,8 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public VerificationToken generateNewVerificationToken(final String existingVerificationToken) throws SQLException {
-        VerificationToken vToken = authenticationBackend.findByToken(existingVerificationToken);
+    public Token generateNewVerificationToken(final String existingVerificationToken) throws SQLException {
+        Token vToken = authenticationBackend.findByToken(existingVerificationToken);
         vToken.setToken(UUID.randomUUID().toString());
         vToken = authenticationBackend.save(vToken);
         return vToken;
@@ -57,7 +55,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public VerificationToken getVerificationToken(String VerificationToken) {
+    public Token getVerificationToken(String VerificationToken) {
         return authenticationBackend.findByToken(VerificationToken);
     }
 
@@ -71,4 +69,19 @@ public class UserService implements IUserService {
         VerificationToken myToken = new VerificationToken(token, user);
         authenticationBackend.addToken(myToken);
     }
+
+    @Override
+    public void createPasswordResetTokenForUser(AdminUser adminUser, String token) {
+        PasswordResetToken myToken = new PasswordResetToken(token, adminUser);
+        //passwordTokenRepository.save(myToken);
+    }
+
+    @Override
+    public void changeUserPassword(AdminUser adminUser, String password) {
+        adminUser.setPassword(passwordEncoder.encode(password));
+        //TODO: this and above
+        //repository.save(user);
+    }
+
+
 }
