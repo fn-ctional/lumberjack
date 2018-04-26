@@ -2,6 +2,7 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.Token;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.VerificationToken;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 
@@ -18,7 +19,7 @@ public class DatabaseTokens {
     @Autowired
     private DatabaseAdminUsers databaseAdminUsers;
 
-    public void insertIntoTokens(VerificationToken verificationToken) throws SQLException {
+    public void insertIntoTokens(Token verificationToken) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("INSERT INTO Tokens (Token, AdminEmail, ExpiryDate)" +
                 "VALUES (?,?,?)");
         stmt.setString(1, verificationToken.getToken());
@@ -27,14 +28,14 @@ public class DatabaseTokens {
         stmt.execute();
     }
 
-    public VerificationToken loadToken(String verificationToken) throws SQLException {
+    public Token loadToken(String verificationToken) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("SELECT * FROM Tokens WHERE Token = ?");
         stmt.setString(1, verificationToken);
         ResultSet rs = stmt.executeQuery();
         return loadTokenFromResultSet(rs);
     }
 
-    private VerificationToken loadTokenFromResultSet(ResultSet rs) throws SQLException {
+    private Token loadTokenFromResultSet(ResultSet rs) throws SQLException {
         if (rs.next()) {
             AdminUser adminUser = databaseAdminUsers.loadAdminUser(rs.getString("AdminEmail"));
             String token = rs.getString("Token");
@@ -43,7 +44,7 @@ public class DatabaseTokens {
         return null;
     }
 
-    public void updateToken(String token, VerificationToken verificationToken) throws SQLException {
+    public void updateToken(String token, Token verificationToken) throws SQLException {
         PreparedStatement stmt = databaseConnection.getConnection().prepareStatement("UPDATE Tokens SET Token = ?, AdminEmail = ?, ExpiryDate = ? " +
                 "WHERE Token = ?");
         stmt.setString(1, verificationToken.getToken());

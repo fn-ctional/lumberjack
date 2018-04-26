@@ -1,12 +1,10 @@
 package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data;
 
-import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
-
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-public class VerificationToken implements Token {
+public class PasswordResetToken implements Token {
 
     private String token;
 
@@ -14,7 +12,7 @@ public class VerificationToken implements Token {
 
     private Date expiryDate;
 
-    public VerificationToken(String token, AdminUser adminUser) {
+    public PasswordResetToken(String token, AdminUser adminUser) {
         this.token = token;
         this.adminUser = adminUser;
         this.expiryDate = calculateExpiryDate(60 * 24);

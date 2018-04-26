@@ -60,6 +60,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/*").hasRole("ADMINISTRATOR")
                     .anyRequest().authenticated()
                 .and()
+                    .authorizeRequests()
+                    .antMatchers("/user/updatePassword*",
+                            "/user/savePassword*",
+                            "/updatePassword*")
+                    .hasAuthority("CHANGE_PASSWORD_PRIVILEGE")
+                .and()
                     .logout()
                     .logoutSuccessUrl("/login")
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
