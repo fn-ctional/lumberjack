@@ -14,20 +14,33 @@ public class DatabaseUtility {
     @Autowired
     private DatabaseConnection databaseConnection;
 
+    /**
+     * Completely resets database.
+     * @throws SQLException
+     */
     public void resetDatabase() throws SQLException {
         Statement stmt = databaseConnection.getConnection().createStatement();
 
-        stmt.addBatch("DROP TABLE IF EXISTS AssignmentHistory");
-        stmt.addBatch("DROP TABLE IF EXISTS Assignments");
-        stmt.addBatch("DROP TABLE IF EXISTS Users");
-        stmt.addBatch("DROP TABLE IF EXISTS Devices");
-        stmt.addBatch("DROP TABLE IF EXISTS GroupPermissions");
-        stmt.addBatch("DROP TABLE IF EXISTS Rules");
-        stmt.addBatch("DROP TABLE IF EXISTS UserGroups");
-        stmt.addBatch("DROP TABLE IF EXISTS PermittedEmails");
-        stmt.addBatch("DROP TABLE IF EXISTS Tokens");
-        stmt.addBatch("DROP TABLE IF EXISTS Admins");
+        dropAllTables(stmt);
+        addAllTables(stmt);
 
+        stmt.executeBatch();
+    }
+
+
+    /**
+     * Creates any tables that are missing from the database.
+     * @throws SQLException
+     */
+    public void checkDatabase() throws SQLException {
+        Statement stmt = databaseConnection.getConnection().createStatement();
+
+        addAllTables(stmt);
+
+        stmt.executeBatch();
+    }
+
+    private void addAllTables(Statement stmt) throws SQLException {
         createAdminsTable(stmt);
         createTokensTable(stmt);
         createUserGroupsTable(stmt);
@@ -38,8 +51,19 @@ public class DatabaseUtility {
         createAssignmentsTable(stmt);
         createAssignmentHistoryTable(stmt);
         createPermittedEmailsTable(stmt);
+    }
 
-        stmt.executeBatch();
+    private void dropAllTables(Statement stmt) throws SQLException {
+        stmt.addBatch("DROP TABLE IF EXISTS AssignmentHistory");
+        stmt.addBatch("DROP TABLE IF EXISTS Assignments");
+        stmt.addBatch("DROP TABLE IF EXISTS Users");
+        stmt.addBatch("DROP TABLE IF EXISTS Devices");
+        stmt.addBatch("DROP TABLE IF EXISTS GroupPermissions");
+        stmt.addBatch("DROP TABLE IF EXISTS Rules");
+        stmt.addBatch("DROP TABLE IF EXISTS UserGroups");
+        stmt.addBatch("DROP TABLE IF EXISTS PermittedEmails");
+        stmt.addBatch("DROP TABLE IF EXISTS Tokens");
+        stmt.addBatch("DROP TABLE IF EXISTS Admins");
     }
 
     /**

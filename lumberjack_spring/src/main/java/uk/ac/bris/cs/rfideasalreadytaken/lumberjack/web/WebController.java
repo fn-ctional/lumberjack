@@ -13,6 +13,7 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.AuthenticationBackend;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.DatabaseUtility;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileDownloadException;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.exceptions.FileUploadException;
@@ -31,7 +32,12 @@ public class WebController extends WebMvcConfigurerAdapter {
     private WebBackend webBackend;
 
     @Autowired
+    private DatabaseUtility databaseUtility;
+
+    @Autowired
     private AuthenticationBackend authenticationBackend;
+
+    private boolean isDatabaseInitialised = false;
 
     /**
      * Adding view controllers to serve the basic pages that don't require complex mappings.
@@ -39,7 +45,6 @@ public class WebController extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("home");
         registry.addViewController("/about");
         registry.addViewController("/download");
         registry.addViewController("/login");
@@ -47,9 +52,25 @@ public class WebController extends WebMvcConfigurerAdapter {
     }
 
     /**
+     * GET request handler for serving the home page.
+     * Also has the functionality of checking if the database has been initialised, and if not, will initialise it.
+     * @return home.html.
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
+     */
+    @GetMapping("/")
+    public String home() throws SQLException {
+        if (!this.isDatabaseInitialised) {
+            databaseUtility.checkDatabase();
+            this.isDatabaseInitialised = true;
+        }
+        return "home";
+    }
+
+    /**
      * GET request handler for serving the admin dashboard with the active user's name as a model attribute.
      * @param model The session/page model.
      * @return dashboard.html.
+     * @throws SQLException Throws in case of database error, picked up by the SQLException handler.
      */
     @GetMapping("/dashboard")
     public String dashboard(Model model) throws SQLException {
