@@ -156,10 +156,8 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
     }
 
     private AdminUser createUserAccount(AdminUserDTO accountDTO, BindingResult result) throws EmailNotPermittedException, Exception {
-
         return userService.registerNewUserAccount(accountDTO);
     }
-
 
     @GetMapping(value = "/user/resendRegistrationToken")
     @ResponseBody
@@ -234,6 +232,13 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
         return email;
     }
 
+    /**
+     * Request to send a change password email to an admin.
+     * @param id
+     * @param token
+     * @param model
+     * @return
+     */
     @GetMapping(value = "/user/changePassword")
     public ModelAndView showChangePasswordPage(@RequestParam("id") String id, @RequestParam("token") String token, Model model) {
 
@@ -248,6 +253,12 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
         return new ModelAndView("message", "user", hashCode());
     }
 
+    /**
+     * POST request mapping for changing the currently logged in admin's password.
+     * @param passwordDto Containing the new password, but email field is not used.
+     * @param model
+     * @return
+     */
     @PostMapping(value = "/user/savePassword")
     @ResponseBody
     public ModelAndView savePassword(PasswordDTO passwordDto, Model model) {
@@ -262,13 +273,18 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
             model.addAttribute("messageString", "Please try again!");
             return new ModelAndView("message", "user", hashCode());
         }
-        //String what?
         model.addAttribute("messageType", "Reset email sent!");
         model.addAttribute("messageString", "Please check your inbox!");
         return new ModelAndView("message", "user", hashCode());
     }
 
 
+    /**
+     * POST request mapping for changing the password of any user.
+     * @param passwordDto Containing email and new password.
+     * @param model
+     * @return
+     */
     @PostMapping(value = "/user/changePassword")
     @ResponseBody
     public ModelAndView manualChangePassword(PasswordDTO passwordDto, Model model) {
