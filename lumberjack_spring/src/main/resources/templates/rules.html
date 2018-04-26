@@ -53,7 +53,7 @@
 
                 <h2>Rule <span th:text="${thisRule.getId()}">123456789</span></h2>
 
-                <p class="lead">Maximum removal time: <code th:text="${thisRule.getMaximumRemovalTime()}">8</code> hours.</p>
+                <h3>Maximum removal time: <code th:text="${thisRule.getMaximumRemovalTime()}">8</code> hours.</h3>
 
                 <a th:href="@{'/update/rule/' + ${searchTerm}}" class="btn btn-primary">Edit</a>
 
