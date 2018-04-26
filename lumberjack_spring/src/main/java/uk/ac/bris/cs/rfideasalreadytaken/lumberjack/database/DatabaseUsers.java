@@ -133,12 +133,11 @@ public class DatabaseUsers {
         return loadUsersFromResultSet(rs);
     }
 
-    //TODO: I don't think this function has correct operation
+    // These two functions do not need to check the database
     public boolean canUserRemoveDevices(User user) {
         return user.canRemove();
     }
 
-    //TODO: I don't think this function has correct operation
     public boolean isUserAtDeviceLimit(User user){
         return user.getDeviceLimit() <= user.getDevicesRemoved();
     }

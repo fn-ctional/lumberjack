@@ -100,32 +100,4 @@ public class WebControllerTest {
         mvc.perform(get("/devices"))
                 .andExpect(status().isOk());
     }
-
-    @Test
-    public void deviceSpecified() {
-    }
-
-    @Test
-    public void search() {
-    }
-
-    @Test
-    public void searchType() {
-    }
-
-    @Test
-    public void add() {
-    }
-
-    @Test
-    public void addType() {
-    }
-
-    @Test
-    public void addUsersCSV() {
-    }
-
-    @Test
-    public void addDevicesCSV() {
-    }
 }
