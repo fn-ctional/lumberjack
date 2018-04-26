@@ -119,7 +119,7 @@ public class WebBackend implements FromFrontEnd {
     public void resetUsers() throws SQLException {
         List<User> users = getUsers();
         for (User user : users) {
-            databaseUsers.deleteFromUsers(user.getId());
+            if(getUserAssignments(user.getId()).isEmpty()) databaseUsers.deleteFromUsers(user.getId());
         }
     }
 
@@ -169,10 +169,7 @@ public class WebBackend implements FromFrontEnd {
     public void resetDevices() throws SQLException {
         List<Device> devices = getDevices();
         for (Device device : devices) {
-            try {
-                databaseDevices.deleteFromDevices(device.getId());
-            } catch (SQLException e) {
-            }
+            if (getDeviceAssignments(device.getId()).isEmpty()) databaseDevices.deleteFromDevices(device.getId());
         }
     }
 

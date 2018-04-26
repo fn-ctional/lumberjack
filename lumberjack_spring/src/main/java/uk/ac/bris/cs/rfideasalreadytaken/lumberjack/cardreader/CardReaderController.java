@@ -36,13 +36,13 @@ public class CardReaderController extends WebMvcConfigurerAdapter {
                 case SUCCESSRETURNANDREMOVAL:
                     return ResponseEntity.status(200).body("Device " + scanDTO.getDevice() + " successfully returned and taken out by " + scanDTO.getUser() + ".");
                 case FAILUSERNOTRECOGNISED:
-                    return ResponseEntity.status(500).body("User not recognised");
+                    return ResponseEntity.status(403).body("User not recognised.");
                 case FAILDEVICENOTRECOGNISED:
-                    return ResponseEntity.status(500).body("Device not recognised");
+                    return ResponseEntity.status(403).body("Device not recognised.");
                 case FAILUSERATDEVICELIMIT:
                     return ResponseEntity.status(403).body("User " + scanDTO.getUser() + " is at their limit of removable devices.");
                 case FAILUSERNORPERMITTEDTOREMOVE:
-                    return ResponseEntity.status(403).body("User " + scanDTO.getUser() + " is not permitted to remove");
+                    return ResponseEntity.status(403).body("User " + scanDTO.getUser() + " is not permitted to remove.");
                 case FAILDEVICEUNAVIALABLE:
                     return ResponseEntity.status(403).body("Device " + scanDTO.getDevice() + " can not be taken out.");
                 case ERRORCONNECTIONFAILED:

@@ -3,9 +3,11 @@ package uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database;
 import org.h2.engine.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.authentication.data.AdminUser;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.data.*;
 import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.cardreader.*;
 
+import java.sql.Date;
 import java.sql.SQLException;
 
 @Service
@@ -32,7 +34,10 @@ public class DatabaseTesting {
     @Autowired
     public CardReaderBackend databaseCardReader;
 
-    public void insertTestCases() throws Exception {
+    @Autowired
+    private DatabaseAdminUsers databaseAdminUsers;
+
+    public void insertTestCases() throws SQLException {
         databaseUtility.resetDatabase();
 
         Rule rule = new Rule("ruleSet1", 20);
@@ -130,6 +135,61 @@ public class DatabaseTesting {
         databaseUserGroups.insertIntoGroupPermissions(permission);
         permission = new GroupPermission("ruleSet2", "groupOne");
         databaseUserGroups.insertIntoGroupPermissions(permission);
+    }
+
+    public void addValidScanData() throws SQLException {
+        databaseUtility.resetUsers();
+        databaseUtility.resetDevices();
+        databaseUtility.resetAssignments();
+
+        User user = new User("user01", "1314831486", "ab98765", 2, 0, true, "groupOne");
+        databaseUsers.insertIntoUsers(user);
+
+        Device device = new Device("laptop01", "36109839730967812", "laptop", true, false, "ruleSet1");
+        databaseDevices.insertIntoDevices(device);
+    }
+
+    public void addReturnScanData() throws SQLException {
+        databaseUtility.resetUsers();
+        databaseUtility.resetDevices();
+        databaseUtility.resetAssignments();
+
+        User user = new User("user01", "1314831486", "ab98765", 2, 1, true, "groupOne");
+        databaseUsers.insertIntoUsers(user);
+
+        Device device = new Device("laptop01", "36109839730967812", "laptop", true, true, "ruleSet1");
+        databaseDevices.insertIntoDevices(device);
+
+        Assignment assignment = new Assignment(device.getId(), user.getId());
+        databaseAssignments.insertIntoAssignments(assignment);
+    }
+
+    public void addMissingUserReturnScanData() throws SQLException {
+        databaseUtility.resetUsers();
+        databaseUtility.resetDevices();
+        databaseUtility.resetAssignments();
+
+        Device device = new Device("laptop01", "36109839730967812", "laptop", true, true, "ruleSet1");
+        databaseDevices.insertIntoDevices(device);
+    }
+
+    public void addMissingDeviceReturnScanData() throws SQLException {
+        databaseUtility.resetUsers();
+        databaseUtility.resetDevices();
+        databaseUtility.resetAssignments();
+
+        User user = new User("user01", "1314831486", "ab98765", 2, 1, true, "groupOne");
+        databaseUsers.insertIntoUsers(user);
+    }
+
+    public void addTestAdmins() throws SQLException {
+        databaseUtility.resetAdmins();
+
+        AdminUser admin = new AdminUser();
+        admin.setName("test");
+        admin.setEmail("test");
+        admin.setPassword("test");
+        databaseAdminUsers.insertIntoAdminUsers(admin);
     }
 }
 

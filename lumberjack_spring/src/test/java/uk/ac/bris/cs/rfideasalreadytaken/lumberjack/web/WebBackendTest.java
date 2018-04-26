@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -199,9 +200,14 @@ public class WebBackendTest {
         assertNull(webBackend.getUser(testUser.getId()));
     }
 
+    /**
+     * Testing functionality of reset users.
+     * Users with assignments should not be removed as this violates foreign key constraints.
+     * @throws SQLException In the case of a database error.
+     */
     @Test
-    public void testResetUsers() throws Exception {
-        databaseTesting.addTestUsers();
+    public void testResetUsers() throws SQLException {
+        databaseTesting.insertTestCases();
 
         List<User> users = new ArrayList<>();
         users.add(new User("Betty1248", "457436545", "bc12480",3, 1, true, "groupTwo"));
@@ -292,9 +298,14 @@ public class WebBackendTest {
         assertNull(webBackend.getDevice(testDevice.getId()));
     }
 
+     /**
+     * Testing functionality of reset devices.
+     * Devices with assignments should not be removed as this violates foreign key constraints.
+     * @throws SQLException In the case of a database error.
+     */
     @Test
     public void testResetDevices() throws Exception {
-        databaseTesting.addTestDevices();
+        databaseTesting.insertTestCases();
 
         List<Device> devices = new ArrayList<>();
         devices.add(new Device("laptop02", "23482364326842334", "laptop", true, true, "ruleSet2"));

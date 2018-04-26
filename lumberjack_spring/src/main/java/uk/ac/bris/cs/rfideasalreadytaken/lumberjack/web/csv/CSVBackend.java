@@ -92,7 +92,7 @@ public class CSVBackend {
     public String getUsersCSV() throws SQLException {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("id,");
-        stringBuilder.append("username");
+        stringBuilder.append("username,");
         stringBuilder.append("scan value,");
         stringBuilder.append("device limit,");
         stringBuilder.append("devices removed,");

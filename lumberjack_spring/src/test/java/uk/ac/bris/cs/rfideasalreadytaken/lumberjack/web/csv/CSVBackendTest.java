@@ -33,7 +33,7 @@ public class CSVBackendTest {
         webBackend.deleteUser("Dorathy0369");
         webBackend.deleteUser("Callum2468");
 
-        assertEquals(csvBackend.getUsersCSV(), "id,username,scan value,device limit,devices removed,can remove,group id\nBetty1248,457436545,3,1,true,groupTwo\n");
+        assertEquals(csvBackend.getUsersCSV(), "id,username,scan value,device limit,devices removed,can remove,group id\nBetty1248,bc12480,457436545,3,1,true,groupTwo\n");
     }
 
     @Test

@@ -15,6 +15,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import uk.ac.bris.cs.rfideasalreadytaken.lumberjack.database.DatabaseTesting;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -26,11 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource(locations = "file:${user.dir}/config/testdatabase.properties")
 @SpringBootTest
-@WithMockUser(roles = "ADMINISTRATOR")
+@WithMockUser(username = "test", roles = "ADMINISTRATOR")
 public class WebControllerTest {
 
     @Autowired
     private WebApplicationContext wac;
+
+    @Autowired
+    private DatabaseTesting databaseTesting;
 
     private MockMvc mvc;
 
@@ -56,7 +61,8 @@ public class WebControllerTest {
 
     @Test
     public void dashboard() throws Exception {
-         mvc.perform(get("/dashboard"))
+        databaseTesting.addTestAdmins();
+        mvc.perform(get("/dashboard"))
                 .andExpect(status().isOk());
     }
 
@@ -74,11 +80,13 @@ public class WebControllerTest {
 
     @Test
     public void userSpecified() throws Exception {
-        mvc.perform(get("/user/userinthere"))
+        databaseTesting.addTestUsers();
+
+        mvc.perform(get("/user/user01"))
                 .andExpect(status().isOk());
 
         mvc.perform(get("/user/usernotinthere"))
-                .andExpect(status().isOk());
+                .andExpect(status().is4xxClientError());
     }
 
     @Test

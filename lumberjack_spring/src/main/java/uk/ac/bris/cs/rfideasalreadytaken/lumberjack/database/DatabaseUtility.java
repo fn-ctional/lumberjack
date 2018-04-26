@@ -51,8 +51,8 @@ public class DatabaseUtility {
         stmt.addBatch("DROP TABLE IF EXISTS Assignments");
         stmt.addBatch("DROP TABLE IF EXISTS Users");
 
+        createUserGroupsTable(stmt);
         createUsersTable(stmt);
-        createAssignmentsTable(stmt);
         stmt.executeBatch();
     }
 
@@ -65,8 +65,8 @@ public class DatabaseUtility {
         stmt.addBatch("DROP TABLE IF EXISTS Assignments");
         stmt.addBatch("DROP TABLE IF EXISTS Devices");
 
+        createRulesTable(stmt);
         createDevicesTable(stmt);
-        createAssignmentsTable(stmt);
 
         stmt.executeBatch();
     }
@@ -83,8 +83,6 @@ public class DatabaseUtility {
         stmt.addBatch("DROP TABLE IF EXISTS UserGroups");
 
         createUserGroupsTable(stmt);
-        createGroupPermissionsTable(stmt);
-        createUsersTable(stmt);
 
         stmt.executeBatch();
     }
@@ -101,9 +99,6 @@ public class DatabaseUtility {
         stmt.addBatch("DROP TABLE IF EXISTS Rules");
 
         createRulesTable(stmt);
-        createGroupPermissionsTable(stmt);
-        createDevicesTable(stmt);
-        createAssignmentsTable(stmt);
 
         stmt.executeBatch();
     }
@@ -118,6 +113,38 @@ public class DatabaseUtility {
         stmt.addBatch("DROP TABLE IF EXISTS GroupPermissions");
 
         createGroupPermissionsTable(stmt);
+
+        stmt.executeBatch();
+    }
+
+
+    /**
+     * Resets Assignments table
+     * @throws SQLException
+     */
+    public void resetAssignments() throws SQLException {
+        Statement stmt = databaseConnection.getConnection().createStatement();
+
+        stmt.addBatch("DROP TABLE IF EXISTS Assignments");
+
+        createUserGroupsTable(stmt);
+        createUsersTable(stmt);
+        createAssignmentsTable(stmt);
+
+        stmt.executeBatch();
+    }
+
+    /**
+     * Resets Admins table
+     * @throws SQLException
+     */
+    public void resetAdmins() throws SQLException {
+        Statement stmt = databaseConnection.getConnection().createStatement();
+
+        stmt.addBatch("DROP TABLE IF EXISTS Tokens");
+        stmt.addBatch("DROP TABLE IF EXISTS Admins");
+
+        createAdminsTable(stmt);
 
         stmt.executeBatch();
     }
@@ -219,4 +246,5 @@ public class DatabaseUtility {
                 "\nEmail varchar(100) NOT NULL," +
                 "\nPRIMARY KEY (Email))");
     }
+
 }
