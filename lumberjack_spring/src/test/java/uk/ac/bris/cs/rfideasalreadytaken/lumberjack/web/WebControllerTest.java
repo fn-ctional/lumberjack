@@ -86,7 +86,7 @@ public class WebControllerTest {
                 .andExpect(status().isOk());
 
         mvc.perform(get("/user/usernotinthere"))
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isOk());
     }
 
     @Test

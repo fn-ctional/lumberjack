@@ -151,7 +151,8 @@ public class WebController extends WebMvcConfigurerAdapter {
         model.addAttribute("searchTerm", id);
 
         User user = webBackend.getUser(id);
-        if (user.getId().equals(id)) {
+
+        if (user != null) {
             userList.add(user);
             found = true;
             takeoutList = webBackend.getUserAssignmentHistory(id);
@@ -1072,12 +1073,5 @@ public class WebController extends WebMvcConfigurerAdapter {
         mav.addObject("messageString","Unknown server error, please try again!");
         return mav;
     }
-
-//    @PostMapping("/resetPassword")
-//    public String resetPassword(Model model) {
-//        model.addAttribute("messageType", "Password Reset");
-//        model.addAttribute("messageString", "Please check your emails!");
-//        return "message";
-//    }
 
 }
