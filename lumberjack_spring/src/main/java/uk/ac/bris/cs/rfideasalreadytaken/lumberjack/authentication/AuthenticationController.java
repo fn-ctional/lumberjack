@@ -153,10 +153,8 @@ public class AuthenticationController extends WebMvcConfigurerAdapter {
     }
 
     private AdminUser createUserAccount(AdminUserDTO accountDTO, BindingResult result) throws EmailNotPermittedException, Exception {
-
         return userService.registerNewUserAccount(accountDTO);
     }
-
 
     @GetMapping(value = "/user/resendRegistrationToken")
     @ResponseBody
